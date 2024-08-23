@@ -10,6 +10,7 @@ Cada jugador toma el control de un boxeador, cada uno con sus estadísticas y ha
 
 - C++ (versión 17)
 - SFML (Simple and Fast Multimedia Library) para gráficos y manejo de eventos
+- Tree comportamiento
 
 ## Estructura del Proyecto
 
