@@ -2,12 +2,15 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic
 
 SRC_DIR = src
+MAIN_SRC_DIR = main/src
 OBJ_DIR = obj
 BIN_DIR = bin
 TEST_DIR = test
 
-SRCS = $(wildcard $(SRC_DIR)/*.cpp)
+SRCS = $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(MAIN_SRC_DIR)/*.cpp)
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+OBJS += $(SRCS:$(MAIN_SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+
 TARGET = $(BIN_DIR)/main
 TEST_TARGET = $(BIN_DIR)/test
 
@@ -18,6 +21,10 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+$(OBJ_DIR)/%.o: $(MAIN_SRC_DIR)/%.cpp
 	mkdir -p $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
