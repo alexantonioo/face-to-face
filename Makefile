@@ -16,13 +16,16 @@ INCLUDEPATH = -I$(LIB)/include
 
 FLAGS       = -Ofast $(WARN)
 
+# SFML Libraries
+SFML_LIBS   = -lsfml-graphics -lsfml-window -lsfml-system
+
 all: test
 
 $(LIB)/obj/%.o : $(LIB)/src/%.cpp
 	$(CXX) $(FLAGS) $(INCLUDEPATH) -c $< -o $@
 
 $(TESTDIR)/bin/%: $(TESTDIR)/src/%.cpp $(OBJECTS)
-	$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(OBJECTS)
+	$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(OBJECTS) $(SFML_LIBS)
 
 test: $(TEST) $(INCLUDES) $(SOURCES) $(MKTEST)
 
