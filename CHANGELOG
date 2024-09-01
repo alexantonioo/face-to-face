@@ -1,0 +1,18 @@
+# Changelog
+
+## [0.1.0] - 2024-08-24
+### Added
+- Created the basic directory structure for the project.
+- Implemented the initial classes:
+  - `Achievement`: Handles player achievements and progress.
+  - `Boxer`: Manages the boxer's attributes such as health, stamina, and moves.
+  - `Combo`: Represents the combinations of moves that can be executed by the boxer.
+  - `Match`: Oversees the entire boxing match, including rounds and scoring.
+  - `Ring`: Represents the boxing ring where the match takes place.
+  - `Timer`: Manages the in-game time, including round duration and cooldowns.
+- Created the main game file `Game.cpp` to tie all components together.
+
+## [0.1.1] - 2024-08-31
+### Changed
+- Restructured the directory layout to improve organization and maintainability.
+- Adjusted the Makefile to ensure successful compilation of the project.
