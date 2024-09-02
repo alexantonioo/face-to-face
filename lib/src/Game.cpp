@@ -3,7 +3,7 @@
 
 //exaple code of a simple heart in sfml 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "heart");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "corazon");
 
     sf::VertexArray heart(sf::TrianglesFan, 102);
 
