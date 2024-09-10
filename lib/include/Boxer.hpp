@@ -1,34 +1,37 @@
 #include <string>
-#include <vector>
-#include <unordered_map>
-//#include "Timer.hpp"
 
 class Boxer 
 {
-    private:
-        std::string name;
-        int health;
-        int stamina;
-        int strength;
-        int defense;    
-        int speed;
-        int agility;
+public:
+    // Constructor
+    Boxer(const std::string& name);
 
-        std::vector<std::string> current_combo;
-        //std::unordered_map<std::string, Timer> cooldowns; ??
-        //faltan los atributos del cooldown, los del timer
-        //Timer jab_cooldown_timer;       
-        //Timer uppercut_cooldown_timer;  
+    // Métodos de acción
+    void jab_right();
+    void jab_left();
+    void block();
+    void dodge();
+    void take_damage(int amount);
+    
+    // Métodos para K.O.
+    void increase_ko_probability(int amount);
+    bool attempt_knockout();
+    bool is_knocked_out() const;
+    void check_for_technical_ko();
 
-    public:
-        Boxer(const std::string& name);
+    // Métodos de acceso
+    const std::string& get_name() const;
+    int get_stamina() const;
+    int get_lucky_in_punch() const;
+    int get_defense() const;
+    int get_speed() const;
 
-        // Metodos 
-        void jab();
-        void uppercut();
-        void block();
-        void dodge();
-        void take_damage(int amount);
-
-        // Getters y Setters ??
+private:
+    std::string name;
+    int stamina;
+    int lucky_in_punch;
+    int defense;    
+    int speed;
+    int ko_probability;  // Atributo agregado para la probabilidad de K.O.
+    bool knocked_out;    // Atributo agregado para rastrear si el boxeador está noqueado
 };
