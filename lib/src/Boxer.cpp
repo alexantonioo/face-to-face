@@ -1,6 +1,6 @@
 #include "boxer.hpp"
 #include <cstdlib> // Para std::rand()
-
+#include <iostream>
 // Constructor
 Boxer::Boxer(const std::string& name) 
     : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10), 
@@ -12,31 +12,57 @@ Boxer::Boxer(const std::string& name)
 // Métodos de acción
 void Boxer::jab_right() 
 {
-    // Lógica del golpe de derecha
-    increase_ko_probability(5);  // Incrementa la probabilidad de K.O.
+    std::cout << name << " lanza un jab con la derecha." << std::endl;
+    stamina -= 5;
+    increase_ko_probability(3);
 }
 
 void Boxer::jab_left() 
 {
-    // Lógica del golpe de izquierda
-    increase_ko_probability(5);  // Incrementa la probabilidad de K.O.
+    std::cout << name << " lanza un jab con la izquierda." << std::endl;
+    stamina -= 4;  // Un jab con la izquierda puede costar menos stamina
+    increase_ko_probability(3);
 }
 
 void Boxer::block() 
 {
-    // Lógica para bloquear
+    std::cout << name << " está bloqueando." << std::endl;
+    defense += 10;
 }
 
 void Boxer::dodge() 
 {
-    // Lógica para esquivar
+    std::cout << name << " intenta esquivar." << std::endl;
+    if (rand() % 100 < speed) {
+        std::cout << name << " esquivó con éxito!" << std::endl;
+    }   
+    else 
+    {
+        std::cout << name << " falló al esquivar." << std::endl;
+    }
 }
 
 void Boxer::take_damage(int amount) 
 {
-    stamina -= amount;
-    check_for_technical_ko();  // Verifica si se debe dar K.O. técnico
+    if (defense > 0) 
+    {
+        amount -= defense / 2;  
+        defense = 0;  
+    }
+    
+    if (amount > 0) 
+    {
+    stamina -= amount;  
+        std::cout << name << " recibió " << amount << " de daño." << std::endl;
+    } 
+    else 
+    {
+    std::cout << name << " bloqueó todo el daño!" << std::endl;
+    }
+
+    check_for_technical_ko();
 }
+
 
 // Métodos para K.O.
 void Boxer::increase_ko_probability(int amount) 
