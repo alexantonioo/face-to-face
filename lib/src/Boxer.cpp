@@ -1,20 +1,23 @@
 #include "boxer.hpp"
 #include <cstdlib> // Para std::rand()
 #include <iostream>
+#include <queue>
+#include <functional>
 // Constructor
 Boxer::Boxer(const std::string& name) 
     : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10), 
-    ko_probability(0), knocked_out(false)
+        ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f)
 {
     // Inicialización de otros atributos si es necesario
 }
 
-// Métodos de acción
+// Métodos de acción**
 void Boxer::jab_right() 
 {
     std::cout << name << " lanza un jab con la derecha." << std::endl;
     stamina -= 5;
     increase_ko_probability(3);
+    state = BoxerState::ATTACKING;
 }
 
 void Boxer::jab_left() 
@@ -22,12 +25,14 @@ void Boxer::jab_left()
     std::cout << name << " lanza un jab con la izquierda." << std::endl;
     stamina -= 4;  // Un jab con la izquierda puede costar menos stamina
     increase_ko_probability(3);
+    state = BoxerState::ATTACKING;
 }
 
 void Boxer::block() 
 {
     std::cout << name << " está bloqueando." << std::endl;
     defense += 10;
+    state = BoxerState::BLOCKING;
 }
 
 void Boxer::dodge() 
@@ -40,31 +45,51 @@ void Boxer::dodge()
     {
         std::cout << name << " falló al esquivar." << std::endl;
     }
+    state = BoxerState::DODGING;
 }
 
 void Boxer::take_damage(int amount) 
 {
-    if (defense > 0) 
-    {
-        amount -= defense / 2;  
-        defense = 0;  
-    }
+    if (defense > 0) {
+        amount -= defense / 2;
+        defense = 0;
+        }
     
-    if (amount > 0) 
-    {
-    stamina -= amount;  
+    if (amount > 0) {
+        stamina -= amount;
         std::cout << name << " recibió " << amount << " de daño." << std::endl;
-    } 
-    else 
-    {
-    std::cout << name << " bloqueó todo el daño!" << std::endl;
+        } 
+    
+    else {
+        std::cout << name << " bloqueó todo el daño!" << std::endl;
     }
 
     check_for_technical_ko();
+    state = BoxerState::TAKING_DAMAGE;
 }
 
+// Sistema de eventos**
+void Boxer::enqueue_action(Action action) 
+    {
+    action_queue.push(action);
+}
 
-// Métodos para K.O.
+// Método update para procesar las acciones en cola
+void Boxer::update(float delta_time) 
+    {
+    time_accumulated += delta_time;
+
+        if (time_accumulated >= action_interval && !action_queue.empty()) 
+            {
+        
+        action_queue.front()();
+        action_queue.pop();
+
+        time_accumulated = 0.0f;
+        }
+}
+
+// Métodos para K.O.**
 void Boxer::increase_ko_probability(int amount) 
 {
     ko_probability += amount;
@@ -94,8 +119,8 @@ void Boxer::check_for_technical_ko()
     }
 }
 
-// Métodos de acceso
-    const std::string& Boxer::get_name() const 
+// Métodos de acceso**
+const std::string& Boxer::get_name() const 
     {
         return name;
     }
