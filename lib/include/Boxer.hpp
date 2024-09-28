@@ -24,6 +24,8 @@ public:
     // Métodos de acción**
     void jab_right();
     void jab_left();
+    void hook();
+    void uppercut();
     void block();
     void dodge();
     void take_damage(int amount);

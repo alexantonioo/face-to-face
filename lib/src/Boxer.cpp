@@ -1,8 +1,9 @@
 #include "boxer.hpp"
-#include <cstdlib> // Para std::rand()
+#include <cstdlib> 
 #include <iostream>
 #include <queue>
 #include <functional>
+
 // Constructor
 Boxer::Boxer(const std::string& name) 
     : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10), 
@@ -10,6 +11,7 @@ Boxer::Boxer(const std::string& name)
 {
     // Inicialización de otros atributos si es necesario
 }
+
 
 // Métodos de acción**
 void Boxer::jab_right() 
@@ -20,11 +22,27 @@ void Boxer::jab_right()
     state = BoxerState::ATTACKING;
 }
 
-void Boxer::jab_left() 
-{
+void Boxer::jab_left()
+    {
     std::cout << name << " lanza un jab con la izquierda." << std::endl;
     stamina -= 4;  // Un jab con la izquierda puede costar menos stamina
     increase_ko_probability(3);
+    state = BoxerState::ATTACKING;
+}
+
+void Boxer::hook() 
+    {
+    std::cout << name << " lanza un hook." << std::endl;
+    stamina -= 7;  
+    increase_ko_probability(5);  
+    state = BoxerState::ATTACKING;
+}
+
+void Boxer::uppercut() 
+    {
+    std::cout << name << " lanza un uppercut." << std::endl;
+    stamina -= 8;  
+    increase_ko_probability(6);  
     state = BoxerState::ATTACKING;
 }
 
@@ -68,11 +86,13 @@ void Boxer::take_damage(int amount)
     state = BoxerState::TAKING_DAMAGE;
 }
 
+
 // Sistema de eventos**
 void Boxer::enqueue_action(Action action) 
     {
     action_queue.push(action);
 }
+
 
 // Método update para procesar las acciones en cola
 void Boxer::update(float delta_time) 
@@ -88,6 +108,7 @@ void Boxer::update(float delta_time)
         time_accumulated = 0.0f;
         }
 }
+
 
 // Métodos para K.O.**
 void Boxer::increase_ko_probability(int amount) 
@@ -118,6 +139,7 @@ void Boxer::check_for_technical_ko()
         knocked_out = true;  
     }
 }
+
 
 // Métodos de acceso**
 const std::string& Boxer::get_name() const 
