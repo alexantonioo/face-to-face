@@ -6,10 +6,20 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name) 
-    : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10), 
-        ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f)
-{
-    // Inicialización de otros atributos si es necesario
+    : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10),
+      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f) {
+    head.setRadius(25);
+    head.setFillColor(sf::Color::White); // Color por defecto
+    head.setPosition(200, 200); // Posición inicial
+      }
+
+// Constructor que acepta un color
+Boxer::Boxer(sf::Color color) 
+    : name("Default Boxer"), stamina(100), lucky_in_punch(10), defense(10), speed(10), 
+      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f) {
+    head.setRadius(25);
+    head.setFillColor(color); // Color personalizado
+    head.setPosition(200, 200); // Posición inicial
 }
 
 
@@ -165,4 +175,25 @@ int Boxer::get_defense() const
 int Boxer::get_speed() const 
 {
     return speed;
+}
+
+
+void Boxer::move(sf::Vector2f direction) {
+    head.move(direction);
+}
+
+void Boxer::draw(sf::RenderWindow& window) {
+    window.draw(head);
+}
+
+sf::FloatRect Boxer::getBounds() const {
+    return head.getGlobalBounds();
+}
+
+void Boxer::setPosition(float x, float y) {
+    head.setPosition(x, y);
+}
+
+void Boxer::setColor(sf::Color color) {
+    head.setFillColor(color); // Establece el color del círculo
 }

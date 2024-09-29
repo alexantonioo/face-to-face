@@ -9,8 +9,8 @@ OBJECTS     = $(SOURCES:$(LIB)/src/%.cpp=$(LIB)/obj/%.o)
 
 # Test
 TESTDIR     = ./test
-TEST        = $(wildcard $(TESTDIR)/src/*.cpp)
-MKTEST      = $(TEST:$(TESTDIR)/src/%.cpp=$(TESTDIR)/bin/%)
+GAMETEST    = $(TESTDIR)/src/GameTest.cpp
+BIN         = $(TESTDIR)/bin/GameTest
 
 INCLUDEPATH = -I$(LIB)/include
 
@@ -19,16 +19,14 @@ FLAGS       = -Ofast $(WARN)
 # SFML Libraries
 SFML_LIBS   = -lsfml-graphics -lsfml-window -lsfml-system
 
-all: test
+all: $(BIN)
 
 $(LIB)/obj/%.o : $(LIB)/src/%.cpp
 	$(CXX) $(FLAGS) $(INCLUDEPATH) -c $< -o $@
 
-$(TESTDIR)/bin/%: $(TESTDIR)/src/%.cpp $(OBJECTS)
+$(BIN): $(GAMETEST) $(OBJECTS)
 	$(CXX) $(FLAGS) $(INCLUDEPATH) $< -o $@ $(OBJECTS) $(SFML_LIBS)
 
-test: $(TEST) $(INCLUDES) $(SOURCES) $(MKTEST)
-
-.PHONY:
+.PHONY: clean
 clean:
-	$(RM) $(MKTEST)
+	$(RM) $(LIB)/obj/*.o $(BIN)

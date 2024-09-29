@@ -1,6 +1,7 @@
 #include <string>
 #include <queue>
 #include <functional>
+#include <SFML/Graphics.hpp>
 
     
     using Action = std::function<void()>;
@@ -18,8 +19,26 @@
 class Boxer 
     {
 public:
-    // Constructor
-    Boxer(const std::string& name);
+    Boxer(const std::string& name);  // Constructor que acepta un nombre
+    Boxer(sf::Color color);           // Constructor que acepta un color
+    Boxer(const std::string& name, sf::Color color); // Constructor que acepta nombre y color
+
+
+// Mover el boxeador en cierta dirección
+    void move(sf::Vector2f direction);
+
+    // Dibujar el boxeador en la ventana
+    void draw(sf::RenderWindow& window);
+
+    // Obtener los límites del boxeador (para las colisiones)
+    sf::FloatRect getBounds() const;
+
+    // Posicionar al boxeador en una ubicación específica
+    void setPosition(float x, float y);
+
+    void setColor(sf::Color color); // Método para establecer el color
+    //void draw(sf::RenderWindow& window); // Método para dibujar el boxeado
+
 
     // Métodos de acción**
     void jab_right();
@@ -55,6 +74,8 @@ public:
     int speed;
     int ko_probability; 
     bool knocked_out;   
+
+    sf::CircleShape head;
 
     BoxerState state;  // Añadimos esta variable para gestionar el estado
     std::queue<Action> action_queue;  // Cola para las acciones
