@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <queue>
 #include <functional>
@@ -6,7 +7,7 @@
     
     using Action = std::function<void()>;
 
-    // Definimos los estados posibles del boxeador**
+    // boxer possible states 
     enum class BoxerState 
         {
     IDLE,
@@ -19,28 +20,21 @@
 class Boxer 
     {
 public:
-    Boxer(const std::string& name);  // Constructor que acepta un nombre
-    Boxer(sf::Color color);           // Constructor que acepta un color
-    Boxer(const std::string& name, sf::Color color); // Constructor que acepta nombre y color
+    Boxer(const std::string& name);  // Constructor name
+    Boxer(sf::Color color);           // Constructor color
+    Boxer(const std::string& name, sf::Color color); // Constructor color/name
 
 
-// Mover el boxeador en cierta dirección
     void move(sf::Vector2f direction);
 
-    // Dibujar el boxeador en la ventana
+    // draw the boxer
     void draw(sf::RenderWindow& window);
-
-    // Obtener los límites del boxeador (para las colisiones)
     sf::FloatRect getBounds() const;
-
-    // Posicionar al boxeador en una ubicación específica
     void setPosition(float x, float y);
 
-    void setColor(sf::Color color); // Método para establecer el color
-    //void draw(sf::RenderWindow& window); // Método para dibujar el boxeado
+    void setColor(sf::Color color); 
 
-
-    // Métodos de acción**
+    // action methods
     void jab_right();
     void jab_left();
     void hook();
@@ -49,17 +43,17 @@ public:
     void dodge();
     void take_damage(int amount);
     
-    // Métodos para gestionar acciones
+    // Methods managing actions
     void enqueue_action(Action action);
     void update(float delta_time);
 
-    // Métodos para K.O.**
+    // methods K.O.
     void increase_ko_probability(int amount);
     bool attempt_knockout();
     bool is_knocked_out() const;
     void check_for_technical_ko();
 
-    // Métodos de acceso**
+    // access methods
     const std::string& get_name() const;
     int get_stamina() const;
     int get_lucky_in_punch() const;
@@ -77,9 +71,9 @@ public:
 
     sf::CircleShape head;
 
-    BoxerState state;  // Añadimos esta variable para gestionar el estado
-    std::queue<Action> action_queue;  // Cola para las acciones
-    float time_accumulated;           // Tiempo acumulado
+    BoxerState state;  // manage state
+    std::queue<Action> action_queue;  // action queue
+    float time_accumulated;           // accumulated time
     float action_interval;
 
 };

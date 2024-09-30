@@ -16,3 +16,11 @@
 ### Changed
 - Restructured the directory layout to improve organization and maintainability.
 - Adjusted the Makefile to ensure successful compilation of the project.
+
+## [0.1.2] - 2024-09-30
+### Added
+- Implemented the `Game` class to manage the main game loop, including event handling and rendering.
+- Added functionality for two boxers to move and collide within the boxing ring.
+- Ensured the boxing ring is rendered correctly in the game window.
+- Created test files for `Game` to verify functionality and integration.
+

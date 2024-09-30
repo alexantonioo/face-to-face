@@ -26,7 +26,7 @@ ComboTree::ComboTree() {
         boxer.uppercut(); 
     });
 }
-//seguir agregando combos y golpes que sean mas efectivos
+//more hits
 
 void ComboTree::execute_combo(Boxer& boxer, const std::vector<std::string>& moves) 
     {
@@ -49,7 +49,7 @@ void ComboTree::execute_combo(Boxer& boxer, const std::vector<std::string>& move
     }
 }
 
-// Avanza en el árbol de combos según el movimiento
+// Advance through the combo tree based on movement.
 std::shared_ptr<ComboNode> ComboTree::advance(std::shared_ptr<ComboNode> node, const std::string& move) 
     {
 

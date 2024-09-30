@@ -8,8 +8,8 @@ Game::Game()
       boxer2(sf::Color::Blue), 
       ring(400, 400) 
 {
-    boxer1.setPosition(150, 150);  // Posición inicial del boxeador 1
-    boxer2.setPosition(450, 450);  // Posición inicial del boxeador 2
+    boxer1.setPosition(150, 150);  // starting position boxer 1
+    boxer2.setPosition(450, 450);  // starting position boxer 2
 }
 
 void Game::run() {
@@ -20,7 +20,7 @@ void Game::run() {
                 window.close();
         }
 
-        // Movimiento del boxeador 1 (controlado con WASD)
+        // boxer 1 movement wasd
         sf::Vector2f movement1(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             movement1.y -= 1.0f;
@@ -37,7 +37,7 @@ void Game::run() {
 
         boxer1.move(movement1);
 
-        // Movimiento del boxeador 2 (controlado con flechas del teclado)
+        // boxer 2 movement arrows
         sf::Vector2f movement2(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             movement2.y -= 1.0f;
@@ -54,10 +54,9 @@ void Game::run() {
 
         boxer2.move(movement2);
 
-        // Manejar colisiones
         handleCollisions();
 
-        // Dibujar todo
+        // draw averything
         window.clear(sf::Color::Black);
         ring.draw(window);
         boxer1.draw(window);
@@ -71,7 +70,7 @@ void Game::handleCollisions() {
     sf::FloatRect boxer2Bounds = boxer2.getBounds();
     sf::FloatRect ringBounds = ring.getBounds();
 
-    // Colisiones con los límites del ring para ambos boxeadores
+    // collisions ring limits
     if (boxer1Bounds.left < ringBounds.left) {
         boxer1.setPosition(ringBounds.left, boxer1Bounds.top);
     }
@@ -98,9 +97,9 @@ void Game::handleCollisions() {
         boxer2.setPosition(boxer2Bounds.left, ringBounds.top + ringBounds.height - boxer2Bounds.height);
     }
 
-    // Colisiones entre los dos boxeadores
+    // collisions between boxers
     if (boxer1Bounds.intersects(boxer2Bounds)) {
-        // Lógica para empujar a los boxeadores fuera de la intersección
+        // push the boxers out of the intersection
         if (boxer1Bounds.left < boxer2Bounds.left) {
             boxer1.setPosition(boxer1Bounds.left - 1.0f, boxer1Bounds.top);
             boxer2.setPosition(boxer2Bounds.left + 1.0f, boxer2Bounds.top);
