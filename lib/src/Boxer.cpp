@@ -5,12 +5,13 @@
 #include <functional>
 
 // Constructor
-Boxer::Boxer(const std::string& name) 
+Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
     : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f) {
-    head.setRadius(25);
-    head.setFillColor(sf::Color::White); 
-    head.setPosition(200, 200); // inicial position
+    loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
+    boxerSprite_.setScale(0.5f, 0.5f);
+    boxerSprite_.setTexture(animations_["idle"]);
+    boxerSprite_.setPosition(300, 300); // Posición inicial
       }
 
 Boxer::Boxer(sf::Color color) 
@@ -20,7 +21,45 @@ Boxer::Boxer(sf::Color color)
     head.setFillColor(color); 
     head.setPosition(200, 200); // inicial position
 }
+/////textures animations etc...
+//load animation textures
 
+void Boxer::loadTexture(const std::string& animationName, const std::string& texturePath) 
+{
+    sf::Texture texture;
+    if (!texture.loadFromFile(texturePath)) 
+    {
+        std::cerr << "!!Error loading texture " << texturePath << std::endl;
+    } 
+    else 
+    {
+        animations_[animationName] = texture;
+    }
+    
+}
+
+void Boxer::loadAnimation(const std::string &animationName, const std::string &texturePath) 
+{
+    sf::Texture animationTexture;
+    if (!animationTexture.loadFromFile(texturePath)) 
+    {
+        std::cerr << "!!Error loading animation " << texturePath << std::endl;
+    }
+    animations_[animationName] = animationTexture; // Guardar la textura en el mapa
+}
+
+//change boxer animations
+void Boxer::setAnimation(const std::string& animationName) 
+{
+    if (animations_.find(animationName) != animations_.end()) 
+    {
+        boxerSprite_.setTexture(animations_[animationName]);
+    } 
+    else 
+    {
+        std::cerr << "!!animation not found " << animationName << std::endl;
+    }
+}
 
 // action methods
 void Boxer::jab_right() 
@@ -32,7 +71,7 @@ void Boxer::jab_right()
 }
 
 void Boxer::jab_left()
-    {
+{
     std::cout << name << " throws a left jab." << std::endl;
     stamina -= 4;  // maybe lowest stamina 
     increase_ko_probability(3);
@@ -40,7 +79,7 @@ void Boxer::jab_left()
 }
 
 void Boxer::hook() 
-    {
+{
     std::cout << name << " throws a hook." << std::endl;
     stamina -= 7;  
     increase_ko_probability(5);  
@@ -48,7 +87,7 @@ void Boxer::hook()
 }
 
 void Boxer::uppercut() 
-    {
+{
     std::cout << name << " throws a uppercut." << std::endl;
     stamina -= 8;  
     increase_ko_probability(6);  
@@ -77,17 +116,20 @@ void Boxer::dodge()
 
 void Boxer::take_damage(int amount) 
 {
-    if (defense > 0) {
+    if (defense > 0) 
+    {
         amount -= defense / 2;
         defense = 0;
-        }
+    }
     
-    if (amount > 0) {
+    if (amount > 0) 
+    {
         stamina -= amount;
         std::cout << name << " took " << amount << " damage" << std::endl;
-        } 
+    } 
     
-    else {
+    else 
+    {
         std::cout << name << " blocked all the damage!" << std::endl;
     }
 
@@ -96,21 +138,21 @@ void Boxer::take_damage(int amount)
 }
 
 void Boxer::enqueue_action(Action action) 
-    {
+{
     action_queue.push(action);
 }
 
 void Boxer::update(float delta_time) 
-    {
+{
     time_accumulated += delta_time;
 
         if (time_accumulated >= action_interval && !action_queue.empty()) 
-            {
+        {
         
-        action_queue.front()();
-        action_queue.pop();
+            action_queue.front()();
+            action_queue.pop();
 
-        time_accumulated = 0.0f;
+            time_accumulated = 0.0f;
         }
 }
 
@@ -172,15 +214,15 @@ int Boxer::get_speed() const
 
 
 void Boxer::move(sf::Vector2f direction) {
-    head.move(direction);
+    boxerSprite_.move(direction);
 }
 
 void Boxer::draw(sf::RenderWindow& window) {
-    window.draw(head);
+    window.draw(boxerSprite_);
 }
 
 sf::FloatRect Boxer::getBounds() const {
-    return head.getGlobalBounds();
+    return boxerSprite_.getGlobalBounds();
 }
 
 void Boxer::setPosition(float x, float y) {
