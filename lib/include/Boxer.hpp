@@ -9,7 +9,7 @@
 
     // boxer possible states 
     enum class BoxerState 
-        {
+    {
     IDLE,
     ATTACKING,
     BLOCKING,

@@ -66,7 +66,11 @@
     "optional": "cpp",
     "random": "cpp",
     "string_view": "cpp",
-    "numbers": "cpp"
+    "numbers": "cpp",
+    "codecvt": "cpp",
+    "ratio": "cpp",
+    "iomanip": "cpp",
+    "sstream": "cpp"
   },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",

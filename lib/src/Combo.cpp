@@ -1,7 +1,8 @@
 #include "Combo.hpp"
 #include <iostream> 
 
-ComboTree::ComboTree() {
+ComboTree::ComboTree() 
+{
     root = std::make_shared<ComboNode>(nullptr);
 
     
@@ -29,7 +30,7 @@ ComboTree::ComboTree() {
 //more hits
 
 void ComboTree::execute_combo(Boxer& boxer, const std::vector<std::string>& moves) 
-    {
+{
     std::shared_ptr<ComboNode> current_node = root;
     
     for (const auto& move : moves) 
