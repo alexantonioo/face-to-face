@@ -23,8 +23,9 @@ public:
     Boxer(const std::string& name);  // Constructor name
     Boxer(sf::Color color);           // Constructor color
     Boxer(const std::string& name, sf::Color color); // Constructor color/name
-
-
+    Boxer(const std::string& name, const std::string& initialTexturePath);
+    void loadTexture(const std::string& animationName, const std::string& texturePath);
+    void loadAnimation(const std::string &animationName, const std::string &texturePath);
     void move(sf::Vector2f direction);
 
     // draw the boxer
@@ -33,6 +34,7 @@ public:
     void setPosition(float x, float y);
 
     void setColor(sf::Color color); 
+    void setAnimation(const std::string& animationName); //change animation
 
     // action methods
     void jab_right();
@@ -76,4 +78,10 @@ public:
     float time_accumulated;           // accumulated time
     float action_interval;
 
+
+    //test
+    sf::Sprite boxerSprite_;
+    std::map<std::string, sf::Texture> animations_; // Animations
+
+    
 };

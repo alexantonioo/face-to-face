@@ -1,16 +1,43 @@
-// lib/src/Game.cpp
+#include <SFML/Graphics.hpp>
 #include "Game.hpp"
-#include <SFML/Window.hpp>
+#include "Ring.hpp"
+#include "Boxer.hpp"
+
 
 Game::Game() 
     : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
-      boxer1(sf::Color::Red), 
-      boxer2(sf::Color::Blue), 
+      boxer1("Boxer 1", "C:\\Users\\alex\\Documents\\GitHub\\face-to-face\\assets\\images\\boxer.png"), 
+      boxer2("Boxer 2", "C:\\Users\\alex\\Documents\\GitHub\\face-to-face\\assets\\images\\boxer.png"), 
       ring(400, 400) 
 {
-    boxer1.setPosition(150, 150);  // starting position boxer 1
-    boxer2.setPosition(450, 450);  // starting position boxer 2
+    boxer1.setPosition(150, 150);  // Posición inicial
+    boxer2.setPosition(450, 450);  // Posición inicial
+
+    // Cargar texturas y animaciones
+    boxer1.loadTexture("default ", "C:\\Users\\alex\\Documents\\GitHub\\face-to-face\\assets\\images\\boxer.png");  // Textura inicial
+    boxer1.loadAnimation("jab", "C:\\Users\\alex\\Documents\\GitHub\\face-to-face\\assets\\images\\right_jab.png");  // Animación de jab
+    boxer1.loadAnimation("hook", "C:\\Users\\alex\\Documents\\GitHub\\face-to-face\\assets\\images\\hook.png");  // Animación de hook
+
+    boxer2.loadTexture("default", "C:\\Users\\alex\\Documents\\GitHub\\face-to-face\\assets\\images\\boxer.png");
+    boxer2.loadAnimation("jab", "C:\\Users\\alex\\Documents\\GitHub\\face-to-face\\assets\\images\\right_jab.png");
+    boxer2.loadAnimation("hook", "C:\\Users\\alex\\Documents\\GitHub\\face-to-face\\assets\\images\\hook.png");
 }
+
+
+/*//test
+// Cargar el boxeador 1 con su textura inicial
+    boxer1 = new Boxer("Player1", "assets/images/boxer.png");
+    // Cargar animaciones adicionales
+    boxer1 ->loadTexture("jab", "assets/images/boxer_jab.png");
+    boxer1 ->loadTexture("hook", "assets/images/boxer_hook.png");
+
+    // Cargar el boxeador 2 con su textura inicial
+    boxer2 = new Boxer("Player2", "assets/images/boxer.png");
+    // Cargar animaciones adicionales para boxer2
+    boxer2 ->loadTexture("jab", "assets/images/boxer_jab.png");
+    boxer2 ->loadTexture("hook", "assets/images/boxer_hook.png");
+
+*/
 
 void Game::run() {
     while (window.isOpen()) {

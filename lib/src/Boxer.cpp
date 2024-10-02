@@ -5,12 +5,12 @@
 #include <functional>
 
 // Constructor
-Boxer::Boxer(const std::string& name) 
+Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
     : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f) {
-    head.setRadius(25);
-    head.setFillColor(sf::Color::White); 
-    head.setPosition(200, 200); // inicial position
+    loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
+    boxerSprite_.setTexture(animations_["idle"]);
+    boxerSprite_.setPosition(300, 300); // Posición inicial
       }
 
 Boxer::Boxer(sf::Color color) 
@@ -20,7 +20,33 @@ Boxer::Boxer(sf::Color color)
     head.setFillColor(color); 
     head.setPosition(200, 200); // inicial position
 }
+/////textures animations etc...
+//load animation textures
+void Boxer::loadTexture(const std::string& animationName, const std::string& texturePath) {
+    sf::Texture texture;
+    if (!texture.loadFromFile(texturePath)) {
+        std::cerr << "!!Error loading texture " << texturePath << std::endl;
+    } else {
+        animations_[animationName] = texture;
+    }
+}
 
+void Boxer::loadAnimation(const std::string &animationName, const std::string &texturePath) {
+    sf::Texture animationTexture;
+    if (!animationTexture.loadFromFile(texturePath)) {
+        std::cerr << "!!Error loading animation " << texturePath << std::endl;
+    }
+    animations_[animationName] = animationTexture; // Guardar la textura en el mapa
+}
+
+//change boxer animations
+void Boxer::setAnimation(const std::string& animationName) {
+    if (animations_.find(animationName) != animations_.end()) {
+        boxerSprite_.setTexture(animations_[animationName]);
+    } else {
+        std::cerr << "!!animation not found " << animationName << std::endl;
+    }
+}
 
 // action methods
 void Boxer::jab_right() 
@@ -172,15 +198,15 @@ int Boxer::get_speed() const
 
 
 void Boxer::move(sf::Vector2f direction) {
-    head.move(direction);
+    boxerSprite_.move(direction);
 }
 
 void Boxer::draw(sf::RenderWindow& window) {
-    window.draw(head);
+    window.draw(boxerSprite_);
 }
 
 sf::FloatRect Boxer::getBounds() const {
-    return head.getGlobalBounds();
+    return boxerSprite_.getGlobalBounds();
 }
 
 void Boxer::setPosition(float x, float y) {
