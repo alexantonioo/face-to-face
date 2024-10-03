@@ -1,4 +1,4 @@
-#include "boxer.hpp"
+#include "Boxer.hpp"
 #include <cstdlib> 
 #include <iostream>
 #include <queue>
