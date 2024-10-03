@@ -7,11 +7,12 @@
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
     : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10),
-      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f) {
+      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.5f, 0.5f);
     boxerSprite_.setTexture(animations_["idle"]);
     boxerSprite_.setPosition(300, 300); // Posición inicial
+    
       }
 
 Boxer::Boxer(sf::Color color) 
@@ -64,34 +65,51 @@ void Boxer::setAnimation(const std::string& animationName)
 // action methods
 void Boxer::jab_right() 
 {
-    std::cout << name << " throws a right jab" << std::endl;
-    stamina -= 5;
-    increase_ko_probability(3);
-    state = BoxerState::ATTACKING;
+    if (state == BoxerState::IDLE) { 
+        state = BoxerState::ATTACKING;
+        punchClock.restart(); 
+
+        loadAnimation("jab", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/right_jab.png");
+        
+        setAnimation("jab"); 
+    }
 }
 
 void Boxer::jab_left()
 {
-    std::cout << name << " throws a left jab." << std::endl;
-    stamina -= 4;  // maybe lowest stamina 
-    increase_ko_probability(3);
-    state = BoxerState::ATTACKING;
+if (state == BoxerState::IDLE) {  
+        state = BoxerState::ATTACKING;
+        punchClock.restart();  
+
+        loadAnimation("jab_left", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/left_jab.png");
+
+        setAnimation("jab_left");  
+    }
 }
 
 void Boxer::hook() 
 {
-    std::cout << name << " throws a hook." << std::endl;
-    stamina -= 7;  
-    increase_ko_probability(5);  
-    state = BoxerState::ATTACKING;
+    if (state == BoxerState::IDLE) {  
+        state = BoxerState::ATTACKING;
+        punchClock.restart();  
+
+        loadAnimation("hook", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/hook.png");
+
+        setAnimation("hook");  
+        //FALTA AJUSTAR STAMINA
+    }
 }
 
 void Boxer::uppercut() 
 {
-    std::cout << name << " throws a uppercut." << std::endl;
-    stamina -= 8;  
-    increase_ko_probability(6);  
-    state = BoxerState::ATTACKING;
+    if (state == BoxerState::IDLE) {  
+        state = BoxerState::ATTACKING;
+        punchClock.restart();  
+
+        loadAnimation("uppercut", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/uppercut.png");
+
+        setAnimation("uppercut");  
+    }
 }
 
 void Boxer::block() 
@@ -142,20 +160,12 @@ void Boxer::enqueue_action(Action action)
     action_queue.push(action);
 }
 
-void Boxer::update(float delta_time) 
-{
-    time_accumulated += delta_time;
+void Boxer::update() {
 
-        if (time_accumulated >= action_interval && !action_queue.empty()) 
-        {
-        
-            action_queue.front()();
-            action_queue.pop();
-
-            time_accumulated = 0.0f;
-        }
+    if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) {
+        state = BoxerState::IDLE; 
+    }
 }
-
 
 void Boxer::increase_ko_probability(int amount) 
 {
@@ -231,4 +241,21 @@ void Boxer::setPosition(float x, float y) {
 
 void Boxer::setColor(sf::Color color) {
     head.setFillColor(color);
+}
+
+void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
+                        sf::Keyboard::Key attack3, sf::Keyboard::Key attack4) 
+{
+    if (sf::Keyboard::isKeyPressed(attack1)) {
+        jab_right(); // Acción para el primer ataque
+    }
+    if (sf::Keyboard::isKeyPressed(attack2)) {
+        uppercut(); // Acción para el segundo ataque
+    }
+    if (sf::Keyboard::isKeyPressed(attack3)) {
+        jab_left(); // Acción para el tercer ataque
+    }
+    if (sf::Keyboard::isKeyPressed(attack4)) {
+        hook(); // Acción para el cuarto ataque
+    }
 }

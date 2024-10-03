@@ -52,6 +52,12 @@ void Game::run()
                 window.close();
         }
 
+        boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
+        boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
+        
+    // Actualizar el estado de cada boxeador
+        boxer1.update();
+        boxer2.update();
         // boxer 1 movement wasd
         sf::Vector2f movement1(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
@@ -94,9 +100,11 @@ void Game::run()
 
         boxer2.move(movement2);
 
+        // Llamada a handleInput para ambos boxeadores
+
         handleCollisions();
 
-        // draw averything
+        // Dibujar todo
         window.clear(sf::Color::Black);
         ring.draw(window);
         boxer1.draw(window);

@@ -28,6 +28,9 @@ public:
     void loadAnimation(const std::string &animationName, const std::string &texturePath);
     void move(sf::Vector2f direction);
 
+    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4);
+    Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
+
     // draw the boxer
     void draw(sf::RenderWindow& window);
     sf::FloatRect getBounds() const;
@@ -35,6 +38,7 @@ public:
 
     void setColor(sf::Color color); 
     void setAnimation(const std::string& animationName); //change animation
+    
 
     // action methods
     void jab_right();
@@ -44,10 +48,11 @@ public:
     void block();
     void dodge();
     void take_damage(int amount);
+    bool isPunching() const { return state == BoxerState::ATTACKING; }
     
     // Methods managing actions
     void enqueue_action(Action action);
-    void update(float delta_time);
+    void update();
 
     // methods K.O.
     void increase_ko_probability(int amount);
@@ -74,6 +79,8 @@ public:
     sf::CircleShape head;
 
     BoxerState state;  // manage state
+    sf::Clock punchClock;
+    sf::Time punchDuration;
     std::queue<Action> action_queue;  // action queue
     float time_accumulated;           // accumulated time
     float action_interval;
