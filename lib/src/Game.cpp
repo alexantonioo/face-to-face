@@ -32,7 +32,43 @@ int main() {
                 window.close();
         }
 
+<<<<<<< Updated upstream
         window.clear(sf::Color::White); 
+=======
+        boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
+        boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
+        
+        if (boxer1.isBlocking()) 
+            {
+    boxer1.attempt_parry(boxer2);  // boxer1 intenta hacer parry sobre el ataque de boxer2
+    }
+
+    if (boxer2.isBlocking()) 
+        {
+    boxer2.attempt_parry(boxer1);  // boxer2 intenta hacer parry sobre el ataque de boxer1
+    }
+    // Actualizar el estado de cada boxeador
+        boxer1.update();
+        boxer2.update();
+        // boxer 1 movement wasd
+        sf::Vector2f movement1(0.f, 0.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
+        {
+            movement1.y -= 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) 
+        {
+            movement1.y += 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) 
+        {
+            movement1.x -= 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) 
+        {
+            movement1.x += 1.0f;
+        }
+>>>>>>> Stashed changes
 
         // dreaw heart
         window.draw(heart);

@@ -31,6 +31,7 @@ void Boxer::jab_left()
 }
 
 void Boxer::hook() 
+<<<<<<< Updated upstream
     {
     std::cout << name << " lanza un hook." << std::endl;
     stamina -= 7;  
@@ -44,6 +45,32 @@ void Boxer::uppercut()
     stamina -= 8;  
     increase_ko_probability(6);  
     state = BoxerState::ATTACKING;
+=======
+{
+    if (state == BoxerState::IDLE) 
+        {  
+        state = BoxerState::ATTACKING;
+        punchClock.restart();  
+
+        loadAnimation("hook", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/hook.png");
+
+        setAnimation("hook");  
+        //FALTA AJUSTAR STAMINA
+    }
+}
+
+void Boxer::uppercut() 
+{
+    if (state == BoxerState::IDLE) 
+        {  
+        state = BoxerState::ATTACKING;
+        punchClock.restart();  
+
+        loadAnimation("uppercut", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/uppercut.png");
+
+        setAnimation("uppercut");  
+    }
+>>>>>>> Stashed changes
 }
 
 void Boxer::block() 
@@ -53,7 +80,13 @@ void Boxer::block()
     state = BoxerState::BLOCKING;
 }
 
+bool Boxer::isBlocking() const 
+    {
+    return state == BoxerState::BLOCKING;  
+}
+
 void Boxer::dodge() 
+
 {
     std::cout << name << " intenta esquivar." << std::endl;
     if (rand() % 100 < speed) {
@@ -64,6 +97,38 @@ void Boxer::dodge()
         std::cout << name << " falló al esquivar." << std::endl;
     }
     state = BoxerState::DODGING;
+}
+
+void Boxer::attempt_parry(Boxer& opponent) 
+    {
+    
+    if (state == BoxerState::BLOCKING && opponent.isPunching()) 
+        {
+        
+        sf::Time elapsedTime = punchClock.getElapsedTime();
+        
+        
+        if (elapsedTime.asSeconds() < 0.5f) 
+            { 
+            state = BoxerState::STUNNED;
+            opponent.cancel_attack();
+            opponent.setState(BoxerState::STUNNED);
+            //setAnimation("parry"); 
+        }
+    }
+}
+
+void Boxer::cancel_attack() 
+    {
+    
+    if (isPunching()) 
+        {
+        state = BoxerState::IDLE;
+        action_queue = std::queue<Action>();
+
+          //empty the queue
+
+    }
 }
 
 void Boxer::take_damage(int amount) 
@@ -93,6 +158,11 @@ void Boxer::enqueue_action(Action action)
     action_queue.push(action);
 }
 
+<<<<<<< Updated upstream
+=======
+void Boxer::update() 
+    {
+>>>>>>> Stashed changes
 
 // Método update para procesar las acciones en cola
 void Boxer::update(float delta_time) 
@@ -109,8 +179,16 @@ void Boxer::update(float delta_time)
         }
 }
 
+<<<<<<< Updated upstream
 
 // Métodos para K.O.**
+=======
+void Boxer::setState(BoxerState newState) 
+    {
+    state = newState;
+}
+
+>>>>>>> Stashed changes
 void Boxer::increase_ko_probability(int amount) 
 {
     ko_probability += amount;

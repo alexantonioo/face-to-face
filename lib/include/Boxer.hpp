@@ -12,6 +12,7 @@
     ATTACKING,
     BLOCKING,
     DODGING,
+    STUNNED,
     TAKING_DAMAGE
     };
 
@@ -29,10 +30,22 @@ public:
     void block();
     void dodge();
     void take_damage(int amount);
+<<<<<<< Updated upstream
+=======
+    bool isPunching() const { return state == BoxerState::ATTACKING; }
+    bool isBlocking() const;
+    void attempt_parry(Boxer& opponent);
+    void cancel_attack();
+>>>>>>> Stashed changes
     
     // Métodos para gestionar acciones
     void enqueue_action(Action action);
+<<<<<<< Updated upstream
     void update(float delta_time);
+=======
+    void update();
+    void setState(BoxerState newState);
+>>>>>>> Stashed changes
 
     // Métodos para K.O.**
     void increase_ko_probability(int amount);
@@ -55,10 +68,22 @@ public:
     int speed;
     int ko_probability; 
     bool knocked_out;   
+<<<<<<< Updated upstream
 
     BoxerState state;  // Añadimos esta variable para gestionar el estado
     std::queue<Action> action_queue;  // Cola para las acciones
     float time_accumulated;           // Tiempo acumulado
+=======
+    
+    
+    sf::CircleShape head;
+
+    BoxerState state;  // manage state
+    sf::Clock punchClock;
+    sf::Time punchDuration;
+    std::queue<Action> action_queue;  // action queue
+    float time_accumulated;           // accumulated time
+>>>>>>> Stashed changes
     float action_interval;
 
 };
