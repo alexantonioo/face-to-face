@@ -4,7 +4,7 @@
 #include <queue>
 #include <functional>
 
-// Constructor
+// Constructorrrrrr
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
     : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
