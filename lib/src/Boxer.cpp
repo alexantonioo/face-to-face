@@ -69,7 +69,7 @@ void Boxer::jab_right()
         state = BoxerState::ATTACKING;
         punchClock.restart(); 
 
-        loadAnimation("jab", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/right_jab.png");
+        loadAnimation("jab", "assets/images/right_jab.png");
         
         setAnimation("jab"); 
     }
@@ -81,7 +81,7 @@ if (state == BoxerState::IDLE) {
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("jab_left", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/left_jab.png");
+        loadAnimation("jab_left", "assets/images/left_jab.png");
 
         setAnimation("jab_left");  
     }
@@ -93,7 +93,7 @@ void Boxer::hook()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("hook", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/hook.png");
+        loadAnimation("hook", "assets/images/hook.png");
 
         setAnimation("hook");  
         //FALTA AJUSTAR STAMINA
@@ -106,7 +106,7 @@ void Boxer::uppercut()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("uppercut", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/uppercut.png");
+        loadAnimation("uppercut", "assets/images/uppercut.png");
 
         setAnimation("uppercut");  
     }
