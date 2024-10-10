@@ -6,10 +6,7 @@
 #include <iostream>
 
 int main() {
-
-    /*for (const auto &entry : std::filesystem::directory_iterator("assets/images")) {
-        std::cout << entry.path() << std::endl;
-    }*/
+    
     Game game;
     game.run();
 
