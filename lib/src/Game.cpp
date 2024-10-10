@@ -10,36 +10,14 @@ Game::Game()
       boxer2("Boxer 2", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
       ring(400, 400) 
 {
-    boxer1.setPosition(100, 100);  // Posición inicial
-    boxer2.setPosition(600, 600);  // Posición inicial
+    boxer1.setPosition(100, 100);  // posicion inicial
+    boxer2.setPosition(600, 600);  // posicion inicial
 
-    // Cargar texturas y animaciones
+    // cargar texturas y animaciones
     boxer1.loadTexture("default ", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png");  // Textura inicial
     boxer2.loadTexture("default", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png");
 
-   /* boxer1.loadAnimation("jab", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/right_jab.png");  // Animación de jab
-    boxer1.loadAnimation("hook", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/hook.png");  // Animación de hook
-
-    
-    boxer2.loadAnimation("jab", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/right_jab.png");
-    boxer2.loadAnimation("hook", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/hook.png");*/
 }
-
-
-/*//test
-// Cargar el boxeador 1 con su textura inicial
-    boxer1 = new Boxer("Player1", "assets/images/boxer.png");
-    // Cargar animaciones adicionales
-    boxer1 ->loadTexture("jab", "assets/images/boxer_jab.png");
-    boxer1 ->loadTexture("hook", "assets/images/boxer_hook.png");
-
-    // Cargar el boxeador 2 con su textura inicial
-    boxer2 = new Boxer("Player2", "assets/images/boxer.png");
-    // Cargar animaciones adicionales para boxer2
-    boxer2 ->loadTexture("jab", "assets/images/boxer_jab.png");
-    boxer2 ->loadTexture("hook", "assets/images/boxer_hook.png");
-
-*/
 
 void Game::run() 
 {
@@ -55,7 +33,6 @@ void Game::run()
         boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
         boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
         
-    // Actualizar el estado de cada boxeador
         boxer1.update();
         boxer2.update();
         // boxer 1 movement wasd
@@ -100,11 +77,9 @@ void Game::run()
 
         boxer2.move(movement2);
 
-        // Llamada a handleInput para ambos boxeadores
-
         handleCollisions();
 
-        // Dibujar todo
+        // dibujar todo
         window.clear(sf::Color::Black);
         ring.draw(window);
         boxer1.draw(window);
@@ -115,45 +90,38 @@ void Game::run()
 
 void Game::handleCollisions() 
 {
-    sf::FloatRect boxer1Bounds = boxer1.getBounds();
-    sf::FloatRect boxer2Bounds = boxer2.getBounds();
+    sf::FloatRect boxer1Bounds = boxer1.getSprite().getGlobalBounds();
+    sf::FloatRect boxer2Bounds = boxer2.getSprite().getGlobalBounds();
     sf::FloatRect ringBounds = ring.getBounds();
 
-    // Collisions ring
-    if (boxer1Bounds.left < ringBounds.left) 
-    {
+    // colisiones para Boxer 1
+    if (boxer1Bounds.left < ringBounds.left) {
         boxer1.setPosition(ringBounds.left, boxer1Bounds.top);
-    }
-    if (boxer1Bounds.left + boxer1Bounds.width > ringBounds.left + ringBounds.width) 
-    {
+    } else if (boxer1Bounds.left + boxer1Bounds.width > ringBounds.left + ringBounds.width) {
         boxer1.setPosition(ringBounds.left + ringBounds.width - boxer1Bounds.width, boxer1Bounds.top);
     }
-    if (boxer1Bounds.top < ringBounds.top) 
-    {
+    if (boxer1Bounds.top < ringBounds.top) {
         boxer1.setPosition(boxer1Bounds.left, ringBounds.top);
-    }
-    if (boxer1Bounds.top + boxer1Bounds.height > ringBounds.top + ringBounds.height) 
-    {
+    } else if (boxer1Bounds.top + boxer1Bounds.height > ringBounds.top + ringBounds.height) {
         boxer1.setPosition(boxer1Bounds.left, ringBounds.top + ringBounds.height - boxer1Bounds.height);
     }
 
-    if (boxer2Bounds.left < ringBounds.left) 
-    {
+    // para el 2
+    if (boxer2Bounds.left < ringBounds.left) {
         boxer2.setPosition(ringBounds.left, boxer2Bounds.top);
-    }
-    if (boxer2Bounds.left + boxer2Bounds.width > ringBounds.left + ringBounds.width) 
-    {
+    } else if (boxer2Bounds.left + boxer2Bounds.width > ringBounds.left + ringBounds.width) {
         boxer2.setPosition(ringBounds.left + ringBounds.width - boxer2Bounds.width, boxer2Bounds.top);
     }
     if (boxer2Bounds.top < ringBounds.top) {
         boxer2.setPosition(boxer2Bounds.left, ringBounds.top);
-    }
-    if (boxer2Bounds.top + boxer2Bounds.height > ringBounds.top + ringBounds.height) 
-    {
+    } else if (boxer2Bounds.top + boxer2Bounds.height > ringBounds.top + ringBounds.height) {
         boxer2.setPosition(boxer2Bounds.left, ringBounds.top + ringBounds.height - boxer2Bounds.height);
     }
 
-    // Collisions between boxers
+    boxer1.update();
+    boxer2.update();
+
+    // collisions between boxers
     if (boxer1Bounds.intersects(boxer2Bounds)) 
     {
         sf::FloatRect intersection;
@@ -185,5 +153,7 @@ void Game::handleCollisions()
 
         boxer1.move(moveDirection);
         boxer2.move(-moveDirection);  
+        
     }
+    
 }

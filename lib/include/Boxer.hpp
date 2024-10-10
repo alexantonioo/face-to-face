@@ -5,10 +5,10 @@
 #include <SFML/Graphics.hpp>
 
     
-    using Action = std::function<void()>;
+using Action = std::function<void()>;
 
     // boxer possible states 
-    enum class BoxerState 
+enum class BoxerState 
     {
     IDLE,
     ATTACKING,
@@ -30,6 +30,7 @@ public:
 
     void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4);
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
+    const sf::Sprite&  getSprite() const;
 
     // draw the boxer
     void draw(sf::RenderWindow& window);
@@ -89,6 +90,5 @@ public:
     //test
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_; // Animations
-
     
 };

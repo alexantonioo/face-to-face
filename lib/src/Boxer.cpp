@@ -15,16 +15,6 @@ Boxer::Boxer(const std::string& name, const std::string& initialTexturePath)
     
       }
 
-Boxer::Boxer(sf::Color color) 
-    : name("Default Boxer"), stamina(100), lucky_in_punch(10), defense(10), speed(10), 
-      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f) {
-    head.setRadius(25);
-    head.setFillColor(color); 
-    head.setPosition(200, 200); // inicial position
-}
-/////textures animations etc...
-//load animation textures
-
 void Boxer::loadTexture(const std::string& animationName, const std::string& texturePath) 
 {
     sf::Texture texture;
@@ -161,9 +151,9 @@ void Boxer::enqueue_action(Action action)
 }
 
 void Boxer::update() {
-
     if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) {
-        state = BoxerState::IDLE; 
+        state = BoxerState::IDLE;
+        setAnimation("idle");
     }
 }
 
@@ -241,6 +231,10 @@ void Boxer::setPosition(float x, float y) {
 
 void Boxer::setColor(sf::Color color) {
     head.setFillColor(color);
+}
+
+const sf::Sprite& Boxer::getSprite() const {
+    return boxerSprite_;
 }
 
 void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
