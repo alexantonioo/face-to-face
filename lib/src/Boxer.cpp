@@ -39,6 +39,8 @@ void Boxer::loadAnimation(const std::string &animationName, const std::string &t
     animations_[animationName] = animationTexture; // Guardar la textura en el mapa
 }
 
+//junte entre loadanumation y loadtexture? 
+
 //change boxer animations
 void Boxer::setAnimation(const std::string& animationName) 
 {
@@ -162,7 +164,7 @@ void Boxer::increase_ko_probability(int amount)
     ko_probability += amount;
 }
 
-bool Boxer::attempt_knockout() 
+bool Boxer::attempt_knockout() // only first punch/hit
 {
     int chance = std::rand() % 100;
     if (chance < ko_probability) 
@@ -170,7 +172,7 @@ bool Boxer::attempt_knockout()
         knocked_out = true;
         return true;  // K.O. successful
     }
-    return false;  // not K.O.
+    return false;  // not K.O. change code style
 }
 
 bool Boxer::is_knocked_out() const 

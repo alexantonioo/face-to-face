@@ -37,7 +37,7 @@ public:
     sf::FloatRect getBounds() const;
     void setPosition(float x, float y);
 
-    void setColor(sf::Color color); 
+    void setColor(sf::Color color); // ?
     void setAnimation(const std::string& animationName); //change animation
     
 
@@ -77,7 +77,7 @@ public:
     int ko_probability; 
     bool knocked_out;   
 
-    sf::CircleShape head;
+    sf::CircleShape head; //?
 
     BoxerState state;  // manage state
     sf::Clock punchClock;
