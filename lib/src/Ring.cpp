@@ -1,50 +1,22 @@
 #include "Ring.hpp"
+#include "iostream"
 
-Ring::Ring(float width, float height) 
+Ring::Ring(float width, float height, const std::string& texturePath) 
 {
-    ringShape.setSize(sf::Vector2f(width, height));
-    ringShape.setFillColor(sf::Color(100, 100, 255));
-    ringShape.setPosition(100, 100); 
-
-    float borderThickness = 20.0f;
-
-    // Bordes del ring
-    topBorder.setSize(sf::Vector2f(width + borderThickness * 2, borderThickness));
-    topBorder.setFillColor(sf::Color::Red);
-    topBorder.setPosition(100 - borderThickness, 100 - borderThickness); 
-
-    bottomBorder = topBorder;
-    bottomBorder.setPosition(100 - borderThickness, 100 + height);
-
-    leftBorder.setSize(sf::Vector2f(borderThickness, height + borderThickness * 2));
-    leftBorder.setFillColor(sf::Color::Red);
-    leftBorder.setPosition(100 - borderThickness, 100 - borderThickness); 
-
-    rightBorder = leftBorder;
-    rightBorder.setPosition(100 + width, 100 - borderThickness);
+    // Cargar la textura del ring
+    if (!ringTexture_.loadFromFile(texturePath)) {
+        std::cerr << "!!Error loading ring texture: " << texturePath << std::endl;
+    } else {
+        ringSprite_.setTexture(ringTexture_);
+        ringSprite_.setScale(width / ringTexture_.getSize().x, height / ringTexture_.getSize().y);
+        ringSprite_.setPosition(100, 100);  
+    }
 }
 
 void Ring::draw(sf::RenderWindow& window) {
-    window.draw(ringShape);
-    window.draw(topBorder);
-    window.draw(bottomBorder);
-    window.draw(leftBorder);
-    window.draw(rightBorder);
+    window.draw(ringSprite_);
 }
 
 sf::FloatRect Ring::getBounds() const {
-    sf::FloatRect ringBounds = ringShape.getGlobalBounds();
-    
-    // Incluir los bordes en los límites del ring
-    sf::FloatRect topBounds = topBorder.getGlobalBounds();
-    sf::FloatRect bottomBounds = bottomBorder.getGlobalBounds();
-    sf::FloatRect leftBounds = leftBorder.getGlobalBounds();
-    sf::FloatRect rightBounds = rightBorder.getGlobalBounds();
-    
-    float left = std::min({ringBounds.left, leftBounds.left});
-    float top = std::min({ringBounds.top, topBounds.top});
-    float right = std::max({ringBounds.left + ringBounds.width, rightBounds.left + rightBounds.width});
-    float bottom = std::max({ringBounds.top + ringBounds.height, bottomBounds.top + bottomBounds.height});
-    
-    return sf::FloatRect(left, top, right - left, bottom - top);
+    return ringSprite_.getGlobalBounds();
 }
