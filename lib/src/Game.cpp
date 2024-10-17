@@ -8,9 +8,9 @@ Game::Game()
     : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
       boxer1("Boxer 1", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
       boxer2("Boxer 2", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
-      ring(400, 400) 
+      ring(500.0f, 500.0f, "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/ring.png")
 {
-    boxer1.setPosition(100, 100);  // posicion inicial
+    boxer1.setPosition(100, 100);  // posicion inicial 
     boxer2.setPosition(600, 600);  // posicion inicial
 
     // cargar texturas y animaciones
@@ -33,8 +33,9 @@ void Game::run()
         boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
         boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
         
-        boxer1.update();
-        boxer2.update();
+        boxer1.update(boxer2.getSprite().getPosition());
+        boxer2.update(boxer1.getSprite().getPosition());
+
         // boxer 1 movement wasd
         sf::Vector2f movement1(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
@@ -94,32 +95,38 @@ void Game::handleCollisions()
     sf::FloatRect boxer2Bounds = boxer2.getSprite().getGlobalBounds();
     sf::FloatRect ringBounds = ring.getBounds();
 
-    // colisiones para Boxer 1
+    // boxer 1 ring collisions
     if (boxer1Bounds.left < ringBounds.left) {
-        boxer1.setPosition(ringBounds.left, boxer1Bounds.top);
-    } else if (boxer1Bounds.left + boxer1Bounds.width > ringBounds.left + ringBounds.width) {
-        boxer1.setPosition(ringBounds.left + ringBounds.width - boxer1Bounds.width, boxer1Bounds.top);
+        boxer1.move({ringBounds.left - boxer1Bounds.left, 0});
+    }
+    if (boxer1Bounds.left + boxer1Bounds.width > ringBounds.left + ringBounds.width) {
+        boxer1.move({ringBounds.left + ringBounds.width - (boxer1Bounds.left + boxer1Bounds.width), 0});
     }
     if (boxer1Bounds.top < ringBounds.top) {
-        boxer1.setPosition(boxer1Bounds.left, ringBounds.top);
-    } else if (boxer1Bounds.top + boxer1Bounds.height > ringBounds.top + ringBounds.height) {
-        boxer1.setPosition(boxer1Bounds.left, ringBounds.top + ringBounds.height - boxer1Bounds.height);
+        boxer1.move({0, ringBounds.top - boxer1Bounds.top});
+    }
+    if (boxer1Bounds.top + boxer1Bounds.height > ringBounds.top + ringBounds.height) {
+        boxer1.move({0, ringBounds.top + ringBounds.height - (boxer1Bounds.top + boxer1Bounds.height)});
     }
 
-    // para el 2
+    // boxer 2 ring collisions
     if (boxer2Bounds.left < ringBounds.left) {
-        boxer2.setPosition(ringBounds.left, boxer2Bounds.top);
-    } else if (boxer2Bounds.left + boxer2Bounds.width > ringBounds.left + ringBounds.width) {
-        boxer2.setPosition(ringBounds.left + ringBounds.width - boxer2Bounds.width, boxer2Bounds.top);
+        boxer2.move({ringBounds.left - boxer2Bounds.left, 0});
+    }
+    if (boxer2Bounds.left + boxer2Bounds.width > ringBounds.left + ringBounds.width) {
+        boxer2.move({ringBounds.left + ringBounds.width - (boxer2Bounds.left + boxer2Bounds.width), 0});
     }
     if (boxer2Bounds.top < ringBounds.top) {
-        boxer2.setPosition(boxer2Bounds.left, ringBounds.top);
-    } else if (boxer2Bounds.top + boxer2Bounds.height > ringBounds.top + ringBounds.height) {
-        boxer2.setPosition(boxer2Bounds.left, ringBounds.top + ringBounds.height - boxer2Bounds.height);
+        boxer2.move({0, ringBounds.top - boxer2Bounds.top});
+    }
+    if (boxer2Bounds.top + boxer2Bounds.height > ringBounds.top + ringBounds.height) {
+        boxer2.move({0, ringBounds.top + ringBounds.height - (boxer2Bounds.top + boxer2Bounds.height)});
     }
 
-    boxer1.update();
-    boxer2.update();
+
+    boxer1.update(boxer2.getSprite().getPosition());
+    boxer2.update(boxer1.getSprite().getPosition());
+
 
     // collisions between boxers
     if (boxer1Bounds.intersects(boxer2Bounds)) 

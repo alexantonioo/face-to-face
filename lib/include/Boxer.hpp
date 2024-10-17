@@ -53,7 +53,7 @@ public:
     
     // Methods managing actions
     void enqueue_action(Action action);
-    void update();
+    void update(const sf::Vector2f& opponentPosition);
 
     // methods K.O.
     void increase_ko_probability(int amount);

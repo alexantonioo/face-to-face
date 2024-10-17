@@ -1,8 +1,11 @@
+#include "Game.hpp"
 #include "Boxer.hpp"
 #include <cstdlib> 
 #include <iostream>
 #include <queue>
 #include <functional>
+#include <cmath>
+
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
@@ -152,12 +155,22 @@ void Boxer::enqueue_action(Action action)
     action_queue.push(action);
 }
 
-void Boxer::update() {
-    if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) {
+void Boxer::update(const sf::Vector2f& opponentPosition) 
+{
+    if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) 
+    {
         state = BoxerState::IDLE;
         setAnimation("idle");
     }
+
+    //boxer rotation
+    sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
+    float angle = std::atan2(direction.y, direction.x) * 180 / 3.14159265;
+
+    boxerSprite_.setRotation(angle + 292); 
 }
+
+
 
 void Boxer::increase_ko_probability(int amount) 
 {
