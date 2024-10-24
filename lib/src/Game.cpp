@@ -6,16 +6,16 @@
 
 Game::Game() 
     : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
-      boxer1("Boxer 1", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
-      boxer2("Boxer 2", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
-      ring(500.0f, 500.0f, "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/ring.png")
+      boxer1("Boxer 1", "assets/images/boxer.png"), 
+      boxer2("Boxer 2", "assets/images/boxer.png"), 
+      ring(500.0f, 500.0f, "assets/images/ring.png")
 {
     boxer1.setPosition(100, 100);  // posicion inicial 
     boxer2.setPosition(600, 600);  // posicion inicial
 
     // cargar texturas y animaciones
-    boxer1.loadTexture("default ", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png");  // Textura inicial
-    boxer2.loadTexture("default", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png");
+    boxer1.loadTexture("default ", "assets/images/boxer.png");  // Textura inicial
+    boxer2.loadTexture("default", "assets/images/boxer.png");
 
 }
 
