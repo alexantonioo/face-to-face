@@ -9,12 +9,16 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
-    : name(name), stamina(100), lucky_in_punch(10), defense(10), speed(10),
+    : name(name), stamina(100),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.3f, 0.3f);
     boxerSprite_.setTexture(animations_["idle"]);
     boxerSprite_.setPosition(300, 300); // Posición inicial
+    staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); // Ancho 100 px, alto 20 px
+    staminaBar.setFillColor(sf::Color::Green);        // Color de la barra según el boxeador
+    staminaBar.setOutlineColor(sf::Color::Black);    // Borde negro
+    staminaBar.setOutlineThickness(2.0f);
     
       }
 
@@ -64,7 +68,7 @@ void Boxer::jab_right()
         state = BoxerState::ATTACKING;
         punchClock.restart(); 
 
-        loadAnimation("jab", "assets/images/right_jab.png");
+        loadAnimation("jab", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/right_jab.png");
         
         setAnimation("jab"); 
     }
@@ -76,9 +80,14 @@ if (state == BoxerState::IDLE) {
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("jab_left", "assets/images/left_jab.png");
+        loadAnimation("jab_left", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/left_jab.png");
 
         setAnimation("jab_left");  
+    }
+    
+    if (stamina >= 10) {  
+        state = BoxerState::ATTACKING;
+        reduce_stamina(10);  
     }
 }
 
@@ -88,10 +97,15 @@ void Boxer::hook()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("hook", "assets/images/hook.png");
+        loadAnimation("hook", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/hook.png");
 
         setAnimation("hook");  
         //FALTA AJUSTAR STAMINA
+    }
+
+    if (stamina >= 8) {  
+        state = BoxerState::ATTACKING;
+        reduce_stamina(10);  
     }
 }
 
@@ -101,7 +115,7 @@ void Boxer::uppercut()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("uppercut", "assets/images/uppercut.png");
+        loadAnimation("uppercut", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/uppercut.png");
 
         setAnimation("uppercut");  
     }
@@ -150,6 +164,22 @@ void Boxer::take_damage(int amount)
     state = BoxerState::TAKING_DAMAGE;
 }
 
+void Boxer::reduce_stamina(float amount) 
+    {
+    stamina -= amount;
+    if (stamina < 0) stamina = 0;
+}
+
+void Boxer::recover_stamina(float amount) {
+    stamina += amount;
+    if (stamina > max_stamina) stamina = max_stamina;
+}
+
+void Boxer::updateStaminaBar() {
+    float staminaPercentage = stamina / max_stamina; 
+    staminaBar.setSize(sf::Vector2f(100.0f * staminaPercentage, 20.0f));
+}
+
 void Boxer::enqueue_action(Action action) 
 {
     action_queue.push(action);
@@ -162,6 +192,10 @@ void Boxer::update(const sf::Vector2f& opponentPosition)
         state = BoxerState::IDLE;
         setAnimation("idle");
     }
+     
+        if (state == BoxerState::IDLE) {
+        recover_stamina(0.5f);  // recovery stamina 
+        }
 
     //boxer rotation
     sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
@@ -207,9 +241,14 @@ const std::string& Boxer::get_name() const
         return name;
     }
 
-int Boxer::get_stamina() const 
+float Boxer::get_stamina() const 
 {
     return stamina;
+}
+
+float Boxer::get_max_stamina() const
+{
+    return max_stamina;
 }
 
 int Boxer::get_lucky_in_punch() const 
@@ -234,6 +273,11 @@ void Boxer::move(sf::Vector2f direction) {
 
 void Boxer::draw(sf::RenderWindow& window) {
     window.draw(boxerSprite_);
+
+    // draw hotbar stamina
+    staminaBar.setSize(sf::Vector2f((stamina / max_stamina) * 100, 10)); // size
+    staminaBar.setPosition(getBounds().left, getBounds().top - 20);  // position the stamina 
+    window.draw(staminaBar);
 }
 
 sf::FloatRect Boxer::getBounds() const {

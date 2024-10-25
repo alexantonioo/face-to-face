@@ -6,21 +6,23 @@
 
 Game::Game() 
     : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
-      boxer1("Boxer 1", "assets/images/boxer.png"), 
-      boxer2("Boxer 2", "assets/images/boxer.png"), 
-      ring(500.0f, 500.0f, "assets/images/ring.png")
+      boxer1("Boxer 1", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
+      boxer2("Boxer 2", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
+      ring(500.0f, 500.0f, "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/ring.png")
 {
     boxer1.setPosition(100, 100);  // posicion inicial 
     boxer2.setPosition(600, 600);  // posicion inicial
 
     // cargar texturas y animaciones
-    boxer1.loadTexture("default ", "assets/images/boxer.png");  // Textura inicial
-    boxer2.loadTexture("default", "assets/images/boxer.png");
-
+    boxer1.loadTexture("default ", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/boxer.png");  // Textura inicial
+    boxer2.loadTexture("default", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/boxer.png");
+     
+        
 }
 
 void Game::run() 
 {
+    window.setVerticalSyncEnabled(true);
     while (window.isOpen()) 
     {
         sf::Event event;
@@ -86,9 +88,29 @@ void Game::run()
         boxer1.draw(window);
         boxer2.draw(window);
         window.display();
+        
     }
 }
 
+void Game::draw() {
+    window.clear();
+
+    // Configura las posiciones de las barras
+    boxer1.staminaBar.setPosition(10, 10); // Barra de stamina del boxeador 1 en la esquina superior izquierda
+    boxer2.staminaBar.setPosition(window.getSize().x - 110, 10); // Barra de stamina del boxeador 2 en la esquina superior derecha
+
+    // Actualiza las barras de stamina antes de dibujar
+    boxer1.updateStaminaBar();
+    boxer2.updateStaminaBar();
+
+    // Dibuja los boxeadores y sus barras de stamina
+    boxer1.draw(window);
+    boxer2.draw(window);
+    window.draw(boxer1.staminaBar);
+    window.draw(boxer2.staminaBar);
+
+    window.display();
+}
 void Game::handleCollisions() 
 {
     sf::FloatRect boxer1Bounds = boxer1.getSprite().getGlobalBounds();

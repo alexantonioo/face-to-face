@@ -14,5 +14,7 @@ private:
     Ring ring;  
 
     void handleCollisions();
-};
+    void update();  // update boxer 
+    void draw();
 
+};
