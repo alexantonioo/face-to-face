@@ -1,7 +1,8 @@
 #include "Combo.hpp"
 #include <iostream> 
 
-ComboTree::ComboTree() {
+ComboTree::ComboTree() 
+{
     root = std::make_shared<ComboNode>(nullptr);
 
     
@@ -26,10 +27,10 @@ ComboTree::ComboTree() {
         boxer.uppercut(); 
     });
 }
-//seguir agregando combos y golpes que sean mas efectivos
+//more hits
 
 void ComboTree::execute_combo(Boxer& boxer, const std::vector<std::string>& moves) 
-    {
+{
     std::shared_ptr<ComboNode> current_node = root;
     
     for (const auto& move : moves) 
@@ -49,7 +50,7 @@ void ComboTree::execute_combo(Boxer& boxer, const std::vector<std::string>& move
     }
 }
 
-// Avanza en el árbol de combos según el movimiento
+// Advance through the combo tree based on movement.
 std::shared_ptr<ComboNode> ComboTree::advance(std::shared_ptr<ComboNode> node, const std::string& move) 
     {
 
@@ -65,3 +66,4 @@ std::shared_ptr<ComboNode> ComboTree::advance(std::shared_ptr<ComboNode> node, c
 
     return nullptr;  
 }  
+

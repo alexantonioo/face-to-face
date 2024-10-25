@@ -1,55 +1,41 @@
 #include <SFML/Graphics.hpp>
-#include <cmath>
+#include "Game.hpp"
+#include "Ring.hpp"
+#include "Boxer.hpp"
 
-//exaple code of a simple heart in sfml 
-int main() {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "heartt");
 
-    sf::VertexArray heart(sf::TrianglesFan, 102);
+Game::Game() 
+    : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
+      boxer1("Boxer 1", "assets/images/boxer.png"), 
+      boxer2("Boxer 2", "assets/images/boxer.png"), 
+      ring(500.0f, 500.0f, "assets/images/ring.png")
+{
+    boxer1.setPosition(100, 100);  // posicion inicial 
+    boxer2.setPosition(600, 600);  // posicion inicial
 
-    sf::Vector2f center(400, 300);
-    float size = 10.0f; 
+    // cargar texturas y animaciones
+    boxer1.loadTexture("default ", "assets/images/boxer.png");  // Textura inicial
+    boxer2.loadTexture("default", "assets/images/boxer.png");
 
-    heart[0].position = center;
-    heart[0].color = sf::Color::Red;
+}
 
-    for (int i = 1; i <= 100; ++i) {
-        float angle = 2 * M_PI * (i - 1) / 100; //??
-        float x = size * 16 * std::pow(std::sin(angle), 3);
-        float y = -size * (13 * std::cos(angle) - 5 * std::cos(2 * angle) - 2 * std::cos(3 * angle) - std::cos(4 * angle));
-        heart[i].position = sf::Vector2f(center.x + x, center.y + y);
-        heart[i].color = sf::Color::Red;
-    }
-
-    heart[101].position = heart[1].position;
-    heart[101].color = sf::Color::Red;
-
-    // principal window loop
-    while (window.isOpen()) {
+void Game::run() 
+{
+    while (window.isOpen()) 
+    {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event)) 
+        {
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
-<<<<<<< Updated upstream
-        window.clear(sf::Color::White); 
-=======
         boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
         boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
         
-        if (boxer1.isBlocking()) 
-            {
-    boxer1.attempt_parry(boxer2);  // boxer1 intenta hacer parry sobre el ataque de boxer2
-    }
+        boxer1.update(boxer2.getSprite().getPosition());
+        boxer2.update(boxer1.getSprite().getPosition());
 
-    if (boxer2.isBlocking()) 
-        {
-    boxer2.attempt_parry(boxer1);  // boxer2 intenta hacer parry sobre el ataque de boxer1
-    }
-    // Actualizar el estado de cada boxeador
-        boxer1.update();
-        boxer2.update();
         // boxer 1 movement wasd
         sf::Vector2f movement1(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
@@ -68,13 +54,113 @@ int main() {
         {
             movement1.x += 1.0f;
         }
->>>>>>> Stashed changes
 
-        // dreaw heart
-        window.draw(heart);
+        boxer1.move(movement1);
 
+        // boxer 2 movement arrows
+        sf::Vector2f movement2(0.f, 0.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) 
+        {
+            movement2.y -= 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) 
+        {
+            movement2.y += 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+        {
+            movement2.x -= 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
+        {
+            movement2.x += 1.0f;
+        }
+
+        boxer2.move(movement2);
+
+        handleCollisions();
+
+        // dibujar todo
+        window.clear(sf::Color::Black);
+        ring.draw(window);
+        boxer1.draw(window);
+        boxer2.draw(window);
         window.display();
     }
+}
 
-    return 0;
+void Game::handleCollisions() 
+{
+    sf::FloatRect boxer1Bounds = boxer1.getSprite().getGlobalBounds();
+    sf::FloatRect boxer2Bounds = boxer2.getSprite().getGlobalBounds();
+    sf::FloatRect ringBounds = ring.getBounds();
+
+    // boxer 1 ring collisions
+    if (boxer1Bounds.left < ringBounds.left) {
+        boxer1.move({ringBounds.left - boxer1Bounds.left, 0});
+    }
+    if (boxer1Bounds.left + boxer1Bounds.width > ringBounds.left + ringBounds.width) {
+        boxer1.move({ringBounds.left + ringBounds.width - (boxer1Bounds.left + boxer1Bounds.width), 0});
+    }
+    if (boxer1Bounds.top < ringBounds.top) {
+        boxer1.move({0, ringBounds.top - boxer1Bounds.top});
+    }
+    if (boxer1Bounds.top + boxer1Bounds.height > ringBounds.top + ringBounds.height) {
+        boxer1.move({0, ringBounds.top + ringBounds.height - (boxer1Bounds.top + boxer1Bounds.height)});
+    }
+
+    // boxer 2 ring collisions
+    if (boxer2Bounds.left < ringBounds.left) {
+        boxer2.move({ringBounds.left - boxer2Bounds.left, 0});
+    }
+    if (boxer2Bounds.left + boxer2Bounds.width > ringBounds.left + ringBounds.width) {
+        boxer2.move({ringBounds.left + ringBounds.width - (boxer2Bounds.left + boxer2Bounds.width), 0});
+    }
+    if (boxer2Bounds.top < ringBounds.top) {
+        boxer2.move({0, ringBounds.top - boxer2Bounds.top});
+    }
+    if (boxer2Bounds.top + boxer2Bounds.height > ringBounds.top + ringBounds.height) {
+        boxer2.move({0, ringBounds.top + ringBounds.height - (boxer2Bounds.top + boxer2Bounds.height)});
+    }
+
+
+    boxer1.update(boxer2.getSprite().getPosition());
+    boxer2.update(boxer1.getSprite().getPosition());
+
+
+    // collisions between boxers
+    if (boxer1Bounds.intersects(boxer2Bounds)) 
+    {
+        sf::FloatRect intersection;
+        boxer1Bounds.intersects(boxer2Bounds, intersection);
+
+        sf::Vector2f moveDirection(0, 0);
+        
+        if (intersection.width < intersection.height) 
+        {
+            if (boxer1Bounds.left < boxer2Bounds.left) 
+            {
+                moveDirection.x = -intersection.width / 2;
+            } else 
+            {
+                moveDirection.x = intersection.width / 2;
+            }
+        }
+         else 
+        {
+            if (boxer1Bounds.top < boxer2Bounds.top) 
+            {
+                moveDirection.y = -intersection.height / 2;
+            } 
+            else 
+            {
+                moveDirection.y = intersection.height / 2;
+            }
+        }
+
+        boxer1.move(moveDirection);
+        boxer2.move(-moveDirection);  
+        
+    }
+    
 }
