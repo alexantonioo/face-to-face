@@ -2,13 +2,17 @@
 #include "Game.hpp"
 #include "Ring.hpp"
 #include "Boxer.hpp"
+//#include "Menu.hpp"
 
 
 Game::Game() 
     : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
+      //currentState(State::Menu),  
+      menu(window),
       boxer1("Boxer 1", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
       boxer2("Boxer 2", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
-      ring(500.0f, 500.0f, "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/ring.png")
+      ring(500.0f, 500.0f, "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/ring.png"),
+      currentState(MENU)
 {
     boxer1.setPosition(100, 100);  // posicion inicial 
     boxer2.setPosition(600, 600);  // posicion inicial
@@ -29,6 +33,22 @@ void Game::run()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+
+         switch (currentState) 
+        {
+            case GameState::MENU:
+                menu.handleInput(event);
+                if (menu.isStartSelected()) 
+                {
+                    currentState = GameState::PLAYING;
+                }
+                break;
+
+            case GameState::PLAYING:
+                handleInput();
+                update();
+                draw();
+                break;}
 
         boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
         boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
@@ -163,4 +183,16 @@ void Game::handleCollisions()
         
     }
     
+}
+
+void Menu::handleInput(const sf::Event& event) 
+{
+    if (event.type == sf::Event::MouseButtonPressed) 
+    {
+        if (startButton.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window)))) 
+        {
+            startSelected = true;
+        }
+        
+    }
 }
