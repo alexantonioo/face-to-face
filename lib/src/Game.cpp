@@ -7,12 +7,12 @@
 
 Game::Game() 
     : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
-      //currentState(State::Menu),  
       menu(window),
+      currentState(MENU),
       boxer1("Boxer 1", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
       boxer2("Boxer 2", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
-      ring(500.0f, 500.0f, "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/ring.png"),
-      currentState(MENU)
+      ring(500.0f, 500.0f, "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/ring.png")
+      
 {
     boxer1.setPosition(100, 100);  // posicion inicial 
     boxer2.setPosition(600, 600);  // posicion inicial
@@ -25,30 +25,32 @@ Game::Game()
 
 void Game::run() 
 {
-    while (window.isOpen()) 
-    {
+    while (window.isOpen()) {
         sf::Event event;
-        while (window.pollEvent(event)) 
-        {
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+            if (currentState == MENU) {
+                menu.handleInput(event, window);
+                if (menu.isStartSelected()) {
+                    currentState = PLAYING;
+                }
+            }
         }
 
-         switch (currentState) 
-        {
-            case GameState::MENU:
-                menu.handleInput(event);
-                if (menu.isStartSelected()) 
-                {
-                    currentState = GameState::PLAYING;
-                }
+        window.clear();
+        switch (currentState) {
+            case MENU:
+                menu.draw(window);
                 break;
-
-            case GameState::PLAYING:
+            case PLAYING:
                 handleInput();
                 update();
-                draw();
-                break;}
+                render();
+                break;
+        }
+        window.display();
 
         boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
         boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
@@ -185,14 +187,27 @@ void Game::handleCollisions()
     
 }
 
-void Menu::handleInput(const sf::Event& event) 
-{
-    if (event.type == sf::Event::MouseButtonPressed) 
-    {
-        if (startButton.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window)))) 
-        {
-            startSelected = true;
+void Game::handleInput() {
+    sf::Event event;
+    while (window.pollEvent(event)) {
+        if (currentState == GameState::MENU) {
+            menu.handleInput(event, window);
         }
-        
+        // Manejar otros estados si es necesario
     }
+}
+
+void Game::update() {
+    if (currentState == GameState::MENU) {
+        menu.update();
+    }
+    // Lógica adicional si cambian los estados
+}
+
+void Game::render() {
+    window.clear();
+    if (currentState == GameState::MENU) {
+        menu.draw(window);
+    }
+    window.display();
 }

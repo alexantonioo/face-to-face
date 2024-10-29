@@ -1,11 +1,11 @@
 #include "Menu.hpp"
+#include <iostream>
 
-Menu::Menu(sf::RenderWindow& window): window(window)  /*selectedOptionIndex(0)*/ {
-    // Cargar la fuente
-    if (!font.loadFromFile("path/to/your/font.ttf")) {
-        // Manejar error si no se carga la fuente
+Menu::Menu(sf::RenderWindow& window) {
+    // Fuente
+    if (!font.loadFromFile("/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/fonts/Eight-Bit Madness.ttf")) {
+        std::cerr << "Error: No se pudo cargar la fuente desde 'assets/fonts/arial.ttf'" << std::endl;
     }
-    //initMenuOptions(width, height);
 }
 
 void Menu::initMenuOptions(float width, float height) {
@@ -22,10 +22,31 @@ void Menu::initMenuOptions(float width, float height) {
     }
 }
 
+void Menu::setupButtons() {
+    startButton.setSize(sf::Vector2f(150, 50));
+    startButton.setPosition(325, 200);
+    startButton.setFillColor(sf::Color::Red);
+
+    settingsButton.setSize(sf::Vector2f(150, 50));
+    settingsButton.setPosition(325, 300);
+    settingsButton.setFillColor(sf::Color::White);
+
+    exitButton.setSize(sf::Vector2f(150, 50));
+    exitButton.setPosition(325, 400);
+    exitButton.setFillColor(sf::Color::White);
+}
+
 void Menu::draw(sf::RenderWindow& window) {
     for (const auto& option : menuOptions) {
         window.draw(option);
     }
+    window.draw(startButton);
+    window.draw(settingsButton);
+    window.draw(exitButton);
+}
+
+void Menu::update() {
+    // Aquí puedes incluir lógica de actualización específica del menú si es necesario
 }
 
 void Menu::moveUp() {
@@ -48,17 +69,19 @@ int Menu::getSelectedOption() const {
     return selectedOptionIndex;
 }
 
-
-
-void Menu::draw() 
-{
-    window.clear();
-    window.draw(startButton);
-    // Dibujar otros elementos del menú
-    window.display();
+bool Menu::isStartSelected() const {
+    return startSelected;
 }
 
-bool Menu::isStartSelected() const 
-{
-    return startSelected;
+void Menu::handleInput(const sf::Event& event, sf::RenderWindow& window) {
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Up) moveUp();
+        else if (event.key.code == sf::Keyboard::Down) moveDown();
+        else if (event.key.code == sf::Keyboard::Enter) startSelected = (selectedOptionIndex == 0);
+    }
+    else if (event.type == sf::Event::MouseButtonPressed) {
+        if (startButton.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window)))) {
+            startSelected = true;
+        }
+    }
 }
