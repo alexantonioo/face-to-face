@@ -7,7 +7,7 @@
 
 Game::Game() 
     : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
-      menu(window),
+      menu(/*window*/),
       currentState(MENU),
       boxer1("Boxer 1", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
       boxer2("Boxer 2", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
@@ -39,77 +39,48 @@ void Game::run()
             }
         }
 
-        window.clear();
+        window.clear(sf::Color::Black);
+
         switch (currentState) {
             case MENU:
                 menu.draw(window);
                 break;
+
             case PLAYING:
                 handleInput();
                 update();
-                render();
+
+                //  boxer1 WASD
+                sf::Vector2f movement1(0.f, 0.f);
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) movement1.y -= 1.0f;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) movement1.y += 1.0f;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) movement1.x -= 1.0f;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) movement1.x += 1.0f;
+                boxer1.move(movement1);
+
+                // boxer2 flechas
+                sf::Vector2f movement2(0.f, 0.f);
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) movement2.y -= 1.0f;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) movement2.y += 1.0f;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) movement2.x -= 1.0f;
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) movement2.x += 1.0f;
+                boxer2.move(movement2);
+
+                boxer1.update(boxer2.getSprite().getPosition());
+                boxer2.update(boxer1.getSprite().getPosition());
+
+                handleCollisions();
+
+                ring.draw(window);
+                boxer1.draw(window);
+                boxer2.draw(window);
                 break;
         }
-        window.display();
 
-        boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
-        boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
-        
-        boxer1.update(boxer2.getSprite().getPosition());
-        boxer2.update(boxer1.getSprite().getPosition());
-
-        // boxer 1 movement wasd
-        sf::Vector2f movement1(0.f, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
-        {
-            movement1.y -= 1.0f;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) 
-        {
-            movement1.y += 1.0f;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) 
-        {
-            movement1.x -= 1.0f;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) 
-        {
-            movement1.x += 1.0f;
-        }
-
-        boxer1.move(movement1);
-
-        // boxer 2 movement arrows
-        sf::Vector2f movement2(0.f, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) 
-        {
-            movement2.y -= 1.0f;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) 
-        {
-            movement2.y += 1.0f;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
-        {
-            movement2.x -= 1.0f;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
-        {
-            movement2.x += 1.0f;
-        }
-
-        boxer2.move(movement2);
-
-        handleCollisions();
-
-        // dibujar todo
-        window.clear(sf::Color::Black);
-        ring.draw(window);
-        boxer1.draw(window);
-        boxer2.draw(window);
         window.display();
     }
 }
+
 
 void Game::handleCollisions() 
 {
@@ -193,7 +164,6 @@ void Game::handleInput() {
         if (currentState == GameState::MENU) {
             menu.handleInput(event, window);
         }
-        // Manejar otros estados si es necesario
     }
 }
 
@@ -201,13 +171,16 @@ void Game::update() {
     if (currentState == GameState::MENU) {
         menu.update();
     }
-    // Lógica adicional si cambian los estados
 }
 
 void Game::render() {
     window.clear();
+    
     if (currentState == GameState::MENU) {
-        menu.draw(window);
+        menu.draw(window); 
+    } else {
+        
     }
+
     window.display();
 }

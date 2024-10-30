@@ -31,6 +31,6 @@ private:
     Boxer boxer1;
     Boxer boxer2;
     Ring ring;
-     void draw();
+    void draw();
 
     };

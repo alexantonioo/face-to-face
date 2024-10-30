@@ -6,7 +6,7 @@ class Menu {
 public:
     Menu();  
 
-    Menu(sf::RenderWindow& window);
+    //Menu(sf::RenderWindow& window);
     void update();
     void draw(sf::RenderWindow& window);
     void handleInput(const sf::Event& event, sf::RenderWindow& window);
