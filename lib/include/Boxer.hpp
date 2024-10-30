@@ -2,9 +2,7 @@
 #include <string>
 #include <queue>
 #include <functional>
-#include <Fists.hpp>
 #include <SFML/Graphics.hpp>
-
 
     
 using Action = std::function<void()>;
@@ -29,7 +27,6 @@ public:
     void loadTexture(const std::string& animationName, const std::string& texturePath);
     void loadAnimation(const std::string &animationName, const std::string &texturePath);
     void move(sf::Vector2f direction);
-
 
     void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4);
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
@@ -71,8 +68,6 @@ public:
     float get_stamina() const;                
     float get_max_stamina() const;   
 
-    
-
     // access methods
     const std::string& get_name() const;
     int get_lucky_in_punch() const;
@@ -82,20 +77,14 @@ public:
     private:
     std::string name;
     
-    float max_stamina; 
-    float stamina;               
     int lucky_in_punch;
     int defense;    
     int speed;
     int ko_probability; 
     bool knocked_out;   
-     
-    
-    Fist leftFist;  // Puño izquierdo
-    Fist rightFist; // Puño derecho
+    float stamina;               
+    float max_stamina;  
 
-    sf::Sprite boxerSprite_;
-    std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?
 
     BoxerState state;  // manage state
@@ -104,5 +93,11 @@ public:
     std::queue<Action> action_queue;  // action queue
     float time_accumulated;           // accumulated time
     float action_interval;
+
+
+    //test
+    sf::Sprite boxerSprite_;
+    
+    std::map<std::string, sf::Texture> animations_; // Animations
     
 };

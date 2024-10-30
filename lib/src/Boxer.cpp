@@ -9,8 +9,8 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
-    : name(name),max_stamina(2000.0) ,stamina(2000.0), lucky_in_punch(10), defense(10), speed(10),
-      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), leftFist(true), rightFist(false), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
+    : name(name), stamina(100),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),
+      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.3f, 0.3f);
     boxerSprite_.setTexture(animations_["idle"]);
@@ -64,7 +64,6 @@ void Boxer::setAnimation(const std::string& animationName)
 // action methods
 void Boxer::jab_right() 
 {
-    rightFist.startPunch();
     if (state == BoxerState::IDLE) { 
         state = BoxerState::ATTACKING;
         punchClock.restart(); 
@@ -73,21 +72,10 @@ void Boxer::jab_right()
         
         setAnimation("jab"); 
     }
-      
-      if (stamina >= 8) 
-        {  
-        state = BoxerState::ATTACKING;
-        reduce_stamina(10); 
-    
-    }
-    
-    
 }
-
 
 void Boxer::jab_left()
 {
-    leftFist.startPunch();
 if (state == BoxerState::IDLE) {  
         state = BoxerState::ATTACKING;
         punchClock.restart();  
@@ -97,13 +85,10 @@ if (state == BoxerState::IDLE) {
         setAnimation("jab_left");  
     }
     
-    if (stamina >= 10) 
-        {  
+    if (stamina >= 10) {  
         state = BoxerState::ATTACKING;
         reduce_stamina(10);  
-        
     }
-    
 }
 
 void Boxer::hook() 
@@ -118,6 +103,10 @@ void Boxer::hook()
         //FALTA AJUSTAR STAMINA
     }
 
+    if (stamina >= 8) {  
+        state = BoxerState::ATTACKING;
+        reduce_stamina(10);  
+    }
 }
 
 void Boxer::uppercut() 
@@ -196,30 +185,20 @@ void Boxer::enqueue_action(Action action)
     action_queue.push(action);
 }
 
-void Boxer::update( const sf::Vector2f& boxerPosition)
+void Boxer::update(const sf::Vector2f& opponentPosition) 
 {
-      float deltaTime = punchClock.restart().asSeconds();
-
-    // Extract x and y coordinates from boxerPosition
-    float x = boxerPosition.x;
-    float y = boxerPosition.y;
-
-    // Actualiza los puños con deltaTime y la posición actual
-    leftFist.update(deltaTime, boxerPosition);
-    rightFist.update(deltaTime, boxerPosition);
-    //float deltaTime = punchClock.restart().asSeconds();
-    //leftFist.update(deltaTime, this->setPosition()); 
-     //rightFist.update(deltaTime, this->setPosition());
-
     if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) 
     {
         state = BoxerState::IDLE;
         setAnimation("idle");
-        
     }
+     
+        if (state == BoxerState::IDLE) {
+        recover_stamina(0.5f);  // recovery stamina 
+        }
 
     //boxer rotation
-    sf::Vector2f direction = boxerPosition - boxerSprite_.getPosition();
+    sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
     float angle = std::atan2(direction.y, direction.x) * 180 / 3.14159265;
 
     boxerSprite_.setRotation(angle + 292); 
@@ -288,42 +267,32 @@ int Boxer::get_speed() const
 }
 
 
-void Boxer::move(sf::Vector2f direction) 
-    {
+void Boxer::move(sf::Vector2f direction) {
     boxerSprite_.move(direction);
 }
 
-void Boxer::draw(sf::RenderWindow& window) 
-    {
+void Boxer::draw(sf::RenderWindow& window) {
     window.draw(boxerSprite_);
-    leftFist.draw(window);  // Dibuja el puño izquierdo
-    rightFist.draw(window); 
+
     // draw hotbar stamina
     staminaBar.setSize(sf::Vector2f((stamina / max_stamina) * 100, 10)); // size
     staminaBar.setPosition(getBounds().left, getBounds().top - 20);  // position the stamina 
     window.draw(staminaBar);
 }
 
-sf::FloatRect Boxer::getBounds() const 
-{
+sf::FloatRect Boxer::getBounds() const {
     return boxerSprite_.getGlobalBounds();
 }
 
-void Boxer::setPosition(float x, float y) 
-{
+void Boxer::setPosition(float x, float y) {
     head.setPosition(x, y);
-
-   
-    boxerSprite_.setPosition(x, y);
 }
 
-void Boxer::setColor(sf::Color color) 
-{
+void Boxer::setColor(sf::Color color) {
     head.setFillColor(color);
 }
 
-const sf::Sprite& Boxer::getSprite() const 
-{
+const sf::Sprite& Boxer::getSprite() const {
     return boxerSprite_;
 }
 
