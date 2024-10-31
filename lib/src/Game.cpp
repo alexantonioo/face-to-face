@@ -68,6 +68,9 @@ void Game::run()
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) movement2.x += 1.0f;
                 boxer2.move(movement2);
 
+                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
+                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
+
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
 
