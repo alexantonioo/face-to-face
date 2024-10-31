@@ -9,15 +9,15 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
-    : name(name), stamina(100),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),
+    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.3f, 0.3f);
     boxerSprite_.setTexture(animations_["idle"]);
-    boxerSprite_.setPosition(300, 300); // Posición inicial
-    staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); // Ancho 100 px, alto 20 px
-    staminaBar.setFillColor(sf::Color::Green);        // Color de la barra según el boxeador
-    staminaBar.setOutlineColor(sf::Color::Black);    // Borde negro
+    boxerSprite_.setPosition(300, 300); 
+    staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
+    staminaBar.setFillColor(sf::Color::Green);        
+    staminaBar.setOutlineColor(sf::Color::Black);    
     staminaBar.setOutlineThickness(2.0f);
     
       }
@@ -64,30 +64,36 @@ void Boxer::setAnimation(const std::string& animationName)
 // action methods
 void Boxer::jab_right() 
 {
-    if (state == BoxerState::IDLE) { 
+    if (stamina < 10) {
+        return; 
+    }
+    
+    if (state == BoxerState::IDLE) {  
         state = BoxerState::ATTACKING;
-        punchClock.restart(); 
-
-        loadAnimation("jab", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/right_jab.png");
+        punchClock.restart();  
+        reduce_stamina(10);
         
-        setAnimation("jab"); 
+        loadAnimation("jab_right", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/right_jab.png");
+
+        setAnimation("jab_right");
     }
 }
 
+
 void Boxer::jab_left()
 {
-if (state == BoxerState::IDLE) {  
+    if (stamina < 10) 
+        {
+        return;  
+    }
+   
+    if (state == BoxerState::IDLE) {  
         state = BoxerState::ATTACKING;
         punchClock.restart();  
-
+        reduce_stamina(10);
+        
         loadAnimation("jab_left", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/left_jab.png");
-
         setAnimation("jab_left");  
-    }
-    
-    if (stamina >= 10) {  
-        state = BoxerState::ATTACKING;
-        reduce_stamina(10);  
     }
 }
 
@@ -164,6 +170,8 @@ void Boxer::take_damage(int amount)
     state = BoxerState::TAKING_DAMAGE;
 }
 
+
+
 void Boxer::reduce_stamina(float amount) 
     {
     stamina -= amount;
@@ -194,7 +202,7 @@ void Boxer::update(const sf::Vector2f& opponentPosition)
     }
      
         if (state == BoxerState::IDLE) {
-        recover_stamina(0.5f);  // recovery stamina 
+        recover_stamina(0.05f);  // recovery stamina 
         }
 
     //boxer rotation
@@ -302,13 +310,8 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     if (sf::Keyboard::isKeyPressed(attack1)) {
         jab_right(); // Acción para el primer ataque
     }
-    if (sf::Keyboard::isKeyPressed(attack2)) {
-        uppercut(); // Acción para el segundo ataque
-    }
+    
     if (sf::Keyboard::isKeyPressed(attack3)) {
         jab_left(); // Acción para el tercer ataque
-    }
-    if (sf::Keyboard::isKeyPressed(attack4)) {
-        hook(); // Acción para el cuarto ataque
     }
 }
