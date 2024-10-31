@@ -39,7 +39,7 @@ public:
 
     void setColor(sf::Color color); // ?
     void setAnimation(const std::string& animationName); //change animation
-    
+    sf::RectangleShape staminaBar;
 
     // action methods
     void jab_right();
@@ -61,21 +61,29 @@ public:
     bool is_knocked_out() const;
     void check_for_technical_ko();
 
+    // Stamina
+    void updateStaminaBar(); 
+    void reduce_stamina(float amount);        
+    void recover_stamina(float amount);       
+    float get_stamina() const;                
+    float get_max_stamina() const;   
+
     // access methods
     const std::string& get_name() const;
-    int get_stamina() const;
     int get_lucky_in_punch() const;
     int get_defense() const;
     int get_speed() const;
 
     private:
     std::string name;
-    int stamina;
+    
     int lucky_in_punch;
     int defense;    
     int speed;
     int ko_probability; 
     bool knocked_out;   
+    float stamina;               
+    float max_stamina;  
 
     sf::CircleShape head; //?
 
@@ -89,6 +97,7 @@ public:
 
     //test
     sf::Sprite boxerSprite_;
+    
     std::map<std::string, sf::Texture> animations_; // Animations
     
 };

@@ -25,7 +25,9 @@ Game::Game()
 
 void Game::run() 
 {
-    while (window.isOpen()) {
+    window.setVerticalSyncEnabled(true);
+    while (window.isOpen()) 
+    {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -78,10 +80,29 @@ void Game::run()
         }
 
         window.display();
+        
     }
 }
 
+void Game::draw() {
+    window.clear();
 
+    // Configura las posiciones de las barras
+    boxer1.staminaBar.setPosition(10, 10); // Barra de stamina del boxeador 1 en la esquina superior izquierda
+    boxer2.staminaBar.setPosition(window.getSize().x - 110, 10); // Barra de stamina del boxeador 2 en la esquina superior derecha
+
+    // Actualiza las barras de stamina antes de dibujar
+    boxer1.updateStaminaBar();
+    boxer2.updateStaminaBar();
+
+    // Dibuja los boxeadores y sus barras de stamina
+    boxer1.draw(window);
+    boxer2.draw(window);
+    window.draw(boxer1.staminaBar);
+    window.draw(boxer2.staminaBar);
+
+    window.display();
+}
 void Game::handleCollisions() 
 {
     sf::FloatRect boxer1Bounds = boxer1.getSprite().getGlobalBounds();
