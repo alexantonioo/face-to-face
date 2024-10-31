@@ -13,6 +13,10 @@ public:
     int getSelectedOption() const;
     bool isStartSelected() const;
 
+    //fondo
+    /*sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;*/
+
 private:
     std::vector<sf::Text> menuOptions;
     sf::Font font;

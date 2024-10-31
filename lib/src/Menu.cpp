@@ -3,12 +3,24 @@
 
 Menu::Menu() {
     // Fuente
+  
+
     if (!font.loadFromFile("/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/fonts/Eight-Bit-Madness.ttf")) {
         std::cerr << "Error 'assets/fonts/Eight-Bit-Madness.ttf'" << std::endl;
     }
 
-    initMenuOptions(800, 600);  // Cambia el tamaño de la ventana según tu configuración
+
+    // fondo
+    /*if (!backgroundTexture.loadFromFile("/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/backgroundmenu.png")) {
+        std::cerr << "Error: No se pudo cargar la imagen de fondo." << std::endl;
+    } else {
+        backgroundSprite.setTexture(backgroundTexture);
+    }*/
+
+  initMenuOptions(800, 600);  // Cambia el tamaño de la ventana según tu configuración
+    
 }
+
 
 void Menu::initMenuOptions(float width, float height) {
     std::vector<std::string> options = {"Play", "Settings", "Exit"};
@@ -25,9 +37,12 @@ void Menu::initMenuOptions(float width, float height) {
 }
 
 void Menu::draw(sf::RenderWindow& window) {
+    //fondo
+    //window.draw(backgroundSprite);
     for (const auto& option : menuOptions) {
         window.draw(option);
     }
+
 }
 
 void Menu::update() {
@@ -58,10 +73,22 @@ bool Menu::isStartSelected() const {
     return startSelected;
 }
 
-void Menu::handleInput(const sf::Event& event, sf::RenderWindow& window) {
-    if (event.type == sf::Event::KeyPressed) {
+void Menu::handleInput(const sf::Event& event, sf::RenderWindow& window) 
+{
+    if (event.type == sf::Event::KeyPressed) 
+    {
         if (event.key.code == sf::Keyboard::Up) moveUp();
         else if (event.key.code == sf::Keyboard::Down) moveDown();
-        else if (event.key.code == sf::Keyboard::Enter) startSelected = (selectedOptionIndex == 0);
+        else if (event.key.code == sf::Keyboard::Enter) 
+        {
+            if (selectedOptionIndex == 0) 
+            { 
+                startSelected = true;
+            } 
+            else if (selectedOptionIndex == 2) 
+            { 
+                window.close(); // close game
+            }
+        }
     }
 }
