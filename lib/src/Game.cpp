@@ -14,7 +14,7 @@ Game::Game()
     boxer2.setPosition(600, 600);  // posicion inicial
 
     // cargar texturas y animaciones
-    boxer1.loadTexture("default ", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/boxer.png");  // Textura inicial
+    boxer1.loadTexture("default", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/boxer.png");  // Textura inicial
     boxer2.loadTexture("default", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/boxer.png");
      
         
@@ -87,6 +87,7 @@ void Game::run()
         ring.draw(window);
         boxer1.draw(window);
         boxer2.draw(window);
+
         window.display();
         
     }
@@ -103,14 +104,42 @@ void Game::draw() {
     boxer1.updateStaminaBar();
     boxer2.updateStaminaBar();
 
+    //hearts
+    drawHearts(boxer1, sf::Vector2f(50, 10));         // Corazones de Boxer1 en la parte superior izquierda
+    drawHearts(boxer2, sf::Vector2f(600, 10));        // Corazones de Boxer2 en la parte superior derecha
+
+
     // Dibuja los boxeadores y sus barras de stamina
     boxer1.draw(window);
     boxer2.draw(window);
     window.draw(boxer1.staminaBar);
     window.draw(boxer2.staminaBar);
-
+    
     window.display();
 }
+
+
+
+void Game::drawHearts(const Boxer& boxer, const sf::Vector2f& position) 
+    {
+
+    static sf::Texture heartTexture;
+    static bool textureLoaded = false;
+    if (!textureLoaded) {
+        if (!heartTexture.loadFromFile("/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/hearts.png")) {
+            
+            return;
+        }
+        textureLoaded = true;
+    }
+    sf::Sprite heartSprite(heartTexture);
+    for (int i = 0; i < boxer.get_hearts(); ++i) {
+        heartSprite.setPosition(position.x + i * (heartSprite.getGlobalBounds().width + 5), position.y);
+        window.draw(heartSprite);
+    }
+}
+
+
 void Game::handleCollisions() 
 {
     sf::FloatRect boxer1Bounds = boxer1.getSprite().getGlobalBounds();
@@ -184,5 +213,21 @@ void Game::handleCollisions()
         boxer2.move(-moveDirection);  
         
     }
-    
+
+     if (boxer1Bounds.intersects(boxer2Bounds)) 
+    {
+        sf::FloatRect intersection;
+        boxer1Bounds.intersects(boxer2Bounds, intersection);
+
+        
+        if (boxer1.getState() == BoxerState::ATTACKING) 
+        {
+            boxer2.receivePunch(); // Boxer 2 recibe el golpe
+        }
+
+        if (boxer2.getState() == BoxerState::ATTACKING) // Asegúrate de que tengas un método isAttacking en tu Boxer
+        {
+            boxer1.receivePunch(); // Boxer 1 recibe el golpe
+        }
+    }
 }

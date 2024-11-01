@@ -5,6 +5,7 @@ class Game {
 public:
     Game();
     void run();
+    void drawHearts(const Boxer& boxer, const sf::Vector2f& position); 
 
 private:
     sf::RenderWindow window; 
@@ -16,5 +17,6 @@ private:
     void handleCollisions();
     void update();  // update boxer 
     void draw();
+    void drawHearts();
 
 };
