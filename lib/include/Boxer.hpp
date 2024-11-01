@@ -3,6 +3,7 @@
 #include <queue>
 #include <functional>
 #include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
 
 
     
@@ -52,7 +53,7 @@ public:
     void hook();
     void uppercut();
     void block();
-    void dodge();
+    void dodge(sf::Vector2f direction);
     
     
     
@@ -99,6 +100,7 @@ public:
     int speed;
     int ko_probability; 
     bool knocked_out;   
+    float dodgeSpeed;
 
     int hearts;  
     bool attacking;   
@@ -108,7 +110,7 @@ public:
     std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?
 
-    
+    sf::Clock dodgeClock; 
 
     BoxerState state;  // manage state
     sf::Clock punchClock;

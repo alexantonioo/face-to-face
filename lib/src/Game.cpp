@@ -56,6 +56,18 @@ void Game::run()
         {
             movement1.x += 1.0f;
         }
+        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
+        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+        {
+        boxer2.dodge(sf::Vector2f(-1.f, 0.f)); // Esquivar hacia la izquierda
+        } 
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
+        {
+        boxer2.dodge(sf::Vector2f(1.f, 0.f)); // Esquivar hacia la derecha
+        }
+        }
 
         boxer1.move(movement1);
 
@@ -80,6 +92,21 @@ void Game::run()
 
         boxer2.move(movement2);
 
+        //DODGE BOXER 1
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) 
+        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+        {
+        boxer1.dodge(sf::Vector2f(-0.5f, 0.f)); 
+        }   
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))               
+        {
+        boxer1.dodge(sf::Vector2f(0.5f, 0.f)); 
+        }   
+        }               
+    
+   
+        
         handleCollisions();
 
         // dibujar todo
@@ -213,6 +240,7 @@ void Game::handleCollisions()
         boxer2.move(-moveDirection);  
         
     }
+
 
      if (boxer1Bounds.intersects(boxer2Bounds)) 
     {

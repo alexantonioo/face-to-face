@@ -9,7 +9,7 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
-    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false),
+    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.3f, 0.3f);
@@ -105,7 +105,7 @@ void Boxer::jab_left()
 {
     if (stamina < 10) 
         {
-                    std::cout << name << "Nesesitas recuperar energia" << std::endl;
+        std::cout << name << "Nesesitas recuperar energia" << std::endl;
         return;  
     }
    
@@ -158,17 +158,21 @@ void Boxer::block()
     state = BoxerState::BLOCKING;
 }
 
-void Boxer::dodge() 
-{
-    std::cout << name << " try to dodge" << std::endl;
-    if (rand() % 100 < speed) {
-        std::cout << name << " successfully dodged!" << std::endl;
-    }   
-    else 
+void Boxer::dodge(sf::Vector2f direction) 
     {
-        std::cout << name << " failed dodge" << std::endl;
-    }
+        
+    float dodgeDistance = 01.f; 
+
+    sf::Vector2f dodgeMovement = direction * dodgeDistance;
     state = BoxerState::DODGING;
+
+    move(direction * dodgeSpeed); // dodgeClock.restart().asSeconds()
+    dodgeClock.restart();
+    reduce_stamina(40);
+        if(state == BoxerState::DODGING)
+        {
+    std::cout << name << " intenta esquivar" << std::endl;
+    }
 }
 
 //methods damage
@@ -196,7 +200,7 @@ void Boxer::receivePunch() {
         state = BoxerState::TAKING_DAMAGE;
         std::cout << "¡Golpe recibido! Corazones restantes x: " << hearts << std::endl;
     } 
-    else
+    else if(hearts == 0)
         {
         std::cout << "El boxeador ya no tiene corazones, ganaste" << std::endl;
     }
@@ -237,9 +241,15 @@ void Boxer::update(const sf::Vector2f& opponentPosition)
         setAnimation("idle");
     }
      
-        if (state == BoxerState::IDLE) {
-        recover_stamina(0.05f);  // recovery stamina 
+        if (state == BoxerState::IDLE) 
+            {
+        recover_stamina(0.05f);  
         }
+
+            if (state == BoxerState::DODGING && dodgeClock.getElapsedTime().asSeconds() > 0.5f) 
+                {
+        state = BoxerState::IDLE;
+            }
 
     //boxer rotation
     sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
