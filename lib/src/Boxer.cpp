@@ -9,16 +9,17 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
-    : name(name), stamina(100),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),
+    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.3f, 0.3f);
     boxerSprite_.setTexture(animations_["idle"]);
-    boxerSprite_.setPosition(300, 300); // Posición inicial
-    staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); // Ancho 100 px, alto 20 px
-    staminaBar.setFillColor(sf::Color::Green);        // Color de la barra según el boxeador
-    staminaBar.setOutlineColor(sf::Color::Black);    // Borde negro
+    boxerSprite_.setPosition(300, 300); 
+    staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
+    staminaBar.setFillColor(sf::Color::Green);        
+    staminaBar.setOutlineColor(sf::Color::Black);    
     staminaBar.setOutlineThickness(2.0f);
+    loadHeartTexture();
     
       }
 
@@ -34,6 +35,23 @@ void Boxer::loadTexture(const std::string& animationName, const std::string& tex
         animations_[animationName] = texture;
     }
     
+}
+
+void Boxer::loadHeartTexture() 
+{
+    if (!heartTexture.loadFromFile("/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/hearts.png")) 
+    {
+        std::cerr << "!!Error loading animation" << std::endl;
+    }
+    heartSprite.setTexture(heartTexture);
+    
+    // Ajustar la posición
+    heartSprite.setPosition(10, 10); // Ajusta la posición como desees
+
+    // Ajustar el tamaño (escalado)
+    float scaleX = 0.25f; 
+    float scaleY = 0.25f; 
+    heartSprite.setScale(scaleX, scaleY);
 }
 
 void Boxer::loadAnimation(const std::string &animationName, const std::string &texturePath) 
@@ -64,30 +82,42 @@ void Boxer::setAnimation(const std::string& animationName)
 // action methods
 void Boxer::jab_right() 
 {
-    if (state == BoxerState::IDLE) { 
+    if (stamina < 10) {
+        std::cout << name << "Nesesitas recuperar energia" << std::endl;
+        return; 
+    }
+    
+    if (state == BoxerState::IDLE) {  
         state = BoxerState::ATTACKING;
-        punchClock.restart(); 
-
-        loadAnimation("jab", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/right_jab.png");
+        punchClock.restart();  
+        reduce_stamina(10);
         
-        setAnimation("jab"); 
+        loadAnimation("jab_right", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/right_jab.png");
+
+        setAnimation("jab_right");
+        
+       
     }
 }
 
+
 void Boxer::jab_left()
 {
-if (state == BoxerState::IDLE) {  
+    if (stamina < 10) 
+        {
+        std::cout << name << "Nesesitas recuperar energia" << std::endl;
+        return;  
+    }
+   
+    if (state == BoxerState::IDLE) {  
+      
         state = BoxerState::ATTACKING;
         punchClock.restart();  
+        reduce_stamina(10);
+        loadAnimation("jab_left", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/left_jab.png");
+        setAnimation("jab_left");
 
-        loadAnimation("jab_left", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/left_jab.png");
-
-        setAnimation("jab_left");  
-    }
-    
-    if (stamina >= 10) {  
-        state = BoxerState::ATTACKING;
-        reduce_stamina(10);  
+       
     }
 }
 
@@ -128,40 +158,56 @@ void Boxer::block()
     state = BoxerState::BLOCKING;
 }
 
-void Boxer::dodge() 
-{
-    std::cout << name << " try to dodge" << std::endl;
-    if (rand() % 100 < speed) {
-        std::cout << name << " successfully dodged!" << std::endl;
-    }   
-    else 
+void Boxer::dodge(sf::Vector2f direction) 
     {
-        std::cout << name << " failed dodge" << std::endl;
-    }
+        
+    float dodgeDistance = 01.f; 
+
+    sf::Vector2f dodgeMovement = direction * dodgeDistance;
     state = BoxerState::DODGING;
+
+    move(direction * dodgeSpeed); // dodgeClock.restart().asSeconds()
+    dodgeClock.restart();
+    reduce_stamina(40);
+        if(state == BoxerState::DODGING)
+        {
+    std::cout << name << " intenta esquivar" << std::endl;
+    }
 }
 
+//methods damage
 void Boxer::take_damage(int amount) 
 {
-    if (defense > 0) 
+     hearts -= amount; 
+    if (hearts < 0) 
     {
-        amount -= defense / 2;
-        defense = 0;
+        hearts = 0; 
+    
     }
     
-    if (amount > 0) 
-    {
-        stamina -= amount;
-        std::cout << name << " took " << amount << " damage" << std::endl;
-    } 
-    
-    else 
-    {
-        std::cout << name << " blocked all the damage!" << std::endl;
-    }
-
+    else{
     check_for_technical_ko();
     state = BoxerState::TAKING_DAMAGE;
+}
+    
+    check_for_technical_ko();
+    state = BoxerState::TAKING_DAMAGE;
+}
+
+void Boxer::receivePunch() {
+    if (hearts > 0) {
+        hearts--;  
+        state = BoxerState::TAKING_DAMAGE;
+        std::cout << "¡Golpe recibido! Corazones restantes x: " << hearts << std::endl;
+    } 
+    else if(hearts == 0)
+        {
+        std::cout << "El boxeador ya no tiene corazones, ganaste" << std::endl;
+    }
+}
+
+bool Boxer::isAttacking() const {
+    return state == BoxerState::ATTACKING;  
 }
 
 void Boxer::reduce_stamina(float amount) 
@@ -169,7 +215,8 @@ void Boxer::reduce_stamina(float amount)
     stamina -= amount;
     if (stamina < 0) stamina = 0;
 }
-
+//
+//stamina
 void Boxer::recover_stamina(float amount) {
     stamina += amount;
     if (stamina > max_stamina) stamina = max_stamina;
@@ -179,6 +226,7 @@ void Boxer::updateStaminaBar() {
     float staminaPercentage = stamina / max_stamina; 
     staminaBar.setSize(sf::Vector2f(100.0f * staminaPercentage, 20.0f));
 }
+//
 
 void Boxer::enqueue_action(Action action) 
 {
@@ -193,9 +241,15 @@ void Boxer::update(const sf::Vector2f& opponentPosition)
         setAnimation("idle");
     }
      
-        if (state == BoxerState::IDLE) {
-        recover_stamina(0.5f);  // recovery stamina 
+        if (state == BoxerState::IDLE) 
+            {
+        recover_stamina(0.05f);  
         }
+
+            if (state == BoxerState::DODGING && dodgeClock.getElapsedTime().asSeconds() > 0.5f) 
+                {
+        state = BoxerState::IDLE;
+            }
 
     //boxer rotation
     sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
@@ -232,6 +286,7 @@ void Boxer::check_for_technical_ko()
     if (stamina <= 0) 
     {
         knocked_out = true;  
+        std::cout <<"k.o tecnico" << std::endl;
     }
 }
 
@@ -266,13 +321,42 @@ int Boxer::get_speed() const
     return speed;
 }
 
+int Boxer::get_hearts() const 
+{
+    return hearts;
+}
+
+BoxerState Boxer::getState() const
+{
+    return state; 
+}
+
+void Boxer::setState(BoxerState newState) {
+    state = newState; 
+}
 
 void Boxer::move(sf::Vector2f direction) {
     boxerSprite_.move(direction);
 }
 
+
 void Boxer::draw(sf::RenderWindow& window) {
+    
     window.draw(boxerSprite_);
+    //draw hearts
+
+    float heartWidth = heartSprite.getGlobalBounds().width;
+    float spacing = heartWidth + 0.2;  // spacing hearts
+    int heartsToDraw = hearts; // number hearts 
+    
+    // Draw hearts acttually
+    float startX = isleft ? 50 : window.getSize().x - (spacing * 10) - 50;
+    float startY = 20; 
+
+    for (int i = 0; i < get_hearts(); ++i) {
+        heartSprite.setPosition(startX + i * spacing, startY);  // Usar 'position' aquí
+        window.draw(heartSprite);
+    }
 
     // draw hotbar stamina
     staminaBar.setSize(sf::Vector2f((stamina / max_stamina) * 100, 10)); // size
@@ -301,14 +385,11 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
 {
     if (sf::Keyboard::isKeyPressed(attack1)) {
         jab_right(); // Acción para el primer ataque
+        setState(BoxerState::ATTACKING);
     }
-    if (sf::Keyboard::isKeyPressed(attack2)) {
-        uppercut(); // Acción para el segundo ataque
-    }
+    
     if (sf::Keyboard::isKeyPressed(attack3)) {
         jab_left(); // Acción para el tercer ataque
-    }
-    if (sf::Keyboard::isKeyPressed(attack4)) {
-        hook(); // Acción para el cuarto ataque
-    }
+        setState(BoxerState::ATTACKING);
+}
 }

@@ -70,7 +70,14 @@
     "codecvt": "cpp",
     "ratio": "cpp",
     "iomanip": "cpp",
-    "sstream": "cpp"
+    "sstream": "cpp",
+    "chrono": "cpp",
+    "filesystem": "cpp",
+    "forward_list": "cpp",
+    "queue": "cpp",
+    "ranges": "cpp",
+    "span": "cpp",
+    "xtree": "cpp"
   },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",

@@ -7,6 +7,7 @@ class Game {
 public:
     Game();
     void run();
+    void drawHearts(const Boxer& boxer, const sf::Vector2f& position); 
 
 private:
 
@@ -32,5 +33,6 @@ private:
     Boxer boxer2;
     Ring ring;
     void draw();
+    void drawHearts();
 
     };

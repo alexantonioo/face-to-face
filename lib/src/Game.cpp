@@ -52,21 +52,72 @@ void Game::run()
                 handleInput();
                 update();
 
-                //  boxer1 WASD
-                sf::Vector2f movement1(0.f, 0.f);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) movement1.y -= 1.0f;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) movement1.y += 1.0f;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) movement1.x -= 1.0f;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) movement1.x += 1.0f;
-                boxer1.move(movement1);
+                // boxer 1 movement wasd
+        sf::Vector2f movement1(0.f, 0.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
+        {
+            movement1.y -= 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) 
+        {
+            movement1.y += 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) 
+        {
+            movement1.x -= 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) 
+        {
+            movement1.x += 1.0f;
+        }
+        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
+        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+        {
+        boxer2.dodge(sf::Vector2f(-1.f, 0.f)); // Esquivar hacia la izquierda
+        } 
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
+        {
+        boxer2.dodge(sf::Vector2f(1.f, 0.f)); // Esquivar hacia la derecha
+        }
+        }
 
-                // boxer2 flechas
-                sf::Vector2f movement2(0.f, 0.f);
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) movement2.y -= 1.0f;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) movement2.y += 1.0f;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) movement2.x -= 1.0f;
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) movement2.x += 1.0f;
-                boxer2.move(movement2);
+        boxer1.move(movement1);
+
+        // boxer 2 movement arrows
+        sf::Vector2f movement2(0.f, 0.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) 
+        {
+            movement2.y -= 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) 
+        {
+            movement2.y += 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+        {
+            movement2.x -= 1.0f;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
+        {
+            movement2.x += 1.0f;
+        }
+
+        boxer2.move(movement2);
+
+        //DODGE BOXER 1
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) 
+        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+        {
+        boxer1.dodge(sf::Vector2f(-0.5f, 0.f)); 
+        }   
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))               
+        {
+        boxer1.dodge(sf::Vector2f(0.5f, 0.f)); 
+        }   
+        }               
 
                 boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
                 boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
@@ -98,14 +149,42 @@ void Game::draw() {
     boxer1.updateStaminaBar();
     boxer2.updateStaminaBar();
 
+    //hearts
+    drawHearts(boxer1, sf::Vector2f(50, 10));         // Corazones de Boxer1 en la parte superior izquierda
+    drawHearts(boxer2, sf::Vector2f(600, 10));        // Corazones de Boxer2 en la parte superior derecha
+
+
     // Dibuja los boxeadores y sus barras de stamina
     boxer1.draw(window);
     boxer2.draw(window);
     window.draw(boxer1.staminaBar);
     window.draw(boxer2.staminaBar);
-
+    
     window.display();
 }
+
+
+
+void Game::drawHearts(const Boxer& boxer, const sf::Vector2f& position) 
+    {
+
+    static sf::Texture heartTexture;
+    static bool textureLoaded = false;
+    if (!textureLoaded) {
+        if (!heartTexture.loadFromFile("/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/hearts.png")) {
+            
+            return;
+        }
+        textureLoaded = true;
+    }
+    sf::Sprite heartSprite(heartTexture);
+    for (int i = 0; i < boxer.get_hearts(); ++i) {
+        heartSprite.setPosition(position.x + i * (heartSprite.getGlobalBounds().width + 5), position.y);
+        window.draw(heartSprite);
+    }
+}
+
+
 void Game::handleCollisions() 
 {
     sf::FloatRect boxer1Bounds = boxer1.getSprite().getGlobalBounds();
@@ -179,7 +258,24 @@ void Game::handleCollisions()
         boxer2.move(-moveDirection);  
         
     }
-    
+
+
+     if (boxer1Bounds.intersects(boxer2Bounds)) 
+    {
+        sf::FloatRect intersection;
+        boxer1Bounds.intersects(boxer2Bounds, intersection);
+
+        
+        if (boxer1.getState() == BoxerState::ATTACKING) 
+        {
+            boxer2.receivePunch(); // Boxer 2 recibe el golpe
+        }
+
+        if (boxer2.getState() == BoxerState::ATTACKING) // Asegúrate de que tengas un método isAttacking en tu Boxer
+        {
+            boxer1.receivePunch(); // Boxer 1 recibe el golpe
+        }
+    }
 }
 
 void Game::handleInput() {
