@@ -9,9 +9,9 @@ Game::Game()
     : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
       menu(/*window*/),
       currentState(MENU),
-      boxer1("Boxer 1", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
-      boxer2("Boxer 2", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png"), 
-      ring(500.0f, 500.0f, "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/ring.png")
+      boxer1("Boxer 1", "../../assets/images/boxer.png"), 
+      boxer2("Boxer 2", "../../assets/images/boxer.png"), 
+      ring(500.0f, 500.0f, "../../assets/images/ring.png")
       
 {
     boxer1.setPosition(100, 100);  // posicion inicial 
@@ -171,7 +171,7 @@ void Game::drawHearts(const Boxer& boxer, const sf::Vector2f& position)
     static sf::Texture heartTexture;
     static bool textureLoaded = false;
     if (!textureLoaded) {
-        if (!heartTexture.loadFromFile("/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/hearts.png")) {
+        if (!heartTexture.loadFromFile("../../assets/images/hearts.png")) {
             
             return;
         }

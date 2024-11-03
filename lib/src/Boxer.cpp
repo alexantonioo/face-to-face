@@ -39,7 +39,7 @@ void Boxer::loadTexture(const std::string& animationName, const std::string& tex
 
 void Boxer::loadHeartTexture() 
 {
-    if (!heartTexture.loadFromFile("/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/hearts.png")) 
+    if (!heartTexture.loadFromFile("../../assets/images/hearts.png")) 
     {
         std::cerr << "!!Error loading animation" << std::endl;
     }
@@ -92,7 +92,7 @@ void Boxer::jab_right()
         punchClock.restart();  
         reduce_stamina(10);
         
-        loadAnimation("jab_right", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/right_jab.png");
+        loadAnimation("jab_right", "../../assets/images/right_jab.png");
 
         setAnimation("jab_right");
         
@@ -114,7 +114,7 @@ void Boxer::jab_left()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
         reduce_stamina(10);
-        loadAnimation("jab_left", "/mnt/c/Users/marus/OneDrive/Documents/GitHub/face-to-face/assets/images/left_jab.png");
+        loadAnimation("jab_left", "../../assets/images/left_jab.png");
         setAnimation("jab_left");
 
        
