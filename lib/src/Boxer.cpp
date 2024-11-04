@@ -9,7 +9,7 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
-    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
+    : name(name), stamina(max_stamina),max_stamina(150), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.3f, 0.3f);
@@ -160,19 +160,27 @@ void Boxer::block()
 
 void Boxer::dodge(sf::Vector2f direction) 
     {
-        
-    float dodgeDistance = 01.f; 
+
+    if (stamina < 40) 
+        {
+        std::cout << name << "Nesesitas recuperar energia" << std::endl;
+        return;  
+    }
+
+    if(state == BoxerState::IDLE)
+        {
+    std::cout << name << " intenta esquivar" << std::endl;
+
+    state == BoxerState::DODGING;
+    float dodgeDistance = 1.0f; 
 
     sf::Vector2f dodgeMovement = direction * dodgeDistance;
-    state = BoxerState::DODGING;
 
     move(direction * dodgeSpeed); // dodgeClock.restart().asSeconds()
     dodgeClock.restart();
     reduce_stamina(40);
-        if(state == BoxerState::DODGING)
-        {
-    std::cout << name << " intenta esquivar" << std::endl;
     }
+    
 }
 
 //methods damage

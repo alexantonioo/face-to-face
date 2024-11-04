@@ -18,8 +18,8 @@ Game::Game()
     boxer2.setPosition(600, 600);  // posicion inicial
 
     // cargar texturas y animaciones
-    boxer1.loadTexture("default ", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png");  // Textura inicial
-    boxer2.loadTexture("default", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/boxer.png");
+    boxer1.loadTexture("default ", "../../assets/images/boxer.png");  // Textura inicial
+    boxer2.loadTexture("default","../../assets/images/boxer.png");
 
 }
 
