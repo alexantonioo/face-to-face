@@ -5,7 +5,7 @@ Menu::Menu() {
     // Fuente
   
 
-    if (!font.loadFromFile("/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/fonts/Eight-Bit-Madness.ttf")) {
+    if (!font.loadFromFile("../../assets/fonts/Eight-Bit-Madness.ttf")) {
         std::cerr << "Error 'assets/fonts/Eight-Bit-Madness.ttf'" << std::endl;
     }
 

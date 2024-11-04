@@ -12,7 +12,7 @@ Boxer::Boxer(const std::string& name, const std::string& initialTexturePath)
     : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
-    boxerSprite_.setScale(0.3f, 0.3f);
+    boxerSprite_.setScale(sf::Vector2f(5, 5));
     boxerSprite_.setTexture(animations_["idle"]);
     boxerSprite_.setPosition(300, 300); 
     staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
@@ -127,7 +127,7 @@ void Boxer::hook()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("hook", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/hook.png");
+        loadAnimation("hook", "../../assets/images/hook.png");
 
         setAnimation("hook");  
         //FALTA AJUSTAR STAMINA
@@ -145,7 +145,7 @@ void Boxer::uppercut()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("uppercut", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/uppercut.png");
+        loadAnimation("uppercut", "../../assets/images/uppercut.png");
 
         setAnimation("uppercut");  
     }
