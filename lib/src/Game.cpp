@@ -10,17 +10,18 @@ Game::Game()
       
       menu(/*window*/),
       currentState(MENU),
-      boxer1("Boxer 1", "../../assets/images/foxerTest.png"), 
-      boxer2("Boxer 2", "../../assets/images/foxerTest.png"), 
-      ring(500.0f, 500.0f, "../../assets/images/ring.png")
+      boxer1("Boxer 1", "../../assets/images/boxer.png"), 
+      boxer2("Boxer 2", "../../assets/images/boxer.png"), 
+      ring(1000.0f, 1000.0f, "../../assets/images/ring.png")
       
 {
     boxer1.setPosition(100, 100);  // posicion inicial 
     boxer2.setPosition(600, 600);  // posicion inicial
-
+    
     // cargar texturas y animaciones
-    boxer1.loadTexture("default ", "../../assets/images/foxerTest.png");  // Textura inicial
-    boxer2.loadTexture("default", "../../assets/images/foxerTest.png");
+    boxer1.loadTexture("default", "../../assets/images/boxer.png");  // Textura inicial
+    boxer2.loadTexture("default", "../../assets/images/boxer.png");
+    window.setVerticalSyncEnabled(false);
 
 }
 
