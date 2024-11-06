@@ -9,8 +9,7 @@ Ring::Ring(float width, float height, const std::string& texturePath)
     } else {
         ringSprite_.setTexture(ringTexture_);
         ringSprite_.setScale(width / ringTexture_.getSize().x, height / ringTexture_.getSize().y);
-        ringSprite_.setPosition(960, 540); 
-        ringSprite_.setOrigin(sf::Vector2f(260, 240));
+        ringSprite_.setPosition(100, 100);  
     }
 }
 
