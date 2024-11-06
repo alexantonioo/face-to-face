@@ -252,12 +252,14 @@ void Boxer::update(const sf::Vector2f& opponentPosition)
     }
 
     //boxer rotation
-    /*sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
+    sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
     float angle = std::atan2(direction.y, direction.x) * 180 / 3.14159265;
 
-    boxerSprite_.setRotation(angle + 300);*/ 
+    boxerSprite_.setRotation(angle + 292); 
 
-    sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
+
+    //prototipo fallido de mirardas
+    /*sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
     float mod = std::sqrt(direction.x * direction.x + direction.y * direction.y);
     if (mod != 0) {
         sf::Vector2f UnitDirection = direction / mod;
@@ -267,7 +269,7 @@ void Boxer::update(const sf::Vector2f& opponentPosition)
         } else {
             boxerSprite_.setScale(0.5f, f);  // No reflejar para que mire a la derecha
         }
-    }
+    }*/
 }
 
 
