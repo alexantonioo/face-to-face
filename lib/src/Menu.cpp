@@ -1,9 +1,8 @@
 #include "Menu.hpp"
+#include "SettingsMenu.hpp"
 #include <iostream>
 
-Menu::Menu() {
-    // Fuente
-  
+Menu::Menu(){
 
     if (!font.loadFromFile("../../assets/fonts/Eight-Bit-Madness.ttf")) {
         std::cerr << "Error 'assets/fonts/Eight-Bit-Madness.ttf'" << std::endl;
@@ -17,7 +16,7 @@ Menu::Menu() {
         backgroundSprite.setTexture(backgroundTexture);
     }*/
 
-  initMenuOptions(800, 600);  // Cambia el tamaño de la ventana según tu configuración
+  initMenuOptions(800, 600); 
     
 }
 
@@ -36,13 +35,18 @@ void Menu::initMenuOptions(float width, float height) {
     }
 }
 
+
 void Menu::draw(sf::RenderWindow& window) {
     //fondo
     //window.draw(backgroundSprite);
-    for (const auto& option : menuOptions) {
-        window.draw(option);
-    }
 
+    if (settingsSelected) {  
+        settingsMenu.draw(window);  
+    } else {
+        for (const auto& option : menuOptions) {
+            window.draw(option);
+        }
+    }
 }
 
 void Menu::update() {
@@ -73,22 +77,35 @@ bool Menu::isStartSelected() const {
     return startSelected;
 }
 
-void Menu::handleInput(const sf::Event& event, sf::RenderWindow& window) 
-{
-    if (event.type == sf::Event::KeyPressed) 
-    {
-        if (event.key.code == sf::Keyboard::Up) moveUp();
-        else if (event.key.code == sf::Keyboard::Down) moveDown();
-        else if (event.key.code == sf::Keyboard::Enter) 
-        {
-            if (selectedOptionIndex == 0) 
-            { 
-                startSelected = true;
-            } 
-            else if (selectedOptionIndex == 2) 
-            { 
-                window.close(); // close game
+void Menu::handleInput(const sf::Event& event, sf::RenderWindow& window) {
+    if (event.type == sf::Event::KeyPressed) {
+        if (settingsSelected) {  
+            // Si está en el submenú de configuración, se maneja la entrada en `settingsMenu`.
+            settingsMenu.handleInput(event);
+            if (event.key.code == sf::Keyboard::Escape) {
+                settingsSelected = false;  // Salir del submenú al presionar Escape.
+            }
+        } else {  
+            // Maneja la entrada en el menú principal.
+            if (event.key.code == sf::Keyboard::Up) moveUp();
+            else if (event.key.code == sf::Keyboard::Down) moveDown();
+            else if (event.key.code == sf::Keyboard::Enter) {
+                if (selectedOptionIndex == 0) {  
+                    startSelected = true;  // Señala que se seleccionó "Play".
+                } else if (selectedOptionIndex == 1) {  
+                    settingsSelected = true;  // Entra al submenú de configuración.
+                } else if (selectedOptionIndex == 2) {  
+                    window.close();  // Cierra el juego si se selecciona "Exit".
+                }
             }
         }
     }
+}
+
+/*void Menu::resetStartSelected() {
+    startSelected = false;
+}*/
+
+bool Menu::isSettingsSelected() const {
+    return settingsSelected;
 }

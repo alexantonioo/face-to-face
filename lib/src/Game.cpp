@@ -15,17 +15,17 @@ Game::Game()
       ring(1000.0f, 1000.0f, "../../assets/images/ring.png")
       
 {
-    boxer1.setPosition(100, 100);  // posicion inicial 
-    boxer2.setPosition(600, 600);  // posicion inicial
+    boxer1.setPosition(100, 100);  
+    boxer2.setPosition(600, 600);  
 
-    // cargar texturas y animaciones
-    boxer1.loadTexture("default ", "../../assets/images/boxer.png");  // Textura inicial
+    boxer1.loadTexture("default ", "../../assets/images/boxer.png");  
     boxer2.loadTexture("default","../../assets/images/boxer.png");
 
 }
 
 void Game::run() 
 {
+    bool isPaused = false;
     sf::Clock deltaClock;
     const float targetFPS = 60.0f;
     const float targetFrameTime = 1.0f / targetFPS;
@@ -38,6 +38,13 @@ void Game::run()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+                else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape){
+                    isPaused = !isPaused;
+                }
+
+            if (isPaused){
+                menu.handleInput(event, window);
+            }
 
             if (currentState == MENU) {
                 menu.handleInput(event, window);
@@ -142,13 +149,18 @@ void Game::run()
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
-
+                if (isPaused) 
+                {
+                    menu.draw(window); 
+                }
+                else {
                 handleCollisions();
 
                 ring.draw(window);
                 boxer1.draw(window);
                 boxer2.draw(window);
                 break;
+                }
         }
     
         window.display();
@@ -160,19 +172,16 @@ void Game::draw() {
     window.clear();
 
     // Configura las posiciones de las barras
-    boxer1.staminaBar.setPosition(10, 10); // Barra de stamina del boxeador 1 en la esquina superior izquierda
-    boxer2.staminaBar.setPosition(window.getSize().x - 110, 10); // Barra de stamina del boxeador 2 en la esquina superior derecha
+    boxer1.staminaBar.setPosition(10, 10); 
+    boxer2.staminaBar.setPosition(window.getSize().x - 110, 10); 
 
-    // Actualiza las barras de stamina antes de dibujar
     boxer1.updateStaminaBar();
     boxer2.updateStaminaBar();
 
     //hearts
-    drawHearts(boxer1, sf::Vector2f(50, 10));         // Corazones de Boxer1 en la parte superior izquierda
-    drawHearts(boxer2, sf::Vector2f(600, 10));        // Corazones de Boxer2 en la parte superior derecha
+    drawHearts(boxer1, sf::Vector2f(50, 10));         
+    drawHearts(boxer2, sf::Vector2f(600, 10));      
 
-
-    // Dibuja los boxeadores y sus barras de stamina
     boxer1.draw(window);
     boxer2.draw(window);
     window.draw(boxer1.staminaBar);
@@ -286,12 +295,12 @@ void Game::handleCollisions()
         
         if (boxer1.getState() == BoxerState::ATTACKING) 
         {
-            boxer2.receivePunch(); // Boxer 2 recibe el golpe
+            boxer2.receivePunch(); 
         }
 
-        if (boxer2.getState() == BoxerState::ATTACKING) // Asegúrate de que tengas un método isAttacking en tu Boxer
+        if (boxer2.getState() == BoxerState::ATTACKING) 
         {
-            boxer1.receivePunch(); // Boxer 1 recibe el golpe
+            boxer1.receivePunch(); 
         }
     }
 }

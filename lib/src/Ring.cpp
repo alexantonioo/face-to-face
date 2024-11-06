@@ -3,7 +3,7 @@
 
 Ring::Ring(float width, float height, const std::string& texturePath) 
 {
-    // Cargar la textura del ring
+    // ring texture
     if (!ringTexture_.loadFromFile(texturePath)) {
         std::cerr << "!!Error loading ring texture: " << texturePath << std::endl;
     } else {

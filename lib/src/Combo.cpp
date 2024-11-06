@@ -50,7 +50,7 @@ void ComboTree::execute_combo(Boxer& boxer, const std::vector<std::string>& move
     }
 }
 
-// Advance through the combo tree based on movement.
+// Advance through the combo tree based on movement
 std::shared_ptr<ComboNode> ComboTree::advance(std::shared_ptr<ComboNode> node, const std::string& move) 
     {
 

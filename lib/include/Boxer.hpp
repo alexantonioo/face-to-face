@@ -9,7 +9,6 @@
     
 using Action = std::function<void()>;
 
-    // boxer possible states 
 enum class BoxerState 
     {
     IDLE,
@@ -22,9 +21,9 @@ enum class BoxerState
 class Boxer 
     {
 public:
-    Boxer(const std::string& name);  // Constructor name
-    Boxer(sf::Color color);           // Constructor color
-    Boxer(const std::string& name, sf::Color color); // Constructor color/name
+    Boxer(const std::string& name);  
+    Boxer(sf::Color color);           
+    Boxer(const std::string& name, sf::Color color); //constructor color ???
     Boxer(const std::string& name, const std::string& initialTexturePath);
     void loadTexture(const std::string& animationName, const std::string& texturePath);
     void loadAnimation(const std::string &animationName, const std::string &texturePath);
@@ -118,6 +117,6 @@ public:
     std::queue<Action> action_queue;  // action queue
     float time_accumulated;           // accumulated time
     float action_interval;
-    sf::Texture heartTexture;  // Textura del corazón
+    sf::Texture heartTexture;  // heart textur
     sf::Sprite heartSprite; 
 };
