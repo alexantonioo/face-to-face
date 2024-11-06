@@ -1,4 +1,3 @@
-#include <SFML/Graphics.hpp>
 #include "Menu.hpp"
 #include "SettingsMenu.hpp"
 #include <iostream>

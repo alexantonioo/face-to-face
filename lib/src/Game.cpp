@@ -6,13 +6,13 @@
 
 
 Game::Game() 
-    : window(sf::VideoMode(1920, 1080), "Face to Face - Boxing Ring / 30FPS"), 
+    : window(sf::VideoMode(1024, 768), "Face to Face", sf::Style::Titlebar | sf::Style::Close), 
     
       menu(window),
       currentState(MENU),
       boxer1("Boxer 1", "../../assets/images/boxer.png"), 
       boxer2("Boxer 2", "../../assets/images/boxer.png"), 
-      ring(1000.0f, 1000.0f, "../../assets/images/ring.png")
+      ring(800.0f, 600.0f, "../../assets/images/ring.png")
       
 {
     boxer1.setPosition(100, 100);  
