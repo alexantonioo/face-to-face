@@ -9,7 +9,7 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
-    : name(name), stamina(max_stamina),max_stamina(150), lucky_in_punch(10), defense(10), speed(200),hearts(10), attacking(false), dodgeSpeed(5.0f),
+    : name(name), stamina(max_stamina),max_stamina(150), lucky_in_punch(10), defense(10), speed(1000),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.3f, 0.3f);
@@ -91,7 +91,7 @@ void Boxer::jab_right()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
         reduce_stamina(10);
-        
+        take_damage(1);
         loadAnimation("jab_right", "../../assets/images/right_jab.png");
 
         setAnimation("jab_right");
@@ -113,6 +113,7 @@ void Boxer::jab_left()
       
         state = BoxerState::ATTACKING;
         punchClock.restart();  
+        take_damage(1);
         reduce_stamina(10);
         loadAnimation("jab_left", "../../assets/images/left_jab.png");
         setAnimation("jab_left");
@@ -161,7 +162,7 @@ void Boxer::block()
 void Boxer::dodge(sf::Vector2f direction) 
     {
 
-    if (stamina < 40) 
+    if (stamina < 45) 
         {
         std::cout << name << "Nesesitas recuperar energia" << std::endl;
         return;  
@@ -178,7 +179,7 @@ void Boxer::dodge(sf::Vector2f direction)
 
     move(direction * dodgeSpeed); // dodgeClock.restart().asSeconds()
     dodgeClock.restart();
-    reduce_stamina(40);
+    reduce_stamina(30);
     }
     
 }
@@ -239,6 +240,10 @@ void Boxer::updateStaminaBar() {
 void Boxer::enqueue_action(Action action) 
 {
     action_queue.push(action);
+}
+
+void Boxer::updatefps(float deltaTime) {
+    position.x += speed * deltaTime;
 }
 
 void Boxer::update(const sf::Vector2f& opponentPosition) 

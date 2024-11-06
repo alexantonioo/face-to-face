@@ -6,17 +6,13 @@
 
 
 Game::Game() 
-<<<<<<< HEAD
     : window(sf::VideoMode(1920, 1080), "Face to Face - Boxing Ring / 30FPS"), 
-      
-=======
-    : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
->>>>>>> parent of cef5cb6 (Merge branch 'gustavo_branch' into V2.0_Lj)
+    
       menu(/*window*/),
       currentState(MENU),
       boxer1("Boxer 1", "../../assets/images/boxer.png"), 
       boxer2("Boxer 2", "../../assets/images/boxer.png"), 
-      ring(500.0f, 500.0f, "../../assets/images/ring.png")
+      ring(1000.0f, 1000.0f, "../../assets/images/ring.png")
       
 {
     boxer1.setPosition(100, 100);  // posicion inicial 
@@ -30,11 +26,16 @@ Game::Game()
 
 void Game::run() 
 {
+    sf::Clock deltaClock;
+    const float targetFPS = 60.0f;
+    const float targetFrameTime = 1.0f / targetFPS;
+
     window.setVerticalSyncEnabled(true);
     while (window.isOpen()) 
     {
         sf::Event event;
-        while (window.pollEvent(event)) {
+        while (window.pollEvent(event)) 
+        {
             if (event.type == sf::Event::Closed)
                 window.close();
 
@@ -43,13 +44,23 @@ void Game::run()
                 if (menu.isStartSelected()) {
                     currentState = PLAYING;
                 }
-            }
+
+        float frameTime = clock.restart().asSeconds();
+        boxer1.updatefps(frameTime);
+        boxer2.updatefps(frameTime);
+
+        // Limitar los FPS a 60
+        if (frameTime < targetFrameTime) 
+        {
+            sf::sleep(sf::seconds(targetFrameTime - frameTime));
         }
-
-        window.clear(sf::Color::Black);
-        limitFPS(30.0f);
-
-
+            
+        }
+ }
+   
+    
+    window.clear(sf::Color::Black);
+        
         switch (currentState) {
             case MENU:
                 menu.draw(window);
@@ -78,7 +89,7 @@ void Game::run()
             movement1.x += 1.0f;
         }
         
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) 
         {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
         {
@@ -114,13 +125,13 @@ void Game::run()
         boxer2.move(movement2);
 
         //DODGE BOXER 1
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
         {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) 
         {
         boxer1.dodge(sf::Vector2f(-0.5f, 0.f)); 
         }   
-        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))               
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))               
         {
         boxer1.dodge(sf::Vector2f(0.5f, 0.f)); 
         }   
@@ -128,7 +139,7 @@ void Game::run()
 
                 boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
                 boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
-
+            
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
 
@@ -139,23 +150,10 @@ void Game::run()
                 boxer2.draw(window);
                 break;
         }
-
+    
         window.display();
         
     }
-}
-//limit 30fps 
-void Game::limitFPS(float targetFPS) 
-{
-    float targetFrameTime = 1.0f / targetFPS;
-    float frameTime = clock.getElapsedTime().asSeconds();
-
-    if (frameTime < targetFrameTime) 
-    {
-        sf::sleep(sf::seconds(targetFrameTime - frameTime));
-    }
-
-    clock.restart();
 }
 
 void Game::draw() {

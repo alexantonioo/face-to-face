@@ -60,7 +60,7 @@ public:
     // Methods managing actions
     void enqueue_action(Action action);
     void update(const sf::Vector2f& opponentPosition);
-
+    void updatefps(float deltatime);
     // methods K.O.
     void increase_ko_probability(int amount);
     bool attempt_knockout();
@@ -89,10 +89,9 @@ public:
     void setState(BoxerState state);
 
     private:
+
     std::string name;
     
-    
-
     float max_stamina; 
     float stamina;               
     int lucky_in_punch;
@@ -101,7 +100,7 @@ public:
     int ko_probability; 
     bool knocked_out;   
     float dodgeSpeed;
-
+    
     int hearts;  
     bool attacking;   
     bool isleft;
@@ -112,6 +111,7 @@ public:
 
     sf::Clock dodgeClock; 
 
+    sf::Vector2f position;
     BoxerState state;  // manage state
     sf::Clock punchClock;
     sf::Time punchDuration;
