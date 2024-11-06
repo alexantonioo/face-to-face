@@ -8,10 +8,11 @@ public:
     Game();
     void run();
     void drawHearts(const Boxer& boxer, const sf::Vector2f& position); 
-
+    void limitFPS(float targetFPS = 30.0f);
 private:
 
     sf::RenderWindow window;
+    sf::Clock clock;
     Menu menu;
 
     void handleCollisions();

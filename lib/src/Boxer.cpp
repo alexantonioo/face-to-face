@@ -9,13 +9,13 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
-    : name(name), stamina(max_stamina),max_stamina(150), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
+    : name(name), stamina(max_stamina),max_stamina(150), lucky_in_punch(10), defense(10), speed(200),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(sf::Vector2f(0.5, 0.5));
     boxerSprite_.setTexture(animations_["idle"]);
     boxerSprite_.setPosition(300, 300); 
-    staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
+    staminaBar.setSize(sf::Vector2f(200.0f, 20.0f)); 
     staminaBar.setFillColor(sf::Color::Green);        
     staminaBar.setOutlineColor(sf::Color::Black);    
     staminaBar.setOutlineThickness(2.0f);

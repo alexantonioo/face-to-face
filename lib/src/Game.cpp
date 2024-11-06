@@ -6,7 +6,7 @@
 
 
 Game::Game() 
-    : window(sf::VideoMode(1920, 1080), "Face to Face - Boxing Ring"), 
+    : window(sf::VideoMode(1920, 1080), "Face to Face - Boxing Ring / 30FPS"), 
       
       menu(/*window*/),
       currentState(MENU),
@@ -44,6 +44,8 @@ void Game::run()
         }
 
         window.clear(sf::Color::Black);
+        limitFPS(30.0f);
+
 
         switch (currentState) {
             case MENU:
@@ -138,6 +140,19 @@ void Game::run()
         window.display();
         
     }
+}
+//limit 30fps 
+void Game::limitFPS(float targetFPS) 
+{
+    float targetFrameTime = 1.0f / targetFPS;
+    float frameTime = clock.getElapsedTime().asSeconds();
+
+    if (frameTime < targetFrameTime) 
+    {
+        sf::sleep(sf::seconds(targetFrameTime - frameTime));
+    }
+
+    clock.restart();
 }
 
 void Game::draw() {
