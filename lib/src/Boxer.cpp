@@ -1,3 +1,4 @@
+#include <SFML/Graphics.hpp>
 #include "Game.hpp"
 #include "Boxer.hpp"
 #include <cstdlib> 
@@ -270,8 +271,6 @@ void Boxer::update(const sf::Vector2f& opponentPosition)
 
     boxerSprite_.setRotation(angle + 292); 
 }
-
-
 
 void Boxer::increase_ko_probability(int amount) 
 {

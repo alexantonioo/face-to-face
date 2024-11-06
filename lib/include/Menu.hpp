@@ -6,7 +6,7 @@
 
 class Menu {
 public:
-    Menu();  
+    Menu(sf::RenderWindow& window);  
 
     //Menu(sf::RenderWindow& window);
     void update();
@@ -17,10 +17,6 @@ public:
     bool isSettingsSelected() const;
     void resetStartSelected();
 
-    //fondo
-    /*sf::Texture backgroundTexture;
-    sf::Sprite backgroundSprite;*/
-
 private:
     std::vector<sf::Text> menuOptions;
     sf::Font font;
@@ -28,6 +24,9 @@ private:
     int selectedOptionIndex = 0;
     bool startSelected = false;
     bool settingsSelected = false;
+    //fondo
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
 
     void setupButtons();
     void initMenuOptions(float width, float height);

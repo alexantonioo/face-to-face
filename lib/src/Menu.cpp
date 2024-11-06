@@ -1,20 +1,28 @@
+#include <SFML/Graphics.hpp>
 #include "Menu.hpp"
 #include "SettingsMenu.hpp"
 #include <iostream>
 
-Menu::Menu(){
+
+Menu::Menu(sf::RenderWindow& window){
 
     if (!font.loadFromFile("../../assets/fonts/Eight-Bit-Madness.ttf")) {
         std::cerr << "Error 'assets/fonts/Eight-Bit-Madness.ttf'" << std::endl;
     }
 
 
-    // fondo
-    /*if (!backgroundTexture.loadFromFile("/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/backgroundmenu.png")) {
-        std::cerr << "Error: No se pudo cargar la imagen de fondo." << std::endl;
+    if (!backgroundTexture.loadFromFile("../../assets/images/backgroundmenu.png")) {
+        std::cerr << "Error al cargar la imagen de fondo" << std::endl;
     } else {
-        backgroundSprite.setTexture(backgroundTexture);
-    }*/
+        backgroundSprite.setTexture(backgroundTexture); 
+    }
+
+    sf::Vector2u windowSize = window.getSize();
+    sf::Vector2u textureSize = backgroundTexture.getSize();
+
+    float scaleX = static_cast<float>(windowSize.x) / textureSize.x;
+    float scaleY = static_cast<float>(windowSize.y) / textureSize.y;
+    backgroundSprite.setScale(scaleX, scaleY);
 
   initMenuOptions(800, 600); 
     
@@ -38,7 +46,7 @@ void Menu::initMenuOptions(float width, float height) {
 
 void Menu::draw(sf::RenderWindow& window) {
     //fondo
-    //window.draw(backgroundSprite);
+    window.draw(backgroundSprite);
 
     if (settingsSelected) {  
         settingsMenu.draw(window);  

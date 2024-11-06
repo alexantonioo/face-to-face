@@ -28,6 +28,7 @@ public:
     void loadTexture(const std::string& animationName, const std::string& texturePath);
     void loadAnimation(const std::string &animationName, const std::string &texturePath);
     void move(sf::Vector2f direction);
+    void reset();
 
 
     void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4);

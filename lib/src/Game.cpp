@@ -8,7 +8,7 @@
 Game::Game() 
     : window(sf::VideoMode(1920, 1080), "Face to Face - Boxing Ring / 30FPS"), 
     
-      menu(/*window*/),
+      menu(window),
       currentState(MENU),
       boxer1("Boxer 1", "../../assets/images/boxer.png"), 
       boxer2("Boxer 2", "../../assets/images/boxer.png"), 
