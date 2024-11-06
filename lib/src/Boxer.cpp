@@ -12,7 +12,7 @@ Boxer::Boxer(const std::string& name, const std::string& initialTexturePath)
     : name(name), stamina(max_stamina),max_stamina(150), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
-    boxerSprite_.setScale(0.3f, 0.3f);
+    boxerSprite_.setScale(sf::Vector2f(0.5, 0.5));
     boxerSprite_.setTexture(animations_["idle"]);
     boxerSprite_.setPosition(300, 300); 
     staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
@@ -21,7 +21,7 @@ Boxer::Boxer(const std::string& name, const std::string& initialTexturePath)
     staminaBar.setOutlineThickness(2.0f);
     loadHeartTexture();
     
-      }
+    }
 
 void Boxer::loadTexture(const std::string& animationName, const std::string& texturePath) 
 {
@@ -127,7 +127,7 @@ void Boxer::hook()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("hook", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/hook.png");
+        loadAnimation("hook", "../../assets/images/hook.png");
 
         setAnimation("hook");  
         //FALTA AJUSTAR STAMINA
@@ -145,7 +145,7 @@ void Boxer::uppercut()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
 
-        loadAnimation("uppercut", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/uppercut.png");
+        loadAnimation("uppercut", "../../assets/images/uppercut.png");
 
         setAnimation("uppercut");  
     }
@@ -249,21 +249,35 @@ void Boxer::update(const sf::Vector2f& opponentPosition)
         setAnimation("idle");
     }
      
-        if (state == BoxerState::IDLE) 
-            {
+    if (state == BoxerState::IDLE) 
+    {
         recover_stamina(0.05f);  
-        }
+    }
 
-            if (state == BoxerState::DODGING && dodgeClock.getElapsedTime().asSeconds() > 0.5f) 
-                {
+    if (state == BoxerState::DODGING && dodgeClock.getElapsedTime().asSeconds() > 0.5f) 
+    {
         state = BoxerState::IDLE;
-            }
+    }
 
     //boxer rotation
     sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
     float angle = std::atan2(direction.y, direction.x) * 180 / 3.14159265;
 
     boxerSprite_.setRotation(angle + 292); 
+
+
+    //prototipo fallido de mirardas
+    /*sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
+    float mod = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+    if (mod != 0) {
+        sf::Vector2f UnitDirection = direction / mod;
+
+        if (UnitDirection.x < 0) {
+            boxerSprite_.setScale(-0.5f, 0.5f); // Reflejar para que mire a la izquierda
+        } else {
+            boxerSprite_.setScale(0.5f, f);  // No reflejar para que mire a la derecha
+        }
+    }*/
 }
 
 

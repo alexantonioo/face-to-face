@@ -6,20 +6,22 @@
 
 
 Game::Game() 
-    : window(sf::VideoMode(800, 600), "Face to Face - Boxing Ring"), 
+    : window(sf::VideoMode(1920, 1080), "Face to Face - Boxing Ring"), 
+      
       menu(/*window*/),
       currentState(MENU),
       boxer1("Boxer 1", "../../assets/images/boxer.png"), 
       boxer2("Boxer 2", "../../assets/images/boxer.png"), 
-      ring(500.0f, 500.0f, "../../assets/images/ring.png")
+      ring(1000.0f, 1000.0f, "../../assets/images/ring.png")
       
 {
     boxer1.setPosition(100, 100);  // posicion inicial 
     boxer2.setPosition(600, 600);  // posicion inicial
-
+    
     // cargar texturas y animaciones
-    boxer1.loadTexture("default ", "../../assets/images/boxer.png");  // Textura inicial
-    boxer2.loadTexture("default","../../assets/images/boxer.png");
+    boxer1.loadTexture("default", "../../assets/images/boxer.png");  // Textura inicial
+    boxer2.loadTexture("default", "../../assets/images/boxer.png");
+    window.setVerticalSyncEnabled(false);
 
 }
 
@@ -151,7 +153,7 @@ void Game::draw() {
 
     //hearts
     drawHearts(boxer1, sf::Vector2f(50, 10));         // Corazones de Boxer1 en la parte superior izquierda
-    drawHearts(boxer2, sf::Vector2f(600, 10));        // Corazones de Boxer2 en la parte superior derecha
+    drawHearts(boxer2, sf::Vector2f(600, 20));        // Corazones de Boxer2 en la parte superior derecha
 
 
     // Dibuja los boxeadores y sus barras de stamina
