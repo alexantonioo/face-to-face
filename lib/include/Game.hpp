@@ -2,7 +2,7 @@
 #include "Boxer.hpp"
 #include "Ring.hpp"
 #include "Menu.hpp"
-
+#include "Collision.hpp"
 class Game {
 public:
     Game();
@@ -32,6 +32,8 @@ private:
     Boxer boxer1;
     Boxer boxer2;
     Ring ring;
+    Collision hitbox_boxer1;
+    Collision hitbox_boxer2;
     void draw();
     void drawHearts();
 
