@@ -11,7 +11,7 @@ Game::Game()
       menu(window),
       currentState(MENU),
       boxer1("Boxer 1", "../../assets/images/boxer.png"), 
-      boxer2("Boxer 2", "../../assets/images/boxer.png"), 
+      boxer2("Boxer 2", "../../assets/images/boxer2.png"), 
       ring(800.0f, 600.0f, "../../assets/images/ring.png")
       
 {
@@ -19,7 +19,7 @@ Game::Game()
     boxer2.setPosition(600, 600);  
 
     boxer1.loadTexture("default ", "../../assets/images/boxer.png");  
-    boxer2.loadTexture("default","../../assets/images/boxer.png");
+    boxer2.loadTexture("default","../../assets/images/boxer2.png");
 
 }
 

@@ -23,7 +23,7 @@ Menu::Menu(sf::RenderWindow& window){
     float scaleY = static_cast<float>(windowSize.y) / textureSize.y;
     backgroundSprite.setScale(scaleX, scaleY);
 
-  initMenuOptions(800, 600); 
+  initMenuOptions(1024, 768); 
     
 }
 
@@ -37,7 +37,7 @@ void Menu::initMenuOptions(float width, float height) {
         menuOptions[i].setString(options[i]);
         menuOptions[i].setFillColor(i == selectedOptionIndex ? sf::Color::Red : sf::Color::White);
         menuOptions[i].setPosition(sf::Vector2f(width / 2 - 50, height / (options.size() + 1) * (i + 1)));
-        menuOptions[i].setCharacterSize(30);
+        menuOptions[i].setCharacterSize(45);
         menuOptions[i].setStyle(sf::Text::Bold);
     }
 }
@@ -87,31 +87,28 @@ bool Menu::isStartSelected() const {
 void Menu::handleInput(const sf::Event& event, sf::RenderWindow& window) {
     if (event.type == sf::Event::KeyPressed) {
         if (settingsSelected) {  
-            // Si está en el submenú de configuración, se maneja la entrada en `settingsMenu`.
+
             settingsMenu.handleInput(event);
             if (event.key.code == sf::Keyboard::Escape) {
-                settingsSelected = false;  // Salir del submenú al presionar Escape.
+                settingsSelected = false;  
             }
         } else {  
-            // Maneja la entrada en el menú principal.
+
             if (event.key.code == sf::Keyboard::Up) moveUp();
             else if (event.key.code == sf::Keyboard::Down) moveDown();
             else if (event.key.code == sf::Keyboard::Enter) {
                 if (selectedOptionIndex == 0) {  
-                    startSelected = true;  // Señala que se seleccionó "Play".
+                    startSelected = true;  
                 } else if (selectedOptionIndex == 1) {  
-                    settingsSelected = true;  // Entra al submenú de configuración.
+                    settingsSelected = true;  
                 } else if (selectedOptionIndex == 2) {  
-                    window.close();  // Cierra el juego si se selecciona "Exit".
+                    window.close();  
                 }
             }
         }
     }
 }
 
-/*void Menu::resetStartSelected() {
-    startSelected = false;
-}*/
 
 bool Menu::isSettingsSelected() const {
     return settingsSelected;
