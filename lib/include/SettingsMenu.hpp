@@ -9,7 +9,8 @@ public:
     void draw(sf::RenderWindow& window);
     void handleInput(const sf::Event& event);
 
-    std::string getSelectedMap() const;
+    int getSelectedMapIndex() const; 
+    void setSelectedMapIndex(int index); 
 
 private:
     std::vector<sf::Text> mapOptions;

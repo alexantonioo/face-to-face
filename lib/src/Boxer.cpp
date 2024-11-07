@@ -94,7 +94,7 @@ void Boxer::jab_right()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
         reduce_stamina(10);
-        take_damage(1);
+        //take_damage(1);
         loadAnimation("jab_right", "../../assets/images/right_jab.png");
 
         setAnimation("jab_right");
@@ -116,7 +116,7 @@ void Boxer::jab_left()
       
         state = BoxerState::ATTACKING;
         punchClock.restart();  
-        take_damage(1);
+        //take_damage(1);
         reduce_stamina(10);
         loadAnimation("jab_left", "../../assets/images/left_jab.png");
         setAnimation("jab_left");

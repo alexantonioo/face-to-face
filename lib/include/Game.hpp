@@ -9,12 +9,28 @@ public:
     void run();
     void drawHearts(const Boxer& boxer, const sf::Vector2f& position); 
     void limitFPS(float targetFPS = 60.0f);
+
+    enum BackgroundType { 
+        RING,
+        STREET 
+    };
+    void setBackground(BackgroundType backgroundType);
     
 private:
 
     sf::RenderWindow window;
     sf::Clock clock;
     Menu menu;
+
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
+    BackgroundType currentBackground = RING;  // Por defecto al iniciar 
+    int selectedMapIndex = 0;
+
+    sf::Texture ringTexture_;
+    sf::Texture streetTexture_;
+    sf::Sprite ringSprite_;
+    sf::Sprite streetSprite_;
 
     void handleCollisions();
     void update();
