@@ -28,7 +28,7 @@ public:
     void reset();
 
 
-    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4);
+    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, sf::Keyboard::Key blockKey);
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
     const sf::Sprite&  getSprite() const;
 
@@ -47,12 +47,15 @@ public:
     // action methods
     void jab_right();
     void jab_left();
+    void setOpponent(Boxer* opponent);
+
     void hook();
     void uppercut();
     void block();
+    void unblock();  
     void dodge(sf::Vector2f direction);
     
-    
+    bool isinrange(const Boxer& opponent, float range) const;
     
     // Methods managing actions
     void enqueue_action(Action action);
@@ -90,6 +93,8 @@ public:
 
     std::string name;
     
+    Boxer* opponent = nullptr; 
+
     float max_stamina; 
     float stamina;               
     int lucky_in_punch;
@@ -108,7 +113,7 @@ public:
     sf::CircleShape head; //?
 
     sf::Clock dodgeClock; 
-
+    sf::Clock blockClock;
     sf::Vector2f position;
     BoxerState state;  // manage state
     

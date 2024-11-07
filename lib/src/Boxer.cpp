@@ -94,12 +94,14 @@ void Boxer::jab_right()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
         reduce_stamina(10);
-        take_damage(1);
+        
         loadAnimation("jab_right", "../../assets/images/right_jab.png");
 
         setAnimation("jab_right");
-        
-       
+        if (opponent) 
+        {
+            opponent->take_damage(1); 
+        } 
     }
 }
 
@@ -116,13 +118,21 @@ void Boxer::jab_left()
       
         state = BoxerState::ATTACKING;
         punchClock.restart();  
-        take_damage(1);
+        
         reduce_stamina(10);
         loadAnimation("jab_left", "../../assets/images/left_jab.png");
         setAnimation("jab_left");
+        if (opponent) 
+        {
+            opponent->take_damage(1); // Llama a takeDamage en el oponente
+        }
+        }
 
        
     }
+
+void Boxer::setOpponent(Boxer* opponent) {
+    this->opponent = opponent;
 }
 
 void Boxer::hook() 
@@ -151,59 +161,74 @@ void Boxer::uppercut()
 
         loadAnimation("uppercut", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/uppercut.png");
 
-        setAnimation("uppercut");  
+        setAnimation("uppercut"); 
     }
 }
 
 void Boxer::block() 
 {
-    std::cout << name << " blocking." << std::endl;
-    defense += 10;
-    state = BoxerState::BLOCKING;
+
+    if (state == BoxerState::IDLE) 
+    { 
+        if(stamina < 20)
+        {
+            std::cout << name << " no se puede bloquear recupera energia" << std::endl;
+
+            return;
+        }
+        state = BoxerState::BLOCKING;
+        reduce_stamina(20);  
+        blockClock.restart();
+        loadAnimation("block", "../../assets/images/block.png");
+
+        setAnimation("block"); 
+
+        std::cout << name << " está bloqueando." << std::endl;
+
+    } 
+}
+void Boxer::unblock() 
+{
+    if (state == BoxerState::BLOCKING)
+    {
+        setState(BoxerState::IDLE);
+        loadAnimation("boxer", "../../assets/images/boxer.png"); 
+        setAnimation("boxer");
+    }
 }
 
 void Boxer::dodge(sf::Vector2f direction) 
-    {
-
-    if (stamina < 45) 
-        {
-        std::cout << name << "Nesesitas recuperar energia" << std::endl;
-        return;  
-    }
-
-    if(state == BoxerState::IDLE)
-        {
-    std::cout << name << " intenta esquivar" << std::endl;
-
-    state == BoxerState::DODGING;
-    float dodgeDistance = 1.0f; 
+{
+    
+    state = BoxerState::DODGING;
+    float dodgeDistance = 01.f; 
 
     sf::Vector2f dodgeMovement = direction * dodgeDistance;
+    state = BoxerState::DODGING;
 
-    move(direction * dodgeSpeed); // dodgeClock.restart().asSeconds()
-    dodgeClock.restart();
-    reduce_stamina(30);
-    }
+    move(direction * dodgeSpeed);
+    dodgeClock.restart().asSeconds();
+    reduce_stamina(40);
+    std::cout << name << "se esquivo" << std::endl;
+        
     
-}
+ }   
 
 //methods damage
 void Boxer::take_damage(int amount) 
 {
+    if (state == BoxerState::BLOCKING) 
+    {
+        std::cout << name << " bloqueó el golpe y no recibió daño." << std::endl;
+        return;
+    }
+
      hearts -= amount; 
     if (hearts < 0) 
     {
         hearts = 0; 
     
     }
-    
-    else{
-    check_for_technical_ko();
-    state = BoxerState::TAKING_DAMAGE;
-}
-    
-    check_for_technical_ko();
-    state = BoxerState::TAKING_DAMAGE;
 }
 
 void Boxer::receivePunch() {
@@ -218,9 +243,6 @@ void Boxer::receivePunch() {
     }
 }
 
-bool Boxer::isAttacking() const {
-    return state == BoxerState::ATTACKING;  
-}
 
 void Boxer::reduce_stamina(float amount) 
     {
@@ -258,15 +280,19 @@ void Boxer::update(const sf::Vector2f& opponentPosition )
         setAnimation("idle");
     }
      
-        if (state == BoxerState::IDLE) 
-            {
-        recover_stamina(0.05f);  
-        }
+    if (state == BoxerState::IDLE) 
+    {
+    recover_stamina(0.05f);  
+    }
 
-            if (state == BoxerState::DODGING && dodgeClock.getElapsedTime().asSeconds() > 0.5f) 
-                {
-        state = BoxerState::IDLE;
-            }
+    if (state == BoxerState::DODGING && dodgeClock.getElapsedTime().asSeconds() > 0.5f) 
+    {
+    state = BoxerState::IDLE;
+    }
+
+    if (state == BoxerState::BLOCKING && blockClock.getElapsedTime().asSeconds() > 2.0f) {
+        unblock(); 
+    }
 
     //boxer rotation 
     sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
@@ -397,15 +423,30 @@ const sf::Sprite& Boxer::getSprite() const {
 }
 
 void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
-                        sf::Keyboard::Key attack3, sf::Keyboard::Key attack4) 
-{
-    if (sf::Keyboard::isKeyPressed(attack1)) {
-        jab_right(); // Acción para el primer ataque
+                        sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, sf::Keyboard::Key blockKey){
+    
+     if (sf::Keyboard::isKeyPressed(blockKey)) 
+    {
+        
+        block(); 
+       
+    } 
+    
+    else if (state == BoxerState::BLOCKING) 
+    {
+        
+        unblock(); 
+    }
+
+    if (sf::Keyboard::isKeyPressed(attack1))
+     {
+        jab_right();
         setState(BoxerState::ATTACKING);
     }
     
-    if (sf::Keyboard::isKeyPressed(attack3)) {
-        jab_left(); // Acción para el tercer ataque
+    if (sf::Keyboard::isKeyPressed(attack3)) 
+    {
+        jab_left(); 
         setState(BoxerState::ATTACKING);
 }
 }

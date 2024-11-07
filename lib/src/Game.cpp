@@ -103,7 +103,9 @@ void Game::run()
         {
             movement1.x += 1.0f;
         }
-        
+        //block
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+        //Dodge
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) 
         {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
@@ -154,8 +156,11 @@ void Game::run()
         }   
         }               
 
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
+        //BLOCK
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::I))
+
+                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::C, sf::Keyboard::Key::Z, sf::Keyboard::Key::I);
+                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::V, sf::Keyboard::Key::X, sf::Keyboard::Key::K); 
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
@@ -164,7 +169,7 @@ void Game::run()
                     menu.draw(window); 
                 }
                 else {
-
+ 
                 boxer1.update(boxer2.getSprite().getPosition() /*1*/);
                 boxer2.update(boxer1.getSprite().getPosition() /*2*/);
 
@@ -308,7 +313,7 @@ void Game::handleCollisions()
     {
         sf::FloatRect intersection;
         boxer1Bounds.intersects(boxer2Bounds, intersection);
-
+        
         
         if (boxer1.getState() == BoxerState::ATTACKING) 
         {
@@ -321,6 +326,8 @@ void Game::handleCollisions()
         }
     }
 }
+
+ 
 
 void Game::handleInput() {
     sf::Event event;
