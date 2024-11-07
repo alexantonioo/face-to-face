@@ -6,7 +6,7 @@ Collision::Collision(const sf::Vector2f& position, const sf::Vector2f& size)
     
     rectangle.setPosition(position);
     rectangle.setFillColor(sf::Color::Transparent);
-    rectangle.setOutlineColor(sf::Color::Red);
+    rectangle.setOutlineColor(sf::Color::Transparent);
     rectangle.setOutlineThickness(4);
     rectangle.setOrigin(sf::Vector2f(size.x/2, size.y/2));
      

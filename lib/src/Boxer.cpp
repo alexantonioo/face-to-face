@@ -249,8 +249,8 @@ void Boxer::updatefps(float deltaTime) {
     position.x += speed * deltaTime;
 }
 
-void Boxer::update(const sf::Vector2f& opponentPosition) 
-void Boxer::update(const sf::Vector2f& opponentPosition  /*, int p*/) 
+
+void Boxer::update(const sf::Vector2f& opponentPosition ) 
 {
     if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) 
     {
@@ -268,40 +268,12 @@ void Boxer::update(const sf::Vector2f& opponentPosition  /*, int p*/)
         state = BoxerState::IDLE;
             }
 
-    //boxer rotation (viejo)
+    //boxer rotation 
     sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
-    float angle = std::atan2(/*opponentPosition.y, opponentPosition.x*/direction.y, direction.x) * 180 / M_PI;
-    boxerSprite_.setRotation(angle + 300);
-    
-    //if(p == 1)
-    //{
-      //  boxerSprite_.setRotation(0 /*angle + 300*/); 
-    //}
-     
-    //if(p == 2)
-    //{
-        //boxerSprite_.setOrigin(193,138.5);
-     //   boxerSprite_.setRotation(180/*angle + 300*/);
-    //}
-    
-
+    float angle = std::atan2(direction.y, direction.x) * 180 / M_PI;
+    boxerSprite_.setRotation(angle + 278);
     
     
-    //prototipo fallido de mirardas
-    
-    
-    /*sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
-    
-    float mod = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-    if (mod != 0) {
-        sf::Vector2f UnitDirection = direction / mod;
-
-        if (UnitDirection.x < 0) {
-            boxerSprite_.setScale(-0.5f, 0.5f); 
-        } else {
-            boxerSprite_.setScale(0.5f, 0.5f);  
-        }
-    }*/
 }
 
 void Boxer::increase_ko_probability(int amount) 

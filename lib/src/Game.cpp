@@ -11,11 +11,11 @@ Game::Game()
     
       menu(window),
       currentState(MENU),
-      boxer1("Boxer 1", "../../assets/images/boxer.png",sf::Vector2f(960,200)), 
-      boxer2("Boxer 2", "../../assets/images/boxer.png",sf::Vector2f(960,600)), 
-      ring(1000.0f, 1000.0f, "../../assets/images/ring.png"),
-      hitbox_boxer1(sf::Vector2f(960,200), sf::Vector2f(100,100)),
-      hitbox_boxer2(sf::Vector2f(960,600), sf::Vector2f(100,100))
+      boxer1("Boxer 1", "../../assets/images/boxer.png",sf::Vector2f(512, 142)), 
+      boxer2("Boxer 2", "../../assets/images/boxer.png",sf::Vector2f(512, 427)), 
+      ring(800.0f, 600.0f, "../../assets/images/ring.png"),
+      hitbox_boxer1(sf::Vector2f(512,142), sf::Vector2f(50,50)),
+      hitbox_boxer2(sf::Vector2f(512,427), sf::Vector2f(50,50))
 
       
 {
