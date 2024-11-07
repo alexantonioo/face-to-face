@@ -9,14 +9,16 @@
 
 
 // Constructor
-Boxer::Boxer(const std::string& name, const std::string& initialTexturePath) 
-    : name(name), stamina(max_stamina),max_stamina(150), lucky_in_punch(10), defense(10), speed(1000),hearts(10), attacking(false), dodgeSpeed(5.0f),
+Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
+    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.3f, 0.3f);
     boxerSprite_.setTexture(animations_["idle"]);
-    boxerSprite_.setPosition(300, 300); 
-    staminaBar.setSize(sf::Vector2f(200.0f, 20.0f)); 
+    boxerSprite_.setOrigin(193,138.5);    
+    boxerSprite_.setPosition(spawn.x,spawn.y); 
+    
+    staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
     staminaBar.setFillColor(sf::Color::Green);        
     staminaBar.setOutlineColor(sf::Color::Black);    
     staminaBar.setOutlineThickness(2.0f);
@@ -236,7 +238,7 @@ void Boxer::updateStaminaBar() {
     float staminaPercentage = stamina / max_stamina; 
     staminaBar.setSize(sf::Vector2f(100.0f * staminaPercentage, 20.0f));
 }
-//
+
 
 void Boxer::enqueue_action(Action action) 
 {
@@ -248,6 +250,7 @@ void Boxer::updatefps(float deltaTime) {
 }
 
 void Boxer::update(const sf::Vector2f& opponentPosition) 
+void Boxer::update(const sf::Vector2f& opponentPosition  /*, int p*/) 
 {
     if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) 
     {
@@ -265,11 +268,40 @@ void Boxer::update(const sf::Vector2f& opponentPosition)
         state = BoxerState::IDLE;
             }
 
-    //boxer rotation
+    //boxer rotation (viejo)
     sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
-    float angle = std::atan2(direction.y, direction.x) * 180 / 3.14159265;
+    float angle = std::atan2(/*opponentPosition.y, opponentPosition.x*/direction.y, direction.x) * 180 / M_PI;
+    boxerSprite_.setRotation(angle + 300);
+    
+    //if(p == 1)
+    //{
+      //  boxerSprite_.setRotation(0 /*angle + 300*/); 
+    //}
+     
+    //if(p == 2)
+    //{
+        //boxerSprite_.setOrigin(193,138.5);
+     //   boxerSprite_.setRotation(180/*angle + 300*/);
+    //}
+    
 
-    boxerSprite_.setRotation(angle + 292); 
+    
+    
+    //prototipo fallido de mirardas
+    
+    
+    /*sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
+    
+    float mod = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+    if (mod != 0) {
+        sf::Vector2f UnitDirection = direction / mod;
+
+        if (UnitDirection.x < 0) {
+            boxerSprite_.setScale(-0.5f, 0.5f); 
+        } else {
+            boxerSprite_.setScale(0.5f, 0.5f);  
+        }
+    }*/
 }
 
 void Boxer::increase_ko_probability(int amount) 

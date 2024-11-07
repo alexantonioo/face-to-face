@@ -2,6 +2,7 @@
 #include "Game.hpp"
 #include "Ring.hpp"
 #include "Boxer.hpp"
+#include "Collision.hpp"
 //#include "Menu.hpp"
 
 
@@ -10,16 +11,23 @@ Game::Game()
     
       menu(window),
       currentState(MENU),
-      boxer1("Boxer 1", "../../assets/images/boxer.png"), 
-      boxer2("Boxer 2", "../../assets/images/boxer2.png"), 
-      ring(800.0f, 600.0f, "../../assets/images/ring.png")
+      boxer1("Boxer 1", "../../assets/images/boxer.png",sf::Vector2f(960,200)), 
+      boxer2("Boxer 2", "../../assets/images/boxer.png",sf::Vector2f(960,600)), 
+      ring(1000.0f, 1000.0f, "../../assets/images/ring.png"),
+      hitbox_boxer1(sf::Vector2f(960,200), sf::Vector2f(100,100)),
+      hitbox_boxer2(sf::Vector2f(960,600), sf::Vector2f(100,100))
+
       
 {
-    boxer1.setPosition(100, 100);  
-    boxer2.setPosition(600, 600);  
+   
+    
+    // cargar texturas y animaciones
+    boxer1.loadTexture("default", "../../assets/images/boxer.png");  // Textura inicial
+    boxer2.loadTexture("default", "../../assets/images/boxer.png");
+    
 
-    boxer1.loadTexture("default ", "../../assets/images/boxer.png");  
-    boxer2.loadTexture("default","../../assets/images/boxer2.png");
+    boxer1.vector = boxer2.getSprite().getPosition() - boxer1.getSprite().getPosition();
+    boxer1.vector = boxer1.getSprite().getPosition() - boxer2.getSprite().getPosition();
 
 }
 
@@ -109,7 +117,8 @@ void Game::run()
         }
 
         boxer1.move(movement1);
-
+        hitbox_boxer1.move(movement1);
+        
         // boxer 2 movement arrows
         sf::Vector2f movement2(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) 
@@ -130,7 +139,8 @@ void Game::run()
         }
 
         boxer2.move(movement2);
-
+        hitbox_boxer2.move(movement2);
+        
         //DODGE BOXER 1
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
         {
@@ -154,11 +164,18 @@ void Game::run()
                     menu.draw(window); 
                 }
                 else {
+
+                boxer1.update(boxer2.getSprite().getPosition() /*1*/);
+                boxer2.update(boxer1.getSprite().getPosition() /*2*/);
+
+                
                 handleCollisions();
 
                 ring.draw(window);
                 boxer1.draw(window);
                 boxer2.draw(window);
+                hitbox_boxer1.draw(window);
+                hitbox_boxer2.draw(window);
                 break;
                 }
         }
@@ -214,8 +231,8 @@ void Game::drawHearts(const Boxer& boxer, const sf::Vector2f& position)
 
 void Game::handleCollisions() 
 {
-    sf::FloatRect boxer1Bounds = boxer1.getSprite().getGlobalBounds();
-    sf::FloatRect boxer2Bounds = boxer2.getSprite().getGlobalBounds();
+    sf::FloatRect boxer1Bounds = hitbox_boxer1.getShape().getGlobalBounds();
+    sf::FloatRect boxer2Bounds = hitbox_boxer2.getShape().getGlobalBounds();
     sf::FloatRect ringBounds = ring.getBounds();
 
     // boxer 1 ring collisions
@@ -247,9 +264,8 @@ void Game::handleCollisions()
     }
 
 
-    boxer1.update(boxer2.getSprite().getPosition());
-    boxer2.update(boxer1.getSprite().getPosition());
-
+    boxer1.update(/*boxer1.vector,1¨*/boxer2.getSprite().getPosition());
+    boxer2.update(/*boxer2.vector,2*/boxer1.getSprite().getPosition());
 
     // collisions between boxers
     if (boxer1Bounds.intersects(boxer2Bounds)) 
@@ -283,7 +299,8 @@ void Game::handleCollisions()
 
         boxer1.move(moveDirection);
         boxer2.move(-moveDirection);  
-        
+        hitbox_boxer1.move(moveDirection);
+        hitbox_boxer2.move(-moveDirection);
     }
 
 

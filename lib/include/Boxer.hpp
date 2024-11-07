@@ -6,7 +6,6 @@
 #include <SFML/System/Vector2.hpp>
 
 
-    
 using Action = std::function<void()>;
 
 enum class BoxerState 
@@ -21,10 +20,8 @@ enum class BoxerState
 class Boxer 
     {
 public:
-    Boxer(const std::string& name);  
-    Boxer(sf::Color color);           
-    Boxer(const std::string& name, sf::Color color); //constructor color ???
-    Boxer(const std::string& name, const std::string& initialTexturePath);
+    
+    Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn);
     void loadTexture(const std::string& animationName, const std::string& texturePath);
     void loadAnimation(const std::string &animationName, const std::string &texturePath);
     void move(sf::Vector2f direction);
@@ -87,7 +84,8 @@ public:
 
     BoxerState getState() const; 
     void setState(BoxerState state);
-
+    sf::Vector2f vector;
+    
     private:
 
     std::string name;
@@ -113,6 +111,7 @@ public:
 
     sf::Vector2f position;
     BoxerState state;  // manage state
+    
     sf::Clock punchClock;
     sf::Time punchDuration;
     std::queue<Action> action_queue;  // action queue
