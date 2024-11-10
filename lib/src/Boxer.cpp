@@ -407,5 +407,11 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     if (sf::Keyboard::isKeyPressed(attack3)) {
         jab_left(); // Acción para el tercer ataque
         setState(BoxerState::ATTACKING);
+    }
 }
+
+sf::Vector2f Boxer::getPosition()
+{
+    return boxerSprite_.getPosition();
 }
+

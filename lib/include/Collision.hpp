@@ -17,6 +17,14 @@ class Collision
     
     void move(sf::Vector2f direction);
     
+    sf::Vector2f getPosition();
+    
+    sf::Vector2f getSize();
+    
+    void setPosition(sf::Vector2f positions);
+
     sf::RectangleShape rectangle;
+    
+
 
 };

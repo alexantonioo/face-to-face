@@ -3,6 +3,7 @@
 #include "Ring.hpp"
 #include "Boxer.hpp"
 #include "Collision.hpp"
+#include <iostream>
 //#include "Menu.hpp"
 
 
@@ -15,7 +16,8 @@ Game::Game()
       boxer2("Boxer 2", "../../assets/images/boxer.png",sf::Vector2f(512, 427)), 
       ring(800.0f, 600.0f, "../../assets/images/ring.png"),
       hitbox_boxer1(sf::Vector2f(512,142), sf::Vector2f(50,50)),
-      hitbox_boxer2(sf::Vector2f(512,427), sf::Vector2f(50,50))
+      hitbox_boxer2(sf::Vector2f(512,427), sf::Vector2f(50,50)),
+      hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f))
 
       
 {
@@ -152,6 +154,15 @@ void Game::run()
         {
         boxer1.dodge(sf::Vector2f(0.5f, 0.f)); 
         }   
+        
+
+        
+        
+        
+        
+        
+        
+        
         }               
 
                 boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
@@ -176,6 +187,7 @@ void Game::run()
                 boxer2.draw(window);
                 hitbox_boxer1.draw(window);
                 hitbox_boxer2.draw(window);
+                hitbox_ring.draw(window);
                 break;
                 }
         }
@@ -231,41 +243,53 @@ void Game::drawHearts(const Boxer& boxer, const sf::Vector2f& position)
 
 void Game::handleCollisions() 
 {
+    
+    sf::FloatRect boxer1BoundSprite = boxer1.getSprite().getGlobalBounds();
+    sf::FloatRect boxer2BoundSprite = boxer2.getSprite().getGlobalBounds();
+    sf::FloatRect ringBoundSprite = ring.getBounds();
+
     sf::FloatRect boxer1Bounds = hitbox_boxer1.getShape().getGlobalBounds();
     sf::FloatRect boxer2Bounds = hitbox_boxer2.getShape().getGlobalBounds();
-    sf::FloatRect ringBounds = ring.getBounds();
-
-    // boxer 1 ring collisions
-    if (boxer1Bounds.left < ringBounds.left) {
-        boxer1.move({ringBounds.left - boxer1Bounds.left, 0});
+    
+    // Colisiones del ring con sprites
+    if (boxer1BoundSprite.left < ringBoundSprite.left) {
+        boxer1.move({ringBoundSprite.left - boxer1BoundSprite.left, 0});
+        hitbox_boxer1.move({ringBoundSprite.left - boxer1BoundSprite.left, 0});
     }
-    if (boxer1Bounds.left + boxer1Bounds.width > ringBounds.left + ringBounds.width) {
-        boxer1.move({ringBounds.left + ringBounds.width - (boxer1Bounds.left + boxer1Bounds.width), 0});
+    if (boxer1BoundSprite.left + boxer1BoundSprite.width > ringBoundSprite.left + ringBoundSprite.width) {
+        boxer1.move({ringBoundSprite.left + ringBoundSprite.width - (boxer1BoundSprite.left + boxer1BoundSprite.width), 0});
+        hitbox_boxer1.move({ringBoundSprite.left + ringBoundSprite.width - (boxer1BoundSprite.left + boxer1BoundSprite.width), 0});
     }
-    if (boxer1Bounds.top < ringBounds.top) {
-        boxer1.move({0, ringBounds.top - boxer1Bounds.top});
+    if (boxer1BoundSprite.top < ringBoundSprite.top) {
+        boxer1.move({0, ringBoundSprite.top - boxer1BoundSprite.top});
+        hitbox_boxer1.move({0, ringBoundSprite.top - boxer1BoundSprite.top});
     }
-    if (boxer1Bounds.top + boxer1Bounds.height > ringBounds.top + ringBounds.height) {
-        boxer1.move({0, ringBounds.top + ringBounds.height - (boxer1Bounds.top + boxer1Bounds.height)});
-    }
-
-    // boxer 2 ring collisions
-    if (boxer2Bounds.left < ringBounds.left) {
-        boxer2.move({ringBounds.left - boxer2Bounds.left, 0});
-    }
-    if (boxer2Bounds.left + boxer2Bounds.width > ringBounds.left + ringBounds.width) {
-        boxer2.move({ringBounds.left + ringBounds.width - (boxer2Bounds.left + boxer2Bounds.width), 0});
-    }
-    if (boxer2Bounds.top < ringBounds.top) {
-        boxer2.move({0, ringBounds.top - boxer2Bounds.top});
-    }
-    if (boxer2Bounds.top + boxer2Bounds.height > ringBounds.top + ringBounds.height) {
-        boxer2.move({0, ringBounds.top + ringBounds.height - (boxer2Bounds.top + boxer2Bounds.height)});
+    if (boxer1BoundSprite.top + boxer1BoundSprite.height > ringBoundSprite.top + ringBoundSprite.height) {
+        boxer1.move({0, ringBoundSprite.top + ringBoundSprite.height - (boxer1BoundSprite.top + boxer1BoundSprite.height)});
+        hitbox_boxer1.move({0, ringBoundSprite.top + ringBoundSprite.height - (boxer1BoundSprite.top + boxer1BoundSprite.height)});
     }
 
+    if (boxer2BoundSprite.left < ringBoundSprite.left) {
+        boxer2.move({ringBoundSprite.left - boxer2BoundSprite.left, 0});
+        hitbox_boxer2.move({ringBoundSprite.left - boxer2BoundSprite.left, 0});
+    }
+    if (boxer2BoundSprite.left + boxer2BoundSprite.width > ringBoundSprite.left + ringBoundSprite.width) {
+        boxer2.move({ringBoundSprite.left + ringBoundSprite.width - (boxer2BoundSprite.left + boxer2BoundSprite.width), 0});
+        hitbox_boxer2.move({ringBoundSprite.left + ringBoundSprite.width - (boxer2BoundSprite.left + boxer2BoundSprite.width), 0});
+    }
+    if (boxer2BoundSprite.top < ringBoundSprite.top) {
+        boxer2.move({0, ringBoundSprite.top - boxer2BoundSprite.top});
+        hitbox_boxer2.move({0, ringBoundSprite.top - boxer2BoundSprite.top});
+    }
+    if (boxer2BoundSprite.top + boxer2BoundSprite.height > ringBoundSprite.top + ringBoundSprite.height) {
+        boxer2.move({0, ringBoundSprite.top + ringBoundSprite.height - (boxer2BoundSprite.top + boxer2BoundSprite.height)});
+        hitbox_boxer2.move({0, ringBoundSprite.top + ringBoundSprite.height - (boxer2BoundSprite.top + boxer2BoundSprite.height)});
+    }
 
-    boxer1.update(/*boxer1.vector,1¨*/boxer2.getSprite().getPosition());
-    boxer2.update(/*boxer2.vector,2*/boxer1.getSprite().getPosition());
+
+
+    boxer1.update(boxer2.getSprite().getPosition());
+    boxer2.update(boxer1.getSprite().getPosition());
 
     // collisions between boxers
     if (boxer1Bounds.intersects(boxer2Bounds)) 
@@ -280,7 +304,8 @@ void Game::handleCollisions()
             if (boxer1Bounds.left < boxer2Bounds.left) 
             {
                 moveDirection.x = -intersection.width / 2;
-            } else 
+            } 
+            else 
             {
                 moveDirection.x = intersection.width / 2;
             }
@@ -304,7 +329,7 @@ void Game::handleCollisions()
     }
 
 
-     if (boxer1Bounds.intersects(boxer2Bounds)) 
+    if (boxer1Bounds.intersects(boxer2Bounds)) 
     {
         sf::FloatRect intersection;
         boxer1Bounds.intersects(boxer2Bounds, intersection);
