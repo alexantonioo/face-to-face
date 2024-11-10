@@ -2,6 +2,7 @@
 #include <string>
 #include <queue>
 #include <functional>
+#include "Collision.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 
@@ -88,6 +89,7 @@ public:
     
     private:
 
+
     std::string name;
     
     float max_stamina; 
@@ -102,6 +104,8 @@ public:
     int hearts;  
     bool attacking;   
     bool isleft;
+    
+    
     
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;

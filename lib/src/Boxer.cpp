@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "Game.hpp"
 #include "Boxer.hpp"
+#include "Collision.hpp"
 #include <cstdlib> 
 #include <iostream>
 #include <queue>
@@ -96,8 +97,9 @@ void Boxer::jab_right()
         reduce_stamina(10);
         //take_damage(1);
         loadAnimation("jab_right", "../../assets/images/right_jab.png");
-
         setAnimation("jab_right");
+
+        
         
        
     }
@@ -107,23 +109,32 @@ void Boxer::jab_right()
 void Boxer::jab_left()
 {
     if (stamina < 10) 
-        {
-        std::cout << name << "Nesesitas recuperar energia" << std::endl;
-        return;  
+    {
+        std::cout << name << " Necesitas recuperar energía" << std::endl;
+        return;
     }
-   
-    if (state == BoxerState::IDLE) {  
-      
+
+    if (state == BoxerState::IDLE) 
+    {  
         state = BoxerState::ATTACKING;
         punchClock.restart();  
-        //take_damage(1);
         reduce_stamina(10);
+
         loadAnimation("jab_left", "../../assets/images/left_jab.png");
         setAnimation("jab_left");
 
-       
+        hitbox_boxer1.expand(sf::Vector2f(20.f, 20.f)); 
+        hitbox_boxer2.expand(sf::Vector2f(20.f, 20.f)); 
+    }
+
+    if (state == BoxerState::IDLE) 
+    {
+        hitbox_boxer1.reset();
+        hitbox_boxer2.reset();
+        state = BoxerState::IDLE;
     }
 }
+
 
 void Boxer::hook() 
 {
@@ -408,4 +419,17 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
         jab_left(); // Acción para el tercer ataque
         setState(BoxerState::ATTACKING);
 }
+}
+
+
+void Collision::expand(const sf::Vector2f& expansionSize) 
+{
+    rectangle.setSize(originalSize + expansionSize);
+    rectangle.setOrigin((originalSize + expansionSize) / 2.f);  
+}
+
+void Collision::reset() 
+{
+    rectangle.setSize(originalSize);
+    rectangle.setOrigin(originalSize / 2.f);  
 }

@@ -19,4 +19,12 @@ class Collision
     
     sf::RectangleShape rectangle;
 
+    void expand (const sf::Vector2f& expansionSize);
+    void reset();
+
+    private:
+
+        sf::RectangleShape rectangle;
+        sf::Vector2f originalSize;
+
 };
