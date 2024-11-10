@@ -177,7 +177,7 @@ void Boxer::block()
             return;
         }
         state = BoxerState::BLOCKING;
-        reduce_stamina(20);  
+        reduce_stamina(1);  
         blockClock.restart();
         loadAnimation("block", "../../assets/images/block.png");
 
@@ -201,15 +201,15 @@ void Boxer::dodge(sf::Vector2f direction)
 {
     
     state = BoxerState::DODGING;
-    float dodgeDistance = 01.f; 
+    float dodgeDistance = 5.0f; 
 
     sf::Vector2f dodgeMovement = direction * dodgeDistance;
     state = BoxerState::DODGING;
 
     move(direction * dodgeSpeed);
     dodgeClock.restart().asSeconds();
-    reduce_stamina(40);
-    std::cout << name << "se esquivo" << std::endl;
+    reduce_stamina(20);
+    std::cout << name << "esquivo" << std::endl;
         
     
  }   
@@ -232,14 +232,19 @@ void Boxer::take_damage(int amount)
 }
 
 void Boxer::receivePunch() {
+    
     if (hearts > 0) {
         hearts--;  
         state = BoxerState::TAKING_DAMAGE;
         std::cout << "¡Golpe recibido! Corazones restantes x: " << hearts << std::endl;
     } 
+
     else if(hearts == 0)
         {
         std::cout << "El boxeador ya no tiene corazones, ganaste" << std::endl;
+        loadAnimation("ko","../../assets/images/ko.png");
+        setAnimation("ko");
+        return;
     }
 }
 
@@ -287,12 +292,10 @@ void Boxer::update(const sf::Vector2f& opponentPosition )
 
     if (state == BoxerState::DODGING && dodgeClock.getElapsedTime().asSeconds() > 0.5f) 
     {
+    
     state = BoxerState::IDLE;
     }
 
-    if (state == BoxerState::BLOCKING && blockClock.getElapsedTime().asSeconds() > 2.0f) {
-        unblock(); 
-    }
 
     //boxer rotation 
     sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
@@ -396,13 +399,13 @@ void Boxer::draw(sf::RenderWindow& window) {
     float startY = 20; 
 
     for (int i = 0; i < get_hearts(); ++i) {
-        heartSprite.setPosition(startX + i * spacing, startY);  // Usar 'position' aquí
+        heartSprite.setPosition(startX + i * spacing, startY);  
         window.draw(heartSprite);
     }
 
     // draw hotbar stamina
-    staminaBar.setSize(sf::Vector2f((stamina / max_stamina) * 100, 10)); // size
-    staminaBar.setPosition(getBounds().left, getBounds().top - 20);  // position the stamina 
+    staminaBar.setSize(sf::Vector2f((stamina / max_stamina) * 100, 10)); 
+    staminaBar.setPosition(getBounds().left, getBounds().top - 20); 
     window.draw(staminaBar);
 }
 
@@ -425,17 +428,37 @@ const sf::Sprite& Boxer::getSprite() const {
 void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
                         sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, sf::Keyboard::Key blockKey){
     
-     if (sf::Keyboard::isKeyPressed(blockKey)) 
-    {
-        
-        block(); 
-       
-    } 
-    
-    else if (state == BoxerState::BLOCKING) 
-    {
-        
-        unblock(); 
+    if (sf::Keyboard::isKeyPressed(blockKey)) {
+        if (state != BoxerState::BLOCKING) {
+            setState(BoxerState::BLOCKING);
+            loadAnimation("block", "../../assets/images/block.png"); 
+            setAnimation("block");
+            blockClock.restart(); 
+        }
+
+        if (blockClock.getElapsedTime() >= blockInterval) 
+        {
+            
+            if (stamina > 0) 
+            {
+                reduce_stamina(2); 
+                blockClock.restart();
+
+            } 
+            else 
+            {
+                setState(BoxerState::IDLE);
+                loadAnimation("boxer", "../../assets/images/boxer.png"); 
+                setAnimation("boxer");
+                std::cout << name << " ha agotado la estamina y no puede seguir bloqueando." << std::endl;
+            }
+        }
+    }
+    // Volver a la animación base cuando se suelta la tecla de bloqueo
+    else if (state == BoxerState::BLOCKING) {
+        setState(BoxerState::IDLE); // Cambia el estado a IDLE
+        loadAnimation("boxer", "../../assets/images/boxer.png"); // Cargar animación base
+        setAnimation("boxer");
     }
 
     if (sf::Keyboard::isKeyPressed(attack1))

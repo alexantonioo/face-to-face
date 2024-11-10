@@ -108,12 +108,14 @@ public:
     bool attacking;   
     bool isleft;
     
+    sf::Clock blockClock;
+    sf::Time blockInterval;
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?
 
     sf::Clock dodgeClock; 
-    sf::Clock blockClock;
+    
     sf::Vector2f position;
     BoxerState state;  // manage state
     

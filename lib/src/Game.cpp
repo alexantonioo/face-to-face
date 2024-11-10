@@ -85,7 +85,7 @@ void Game::run()
                 handleInput();
                 update();
 
-                // boxer 1 movement wasd
+        // boxer 1 movement wasd
         sf::Vector2f movement1(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
         {
@@ -105,9 +105,11 @@ void Game::run()
         }
         //block
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+        
         //Dodge
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) 
         {
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
         {
         boxer2.dodge(sf::Vector2f(-1.f, 0.f)); // Esquivar hacia la izquierda
@@ -143,6 +145,8 @@ void Game::run()
         boxer2.move(movement2);
         hitbox_boxer2.move(movement2);
         
+        //BLOCK
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::I))
         //DODGE BOXER 1
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
         {
@@ -156,11 +160,8 @@ void Game::run()
         }   
         }               
 
-        //BLOCK
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::I))
-
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::C, sf::Keyboard::Key::Z, sf::Keyboard::Key::I);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::V, sf::Keyboard::Key::X, sf::Keyboard::Key::K); 
+                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::Z, sf::Keyboard::Key::I);
+                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::X, sf::Keyboard::Key::K); 
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
