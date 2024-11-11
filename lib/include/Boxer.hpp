@@ -26,7 +26,8 @@ public:
     void loadAnimation(const std::string &animationName, const std::string &texturePath);
     void move(sf::Vector2f direction);
     void reset();
-
+    sf::Vector2f getPosition();
+    
 
     void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, sf::Keyboard::Key blockKey);
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}

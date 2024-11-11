@@ -28,3 +28,18 @@ void Collision::move(sf::Vector2f direction)
 {
     rectangle.move(direction);
 }
+
+sf::Vector2f Collision::getPosition()
+{
+    return rectangle.getPosition();
+}
+
+sf::Vector2f Collision::getSize()
+{
+    return rectangle.getSize();
+}
+
+void Collision::setPosition(sf::Vector2f position)
+{
+    rectangle.setPosition(position);
+}
