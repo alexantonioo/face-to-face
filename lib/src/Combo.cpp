@@ -8,12 +8,12 @@ ComboTree::ComboTree()
     
     root->left = std::make_shared<ComboNode>([](Boxer& boxer) 
         {
-        boxer.jab_left();
+        //boxer.jab_left();
     });
     
     root->right = std::make_shared<ComboNode>([](Boxer& boxer) 
         {
-        boxer.jab_right();
+        //boxer.jab_right();
     });
     
     root->left->left = std::make_shared<ComboNode>([](Boxer& boxer) 

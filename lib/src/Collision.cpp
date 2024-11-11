@@ -3,11 +3,11 @@
 Collision::Collision(const sf::Vector2f& position, const sf::Vector2f& size)
     :rectangle(size), originalSize(size)
 {
-    rectangle.setOrigin(size / 2.f);  // Centra el origen
+    rectangle.setOrigin(size / 2.f);  
     rectangle.setPosition(position);
     rectangle.setPosition(position);
     rectangle.setFillColor(sf::Color::Transparent);
-    rectangle.setOutlineColor(sf::Color::Transparent);
+    rectangle.setOutlineColor(sf::Color::Red);
     rectangle.setOutlineThickness(4);
     rectangle.setOrigin(sf::Vector2f(size.x/2, size.y/2));
      
