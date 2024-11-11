@@ -13,7 +13,7 @@ Game::Game()
       menu(window),
       currentState(MENU),
       boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
-      boxer2("Boxer 2", "../../assets/assets/images/idle_red.png",sf::Vector2f(512, 440)), 
+      boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
       ring(800.0f, 600.0f, "../../assets/images/ring.png"),
       hitbox_boxer1(sf::Vector2f(512,120), sf::Vector2f(50,50)),
       hitbox_boxer2(sf::Vector2f(512,440), sf::Vector2f(50,50)),
@@ -24,8 +24,8 @@ Game::Game()
    
     
     // cargar texturas y animaciones
-    boxer1.loadTexture("default", "../../assets/images/idle_red.png");  // Textura inicial
-    boxer2.loadTexture("default", "../../assets/images/idle_blue.png");
+    boxer1.loadTexture("default", "../../assets/images/boxer.png");  // Textura inicial
+    boxer2.loadTexture("default", "../../assets/images/boxer.png");
     
 
     boxer1.vector = boxer2.getSprite().getPosition() - boxer1.getSprite().getPosition();
