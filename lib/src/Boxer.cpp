@@ -119,17 +119,12 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2) {
         return;
     }
 
-    if (state == BoxerState::IDLE) {  
+    if (state == BoxerState::IDLE) {
         state = BoxerState::ATTACKING;
-        punchClock.restart();  
+        punchClock.restart();
         reduce_stamina(10);
         loadAnimation("jab_left", "../../assets/images/left_jab.png");
         setAnimation("jab_left");
-        if (opponent) 
-        {
-            opponent->take_damage(1); // Llama a takeDamage en el oponente
-        }
-        }
 
         hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
         hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
@@ -140,10 +135,11 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2) {
         hitbox2.reset();
         state = BoxerState::IDLE;
     }
-
-void Boxer::setOpponent(Boxer* opponent) {
-    this->opponent = opponent;
 }
+
+/*void Boxer::setOpponent(Boxer* opponent) {
+    this->opponent = opponent;
+}*/
 
 
 
