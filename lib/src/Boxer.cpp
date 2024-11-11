@@ -83,7 +83,7 @@ void Boxer::setAnimation(const std::string& animationName)
 }
 
 // action methods
-void Boxer::jab_right() 
+void Boxer::jab_right(bool isBoxer1) 
 {
     if (stamina < 10) {
         std::cout << name << "Nesesitas recuperar energia" << std::endl;
@@ -95,7 +95,15 @@ void Boxer::jab_right()
         punchClock.restart();  
         reduce_stamina(10);
         take_damage(1);
-        loadAnimation("jab_right", "../../assets/images/right_.png");
+        
+        if(isBoxer1)
+        {
+            loadAnimation("jab_right", "../../assets/images/right_red.png");
+        }
+        else
+        {
+            loadAnimation("jab_right", "../../assets/images/right_blue.png");
+        }
 
         setAnimation("jab_right");
         
@@ -104,7 +112,7 @@ void Boxer::jab_right()
 }
 
 
-void Boxer::jab_left()
+void Boxer::jab_left(bool isBoxer1)
 {
     if (stamina < 10) 
         {
@@ -118,7 +126,14 @@ void Boxer::jab_left()
         punchClock.restart();  
         take_damage(1);
         reduce_stamina(10);
-        loadAnimation("jab_left", "../../assets/images/left_blue.png");
+        if(isBoxer1)
+        {
+            loadAnimation("jab_left", "../../assets/images/left_red.png");
+        }
+        else
+        {
+            loadAnimation("jab_left", "../../assets/images/left_blue.png");
+        }
         setAnimation("jab_left");
 
        
@@ -397,15 +412,15 @@ const sf::Sprite& Boxer::getSprite() const {
 }
 
 void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
-                        sf::Keyboard::Key attack3, sf::Keyboard::Key attack4) 
+                        sf::Keyboard::Key attack3, sf::Keyboard::Key attack4,bool isBoxer1) 
 {
     if (sf::Keyboard::isKeyPressed(attack1)) {
-        jab_right(); // Acción para el primer ataque
+        jab_right(isBoxer1); // Acción para el primer ataque
         setState(BoxerState::ATTACKING);
     }
     
     if (sf::Keyboard::isKeyPressed(attack3)) {
-        jab_left(); // Acción para el tercer ataque
+        jab_left(isBoxer1); // Acción para el tercer ataque
         setState(BoxerState::ATTACKING);
     }
 }

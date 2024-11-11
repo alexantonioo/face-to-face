@@ -154,20 +154,19 @@ void Game::run()
         {
         boxer1.dodge(sf::Vector2f(0.5f, 0.f)); 
         }   
-        
-
         }               
 
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J); 
+        boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U,true);
+        boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J,false); 
             
-                boxer1.update(boxer2.getSprite().getPosition());
-                boxer2.update(boxer1.getSprite().getPosition());
-                if (isPaused) 
-                {
-                    menu.draw(window); 
-                }
-                else {
+        boxer1.update(boxer2.getSprite().getPosition());
+        boxer2.update(boxer1.getSprite().getPosition());
+                
+        if (isPaused) 
+            {
+                menu.draw(window); 
+            }
+            else {
 
                 boxer1.update(boxer2.getSprite().getPosition() /*1*/);
                 boxer2.update(boxer1.getSprite().getPosition() /*2*/);
@@ -182,7 +181,7 @@ void Game::run()
                 hitbox_boxer2.draw(window);
                 hitbox_ring.draw(window);
                 break;
-                }
+            }
         }
     
         window.display();

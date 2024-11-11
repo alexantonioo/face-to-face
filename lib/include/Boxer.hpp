@@ -29,7 +29,7 @@ public:
     sf::Vector2f getPosition();
     
 
-    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4);
+    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4,bool isBoxer1);
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
     const sf::Sprite&  getSprite() const;
 
@@ -46,8 +46,8 @@ public:
     void drawHearts(sf::RenderWindow& window, int heartsCount, bool isLeft);
 
     // action methods
-    void jab_right();
-    void jab_left();
+    void jab_right(bool isBoxer1);
+    void jab_left(bool isBoxer1);
     void hook();
     void uppercut();
     void block();
