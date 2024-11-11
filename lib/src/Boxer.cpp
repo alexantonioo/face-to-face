@@ -13,9 +13,9 @@ Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf:
     : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
-    boxerSprite_.setScale(0.3f, 0.3f);
+    boxerSprite_.setScale(0.6f, 0.6f);
     boxerSprite_.setTexture(animations_["idle"]);
-    boxerSprite_.setOrigin(193,138.5);    
+    boxerSprite_.setOrigin(339/2,336/2);    
     boxerSprite_.setPosition(spawn.x,spawn.y); 
     
     staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
@@ -120,7 +120,7 @@ void Boxer::jab_left()
         punchClock.restart();  
         
         reduce_stamina(10);
-        loadAnimation("jab_left", "../../assets/images/left_jab.png");
+        loadAnimation("jab_left", "../../assets/images/left_blue.png");
         setAnimation("jab_left");
         if (opponent) 
         {

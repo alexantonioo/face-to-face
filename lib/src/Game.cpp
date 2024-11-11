@@ -12,11 +12,11 @@ Game::Game()
     
       menu(window),
       currentState(MENU),
-      boxer1("Boxer 1", "../../assets/images/boxer.png",sf::Vector2f(512, 142)), 
-      boxer2("Boxer 2", "../../assets/images/boxer.png",sf::Vector2f(512, 427)), 
+      boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
+      boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
       ring(800.0f, 600.0f, "../../assets/images/ring.png"),
-      hitbox_boxer1(sf::Vector2f(512,142), sf::Vector2f(50,50)),
-      hitbox_boxer2(sf::Vector2f(512,427), sf::Vector2f(50,50)),
+      hitbox_boxer1(sf::Vector2f(512,120), sf::Vector2f(50,50)),
+      hitbox_boxer2(sf::Vector2f(512,440), sf::Vector2f(50,50)),
       hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f))
 
       
@@ -39,7 +39,7 @@ void Game::run()
     sf::Clock deltaClock;
     const float targetFPS = 60.0f;
     const float targetFrameTime = 1.0f / targetFPS;
-
+    window.setFramerateLimit(120);
     window.setVerticalSyncEnabled(true);
     while (window.isOpen()) 
     {
@@ -162,13 +162,6 @@ void Game::run()
         }   
         
 
-        
-        
-        
-        
-        
-        
-        
         }               
 
                 boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::Z, sf::Keyboard::Key::I);
