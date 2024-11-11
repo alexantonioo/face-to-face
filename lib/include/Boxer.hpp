@@ -2,6 +2,7 @@
 #include <string>
 #include <queue>
 #include <functional>
+#include "Collision.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
 
@@ -28,7 +29,7 @@ public:
     void reset();
 
 
-    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, sf::Keyboard::Key blockKey);
+    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, Collision& hitbox1, Collision& hitbox2);
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
     const sf::Sprite&  getSprite() const;
 
@@ -45,10 +46,8 @@ public:
     void drawHearts(sf::RenderWindow& window, int heartsCount, bool isLeft);
 
     // action methods
-    void jab_right();
-    void jab_left();
-    void setOpponent(Boxer* opponent);
-
+    void jab_right(Collision& hitbox1, Collision& hitbox2);
+    void jab_left(Collision& hitbox1, Collision& hitbox2);
     void hook();
     void uppercut();
     void block();
@@ -91,6 +90,7 @@ public:
     
     private:
 
+
     std::string name;
     
     Boxer* opponent = nullptr; 
@@ -107,6 +107,8 @@ public:
     int hearts;  
     bool attacking;   
     bool isleft;
+    
+    
     
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;
