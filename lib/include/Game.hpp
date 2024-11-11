@@ -52,6 +52,7 @@ private:
     Ring ring;
     Collision hitbox_boxer1;
     Collision hitbox_boxer2;
+    Collision hitbox_ring;
     void draw();
     void drawHearts();
 

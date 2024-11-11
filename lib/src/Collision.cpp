@@ -7,7 +7,7 @@ Collision::Collision(const sf::Vector2f& position, const sf::Vector2f& size)
     rectangle.setPosition(position);
     rectangle.setPosition(position);
     rectangle.setFillColor(sf::Color::Transparent);
-    rectangle.setOutlineColor(sf::Color::Red);
+    rectangle.setOutlineColor(sf::Color::Green);
     rectangle.setOutlineThickness(4);
     rectangle.setOrigin(sf::Vector2f(size.x/2, size.y/2));
      
@@ -30,3 +30,17 @@ void Collision::move(sf::Vector2f direction)
     rectangle.move(direction);
 }
 
+sf::Vector2f Collision::getPosition()
+{
+    return rectangle.getPosition();
+}
+
+sf::Vector2f Collision::getSize()
+{
+    return rectangle.getSize();
+}
+
+void Collision::setPosition(sf::Vector2f position)
+{
+    rectangle.setPosition(position);
+}

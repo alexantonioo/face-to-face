@@ -14,9 +14,9 @@ Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf:
     : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
-    boxerSprite_.setScale(0.3f, 0.3f);
+    boxerSprite_.setScale(0.6f, 0.6f);
     boxerSprite_.setTexture(animations_["idle"]);
-    boxerSprite_.setOrigin(193,138.5);    
+    boxerSprite_.setOrigin(339/2,336/2);    
     boxerSprite_.setPosition(spawn.x,spawn.y); 
     
     staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
@@ -84,7 +84,7 @@ void Boxer::setAnimation(const std::string& animationName)
 }
 
 // action methods
-void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2) 
+void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
 {
     if (stamina < 10) {
         std::cout << name << "Nesesitas recuperar energia" << std::endl;
@@ -96,7 +96,16 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2)
         punchClock.restart();  
         reduce_stamina(10);
         //take_damage(1);
-        loadAnimation("jab_right", "../../assets/images/right_jab.png");
+        
+        if(isBoxer1)
+        {
+            loadAnimation("jab_right", "../../assets/images/right_red.png");
+        }
+        else
+        {
+            loadAnimation("jab_right", "../../assets/images/right_blue.png");
+        }
+
         setAnimation("jab_right");
 
         
@@ -113,8 +122,10 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2)
 }
 
 
-void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2) {
-    if (stamina < 10) {
+void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
+{
+    if (stamina < 10)
+    {
         std::cout << name << " Necesitas recuperar energía" << std::endl;
         return;
     }
@@ -123,7 +134,14 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2) {
         state = BoxerState::ATTACKING;
         punchClock.restart();
         reduce_stamina(10);
-        loadAnimation("jab_left", "../../assets/images/left_jab.png");
+        if(isBoxer1)
+        {
+            loadAnimation("jab_left", "../../assets/images/left_red.png");
+        }
+        else
+        {
+            loadAnimation("jab_left", "../../assets/images/left_blue.png");
+        }
         setAnimation("jab_left");
 
         hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
@@ -432,15 +450,15 @@ const sf::Sprite& Boxer::getSprite() const {
 
 void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
                         sf::Keyboard::Key attack3, sf::Keyboard::Key attack4,
-                        Collision& hitbox1, Collision& hitbox2) 
+                        Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
 {
     if (sf::Keyboard::isKeyPressed(attack1)) {
-        jab_right(hitbox1, hitbox2); 
+        jab_right(hitbox1, hitbox2, isBoxer1); 
         setState(BoxerState::ATTACKING);
     }
     
     if (sf::Keyboard::isKeyPressed(attack3)) {
-        jab_left(hitbox1, hitbox2); 
+        jab_left(hitbox1, hitbox2, isBoxer1); 
         setState(BoxerState::ATTACKING);
     }
 }
@@ -458,3 +476,9 @@ void Collision::reset()
     rectangle.setSize(originalSize);
     rectangle.setOrigin(originalSize / 2.f);  
 }
+
+sf::Vector2f Boxer::getPosition()
+{
+    return boxerSprite_.getPosition();
+}
+

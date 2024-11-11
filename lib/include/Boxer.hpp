@@ -27,9 +27,12 @@ public:
     void loadAnimation(const std::string &animationName, const std::string &texturePath);
     void move(sf::Vector2f direction);
     void reset();
+    sf::Vector2f getPosition();
+    
 
 
-    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, Collision& hitbox1, Collision& hitbox2);
+    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, Collision& hitbox1, Collision& hitbox2, bool isBoxer1);
+
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
     const sf::Sprite&  getSprite() const;
 
@@ -46,8 +49,9 @@ public:
     void drawHearts(sf::RenderWindow& window, int heartsCount, bool isLeft);
 
     // action methods
-    void jab_right(Collision& hitbox1, Collision& hitbox2);
-    void jab_left(Collision& hitbox1, Collision& hitbox2);
+    void jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
+    void jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
+   
     void hook();
     void uppercut();
     void block();
