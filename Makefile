@@ -8,7 +8,7 @@ FLAGS       = -Ofast $(WARN)
 # Directorios
 LIB         = ./lib
 BUILD_DIR   = $(LIB)/obj
-DSG         = /home/gustalbert/DeSiGNAR-2.0.0
+DSG         = DeSiGNAR-2.0.0
 TESTDIR     = ./test
 INCLUDEPATH = -I./include -I$(DSG)/include -I$(LIB)/include
 
