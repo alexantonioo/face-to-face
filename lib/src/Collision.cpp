@@ -1,4 +1,5 @@
 #include "Collision.hpp"
+#include <list.hpp>
 
 Collision::Collision(const sf::Vector2f& position, const sf::Vector2f& size)
     :rectangle(size)
