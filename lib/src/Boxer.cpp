@@ -5,7 +5,7 @@
 #include <queue>
 #include <functional>
 #include <cmath>
-
+#include <graph.hpp>
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
@@ -14,7 +14,7 @@ Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf:
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(sf::Vector2f(0.5, 0.5));
     boxerSprite_.setTexture(animations_["idle"]);
-    boxerSprite_.setOrigin(193,138.5);    
+    boxerSprite_.setOrigin((341/2)-40,336/2);    
     boxerSprite_.setPosition(spawn.x,spawn.y); 
     
     staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
