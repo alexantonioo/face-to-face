@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "Game.hpp"
 #include "Boxer.hpp"
+#include "Collision.hpp"
 #include <cstdlib> 
 #include <iostream>
 #include <queue>
@@ -11,7 +12,7 @@
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
     : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
-      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
+    ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.6f, 0.6f);
     boxerSprite_.setTexture(animations_["idle"]);
@@ -24,7 +25,7 @@ Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf:
     staminaBar.setOutlineThickness(2.0f);
     loadHeartTexture();
     
-      }
+    }
 
 void Boxer::loadTexture(const std::string& animationName, const std::string& texturePath) 
 {
@@ -83,7 +84,7 @@ void Boxer::setAnimation(const std::string& animationName)
 }
 
 // action methods
-void Boxer::jab_right() 
+void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
 {
     if (stamina < 10) {
         std::cout << name << "Nesesitas recuperar energia" << std::endl;
@@ -94,46 +95,71 @@ void Boxer::jab_right()
         state = BoxerState::ATTACKING;
         punchClock.restart();  
         reduce_stamina(10);
+        //take_damage(1);
         
-        loadAnimation("jab_right", "../../assets/images/right_jab.png");
+        if(isBoxer1)
+        {
+            loadAnimation("jab_right", "../../assets/images/right_red.png");
+        }
+        else
+        {
+            loadAnimation("jab_right", "../../assets/images/right_blue.png");
+        }
 
         setAnimation("jab_right");
-        if (opponent) 
-        {
-            opponent->take_damage(1); 
-        } 
-    }
-}
 
-
-void Boxer::jab_left()
-{
-    if (stamina < 10) 
-        {
-        std::cout << name << "Nesesitas recuperar energia" << std::endl;
-        return;  
-    }
-   
-    if (state == BoxerState::IDLE) {  
-      
-        state = BoxerState::ATTACKING;
-        punchClock.restart();  
         
-        reduce_stamina(10);
-        loadAnimation("jab_left", "../../assets/images/left_blue.png");
-        setAnimation("jab_left");
-        if (opponent) 
-        {
-            opponent->take_damage(1); // Llama a takeDamage en el oponente
-        }
-        }
-
-       
+        hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
+        hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
+    
     }
 
-void Boxer::setOpponent(Boxer* opponent) {
-    this->opponent = opponent;
+    else {
+        hitbox1.reset();
+        hitbox2.reset();
+        state = BoxerState::IDLE;
+    }
 }
+
+
+void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
+{
+    if (stamina < 10)
+    {
+        std::cout << name << " Necesitas recuperar energía" << std::endl;
+        return;
+    }
+
+    if (state == BoxerState::IDLE) {
+        state = BoxerState::ATTACKING;
+        punchClock.restart();
+        reduce_stamina(10);
+        if(isBoxer1)
+        {
+            loadAnimation("jab_left", "../../assets/images/left_red.png");
+        }
+        else
+        {
+            loadAnimation("jab_left", "../../assets/images/left_blue.png");
+        }
+        setAnimation("jab_left");
+
+        hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
+        hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
+    }
+
+    else {
+        hitbox1.reset();
+        hitbox2.reset();
+        state = BoxerState::IDLE;
+    }
+}
+
+/*void Boxer::setOpponent(Boxer* opponent) {
+    this->opponent = opponent;
+}*/
+
+
 
 void Boxer::hook() 
 {
@@ -426,52 +452,32 @@ const sf::Sprite& Boxer::getSprite() const {
 }
 
 void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
-                        sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, sf::Keyboard::Key blockKey){
-    
-    if (sf::Keyboard::isKeyPressed(blockKey)) {
-        if (state != BoxerState::BLOCKING) {
-            setState(BoxerState::BLOCKING);
-            loadAnimation("block", "../../assets/images/block.png"); 
-            setAnimation("block");
-            blockClock.restart(); 
-        }
-
-        if (blockClock.getElapsedTime() >= blockInterval) 
-        {
-            
-            if (stamina > 0) 
-            {
-                reduce_stamina(2); 
-                blockClock.restart();
-
-            } 
-            else 
-            {
-                setState(BoxerState::IDLE);
-                loadAnimation("boxer", "../../assets/images/boxer.png"); 
-                setAnimation("boxer");
-                std::cout << name << " ha agotado la estamina y no puede seguir bloqueando." << std::endl;
-            }
-        }
-    }
-    // Volver a la animación base cuando se suelta la tecla de bloqueo
-    else if (state == BoxerState::BLOCKING) {
-        setState(BoxerState::IDLE); // Cambia el estado a IDLE
-        loadAnimation("boxer", "../../assets/images/boxer.png"); // Cargar animación base
-        setAnimation("boxer");
-    }
-
-    if (sf::Keyboard::isKeyPressed(attack1))
-     {
-        jab_right();
+                        sf::Keyboard::Key attack3, sf::Keyboard::Key attack4,
+                        Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
+{
+    if (sf::Keyboard::isKeyPressed(attack1)) {
+        jab_right(hitbox1, hitbox2, isBoxer1); 
         setState(BoxerState::ATTACKING);
     }
     
-    if (sf::Keyboard::isKeyPressed(attack3)) 
-    {
-        jab_left(); 
+    if (sf::Keyboard::isKeyPressed(attack3)) {
+        jab_left(hitbox1, hitbox2, isBoxer1); 
         setState(BoxerState::ATTACKING);
     }
+}
+
+
+
+void Collision::expand(const sf::Vector2f& expansionSize) 
+{
+    rectangle.setSize(originalSize + expansionSize);
+    rectangle.setOrigin((originalSize + expansionSize) / 2.f);  
+}
+
+void Collision::reset() 
+{
+    rectangle.setSize(originalSize);
+    rectangle.setOrigin(originalSize / 2.f);  
 }
 
 sf::Vector2f Boxer::getPosition()

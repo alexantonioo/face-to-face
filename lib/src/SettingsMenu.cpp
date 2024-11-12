@@ -26,11 +26,22 @@ void SettingsMenu::draw(sf::RenderWindow& window) {
 
 void SettingsMenu::handleInput(const sf::Event& event) {
     if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::Up) moveUp();
-        else if (event.key.code == sf::Keyboard::Down) moveDown();
-        else if (event.key.code == sf::Keyboard::Escape) selectedMapIndex = -1;
+        if (event.key.code == sf::Keyboard::Up) {
+            moveUp();
+        } 
+        else if (event.key.code == sf::Keyboard::Down) {
+            moveDown();
+        } 
+        else if (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::Right) {
+            // Alternar entre opciones de escenario (ring y street)
+            selectedMapIndex = (selectedMapIndex == 0) ? 1 : 0;
+        }
+        else if (event.key.code == sf::Keyboard::Escape) {
+            selectedMapIndex = -1; // Puede usarse para salir de la configuración
+        }
     }
 }
+
 
 void SettingsMenu::moveUp() {
     if (selectedMapIndex > 0) {
@@ -48,6 +59,14 @@ void SettingsMenu::moveDown() {
     }
 }
 
-std::string SettingsMenu::getSelectedMap() const {
+/*std::string SettingsMenu::getSelectedMap() const {
     return selectedMapIndex >= 0 ? mapOptions[selectedMapIndex].getString() : "None";
+}*/
+
+int SettingsMenu::getSelectedMapIndex() const {
+    return selectedMapIndex;
+}
+
+void SettingsMenu::setSelectedMapIndex(int index) {
+    selectedMapIndex = index;
 }

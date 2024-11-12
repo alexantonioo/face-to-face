@@ -4,7 +4,7 @@
 #include "Boxer.hpp"
 #include "Collision.hpp"
 #include <iostream>
-//#include "Menu.hpp"
+#include "SettingsMenu.hpp"
 
 
 Game::Game() 
@@ -12,16 +12,42 @@ Game::Game()
     
       menu(window),
       currentState(MENU),
+      currentBackground(STREET),
       boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
       boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
       ring(800.0f, 600.0f, "../../assets/images/ring.png"),
-      hitbox_boxer1(sf::Vector2f(512,120), sf::Vector2f(50,50)),
-      hitbox_boxer2(sf::Vector2f(512,440), sf::Vector2f(50,50)),
+    hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
+      hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
       hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f))
 
       
 {
    
+
+if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) {
+        std::cerr << "Error al cargar la textura del ring" << std::endl;
+    } else {
+        ringSprite_.setTexture(ringTexture_);
+        ringSprite_.setScale(
+            window.getSize().x / static_cast<float>(ringTexture_.getSize().x),
+            window.getSize().y / static_cast<float>(ringTexture_.getSize().y)
+        );
+    }
+
+    // Cargar textura para el escenario "street"
+    if (!streetTexture_.loadFromFile("../../assets/images/street.png")) {
+        std::cerr << "Error al cargar la textura de la calle" << std::endl;
+    } else {
+        streetSprite_.setTexture(streetTexture_);
+        streetSprite_.setScale(
+            window.getSize().x / static_cast<float>(streetTexture_.getSize().x),
+            window.getSize().y / static_cast<float>(streetTexture_.getSize().y)
+        );
+    }
+    setBackground(STREET);
+
+
+
     
     // cargar texturas y animaciones
     boxer1.loadTexture("default", "../../assets/images/boxer.png");  // Textura inicial
@@ -59,6 +85,7 @@ void Game::run()
             if (currentState == MENU) {
                 menu.handleInput(event, window);
                 if (menu.isStartSelected()) {
+                    setBackground(static_cast<BackgroundType>(menu.getSelectedOption()));
                     currentState = PLAYING;
                 }
 
@@ -160,12 +187,10 @@ void Game::run()
         {
         boxer1.dodge(sf::Vector2f(0.5f, 0.f)); 
         }   
-        
-
         }               
 
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::Z, sf::Keyboard::Key::I);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::X, sf::Keyboard::Key::K); 
+                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U, hitbox_boxer1, hitbox_boxer2,true);
+                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false); 
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
@@ -174,7 +199,7 @@ void Game::run()
                     menu.draw(window); 
                 }
                 else {
- 
+
                 boxer1.update(boxer2.getSprite().getPosition() /*1*/);
                 boxer2.update(boxer1.getSprite().getPosition() /*2*/);
 
@@ -188,7 +213,7 @@ void Game::run()
                 hitbox_boxer2.draw(window);
                 hitbox_ring.draw(window);
                 break;
-                }
+            }
         }
     
         window.display();
@@ -198,6 +223,13 @@ void Game::run()
 
 void Game::draw() {
     window.clear();
+    window.draw(backgroundSprite);
+
+    if (selectedMapIndex == 0) {
+        window.draw(ringSprite_);  // Fondo para el escenario "ring"
+    } else if (selectedMapIndex == 1) {
+        window.draw(streetSprite_); // Fondo para el escenario "street"
+    }
 
     // Configura las posiciones de las barras
     boxer1.staminaBar.setPosition(10, 10); 
@@ -346,7 +378,17 @@ void Game::handleCollisions()
     }
 }
 
- 
+
+void Game::setBackground(BackgroundType backgroundType) {
+    currentBackground = backgroundType;
+    
+    if (backgroundType == RING) {
+        backgroundSprite.setTexture(ringTexture_);
+    } else if (backgroundType == STREET) {
+        backgroundSprite.setTexture(streetTexture_);
+    }
+}
+
 
 void Game::handleInput() {
     sf::Event event;
@@ -374,3 +416,5 @@ void Game::render() {
 
     window.display();
 }
+
+

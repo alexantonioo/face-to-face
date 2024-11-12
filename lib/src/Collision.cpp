@@ -1,9 +1,10 @@
 #include "Collision.hpp"
 
 Collision::Collision(const sf::Vector2f& position, const sf::Vector2f& size)
-    :rectangle(size)
+    :rectangle(size), originalSize(size)
 {
-    
+    rectangle.setOrigin(size / 2.f);  
+    rectangle.setPosition(position);
     rectangle.setPosition(position);
     rectangle.setFillColor(sf::Color::Transparent);
     rectangle.setOutlineColor(sf::Color::Green);

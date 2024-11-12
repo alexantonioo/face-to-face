@@ -17,13 +17,22 @@ class Collision
     
     void move(sf::Vector2f direction);
     
+
+    void expand (const sf::Vector2f& expansionSize);
+    void reset();
+
+   
     sf::Vector2f getPosition();
     
     sf::Vector2f getSize();
     
     void setPosition(sf::Vector2f positions);
 
+    private:
+
     sf::RectangleShape rectangle;
+    sf::Vector2f originalSize;
+
     
 
 
