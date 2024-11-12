@@ -6,7 +6,7 @@
 #include <queue>
 #include <functional>
 #include <cmath>
-
+#include <list.hpp>
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
