@@ -16,8 +16,8 @@ Game::Game()
       boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
       boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
       ring(800.0f, 600.0f, "../../assets/images/ring.png"),
-      hitbox_boxer1(sf::Vector2f(512,120), sf::Vector2f(50,50)),
-      hitbox_boxer2(sf::Vector2f(512,440), sf::Vector2f(50,50)),
+    hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
+      hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
       hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f))
 
       
