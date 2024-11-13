@@ -75,8 +75,6 @@ void Game::run()
 {
     bool isPaused = false;
     sf::Clock deltaClock;
-    const float targetFPS = 60.0f;
-    const float targetFrameTime = 1.0f / targetFPS;
     window.setFramerateLimit(120);
     window.setVerticalSyncEnabled(true);
     while (window.isOpen()) 
@@ -109,22 +107,10 @@ void Game::run()
                     setBackground(static_cast<BackgroundType>(menu.getSelectedOption()));
                     currentState = PLAYING;
                 }
-
-        float frameTime = clock.restart().asSeconds();
-        boxer1.updatefps(frameTime);
-        boxer2.updatefps(frameTime);
-
-        // Limitar los FPS a 60
-        if (frameTime < targetFrameTime) 
-        {
-            sf::sleep(sf::seconds(targetFrameTime - frameTime));
-        }
-
-        
             
         }
- }
-   
+}
+
     
     window.clear(sf::Color::Black);
         
@@ -137,7 +123,7 @@ void Game::run()
                 handleInput();
                 update();
 
-                // boxer 1 movement wasd
+        // boxer 1 movement wasd
         sf::Vector2f movement1(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
         {
@@ -157,9 +143,11 @@ void Game::run()
         }
         //block
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+        
         //Dodge
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) 
         {
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
         {
         boxer2.dodge(sf::Vector2f(-1.f, 0.f)); // Esquivar hacia la izquierda
@@ -195,6 +183,8 @@ void Game::run()
         boxer2.move(movement2);
         hitbox_boxer2.move(movement2);
         
+        //BLOCK
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::I))
         //DODGE BOXER 1
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
         {
@@ -210,8 +200,8 @@ void Game::run()
         }   
         }               
 
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U, hitbox_boxer1, hitbox_boxer2,true);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false); 
+                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U,sf::Keyboard::Key::K, hitbox_boxer1, hitbox_boxer2,true);
+                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J,sf::Keyboard::Key::I, hitbox_boxer1, hitbox_boxer2,false); 
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
@@ -220,7 +210,7 @@ void Game::run()
                     menu.draw(window); 
                 }
                 else {
- 
+
                 boxer1.update(boxer2.getSprite().getPosition() /*1*/);
                 boxer2.update(boxer1.getSprite().getPosition() /*2*/);
 
@@ -255,45 +245,54 @@ void Game::draw() {
         window.draw(streetSprite_); 
     }
 
-    // Configura las posiciones de las barras
-    boxer1.staminaBar.setPosition(10, 10); 
-    boxer2.staminaBar.setPosition(window.getSize().x - 110, 10); 
+    float healthBarWidth = 400.0f;   // X
+    float healthBarHeight = 20.0f;   // HH
+    float staminaBarHeight = 15.0f;  // HS
+    float barSpacing = 5.0f;         // spacing
+    
+// Contenedores para las barras
+sf::RectangleShape containerBoxer1(sf::Vector2f(healthBarWidth, healthBarHeight + staminaBarHeight + barSpacing));
+sf::RectangleShape containerBoxer2(sf::Vector2f(healthBarWidth, healthBarHeight + staminaBarHeight + barSpacing));
 
+// Posiciona los contenedores en las esquinas superiores
+containerBoxer1.setPosition(10.0f, 10.0f);
+containerBoxer2.setPosition(window.getSize().x - healthBarWidth - 10.0f, 10.0f);
+
+// Barra de salud del boxeador 1
+boxer1.HealthBar.setSize(sf::Vector2f(healthBarWidth, healthBarHeight));
+boxer1.HealthBar.setPosition(containerBoxer1.getPosition().x, containerBoxer1.getPosition().y);
+
+// Barra de stamina del boxeador 1
+boxer1.staminaBar.setSize(sf::Vector2f(healthBarWidth, staminaBarHeight));
+boxer1.staminaBar.setPosition(containerBoxer1.getPosition().x, containerBoxer1.getPosition().y + healthBarHeight + barSpacing);
+
+// Barra de salud del boxeador 2
+boxer2.HealthBar.setSize(sf::Vector2f(healthBarWidth, healthBarHeight));
+boxer2.HealthBar.setPosition(containerBoxer2.getPosition().x, containerBoxer2.getPosition().y);
+
+// Barra de stamina del boxeador 2
+boxer2.staminaBar.setSize(sf::Vector2f(healthBarWidth, staminaBarHeight));
+boxer2.staminaBar.setPosition(containerBoxer2.getPosition().x, containerBoxer2.getPosition().y + healthBarHeight + barSpacing);
+
+
+
+    boxer1.updateHealthBar();
+    boxer2.updateHealthBar();
     boxer1.updateStaminaBar();
     boxer2.updateStaminaBar();
 
-    //hearts
-    drawHearts(boxer1, sf::Vector2f(50, 10));         
-    drawHearts(boxer2, sf::Vector2f(600, 10));      
-
     boxer1.draw(window);
     boxer2.draw(window);
+
+    
+    window.draw(boxer1.HealthBar);
+    window.draw(boxer2.HealthBar);
     window.draw(boxer1.staminaBar);
     window.draw(boxer2.staminaBar);
-    
     window.display();
 }
 
 
-
-void Game::drawHearts(const Boxer& boxer, const sf::Vector2f& position) 
-    {
-
-    static sf::Texture heartTexture;
-    static bool textureLoaded = false;
-    if (!textureLoaded) {
-        if (!heartTexture.loadFromFile("../../assets/images/hearts.png")) {
-            
-            return;
-        }
-        textureLoaded = true;
-    }
-    sf::Sprite heartSprite(heartTexture);
-    for (int i = 0; i < boxer.get_hearts(); ++i) {
-        heartSprite.setPosition(position.x + i * (heartSprite.getGlobalBounds().width + 5), position.y);
-        window.draw(heartSprite);
-    }
-}
 
 
 void Game::handleCollisions() 
@@ -392,12 +391,12 @@ void Game::handleCollisions()
         
         if (boxer1.getState() == BoxerState::ATTACKING) 
         {
-            boxer2.receivePunch(); 
+            boxer2.receivePunch(10); 
         }
 
         if (boxer2.getState() == BoxerState::ATTACKING) 
         {
-            boxer1.receivePunch(); 
+            boxer1.receivePunch(10); 
         }
     }
 }
