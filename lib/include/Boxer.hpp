@@ -62,13 +62,13 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     void jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
     void jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
     void block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1);
-    void unblock(); 
+    void unblock(bool isBoxer1); 
     
     void hook();
     void uppercut();
     
     
-    void dodge(sf::Vector2f direction);
+    sf::Vector2f dodge(sf::Vector2f direction);
     
     
     // Methods managing actions
@@ -92,7 +92,6 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     void take_damage(int amount);
     void receivePunch(int amount);
 
-    bool isAttacking() const;  
 
     // access methods
     const std::string& get_name() const;

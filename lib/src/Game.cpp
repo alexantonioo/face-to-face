@@ -128,11 +128,11 @@ void Game::run()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
         {
-        boxer2.dodge(sf::Vector2f(-1.f, 0.f)); // Esquivar hacia la izquierda
+        boxer2.dodge(sf::Vector2f(-1.f, 0.f)); 
         } 
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
         {
-        boxer2.dodge(sf::Vector2f(1.f, 0.f)); // Esquivar hacia la derecha
+        boxer2.dodge(sf::Vector2f(1.f, 0.f)); 
         }
         }
 
@@ -222,7 +222,7 @@ void Game::draw() {
     float healthBarHeight = 20.0f;   // HH
     float staminaBarHeight = 15.0f;  // HS
     float barSpacing = 5.0f;         // spacing
-    
+
 // Contenedores para las barras
 sf::RectangleShape containerBoxer1(sf::Vector2f(healthBarWidth, healthBarHeight + staminaBarHeight + barSpacing));
 sf::RectangleShape containerBoxer2(sf::Vector2f(healthBarWidth, healthBarHeight + staminaBarHeight + barSpacing));
@@ -337,7 +337,7 @@ void Game::handleCollisions()
                 moveDirection.x = intersection.width / 2;
             }
         }
-         else 
+        else 
         {
             if (boxer1Bounds.top < boxer2Bounds.top) 
             {

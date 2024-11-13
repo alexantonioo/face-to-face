@@ -147,36 +147,65 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
     }
 }
 
-void Boxer::block(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
+void Boxer::unblock(bool isBoxer1) 
 {
 
-    if (state == BoxerState::IDLE) 
-    { 
-        if(stamina < 20)
-        {
-            std::cout << name << " no se puede bloquear recupera energia" << std::endl;
-
-            return;
-        }
-        state = BoxerState::BLOCKING;
-        reduce_stamina(0.5);  
-        blockClock.restart();
-        loadAnimation("block", "../../assets/images/block.png");
-
-        setAnimation("block"); 
-
-        std::cout << name << " está bloqueando." << std::endl;
-
-    } 
-}
-
-void Boxer::unblock() 
-{
-    if (state == BoxerState::BLOCKING)
+    if (state == BoxerState::BLOCKING) 
     {
         setState(BoxerState::IDLE);
-        loadAnimation("boxer", "../../assets/images/boxer.png"); 
+        
+        if(isBoxer1)
+        {
+            loadAnimation("boxer", "../../assets/images/boxer.png");
+        }
+        else
+        {
+            loadAnimation("boxer", "../../assets/images/boxer2.png");
+        }
         setAnimation("boxer");
+        std::cout << name << " dejó de bloquear." << std::endl;
+    }
+}
+
+void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
+{
+    // Iniciar el bloqueo si no está ya bloqueando
+    if (state != BoxerState::BLOCKING) 
+    {
+        if (stamina < 20) 
+        {
+            std::cout << name << " no tiene suficiente energía para bloquear." << std::endl;
+            return; 
+        }
+
+        setState(BoxerState::BLOCKING);
+
+        // Cargar animación del bloqueador
+        if (isBoxer1)
+            loadAnimation("block", "../../assets/images/blockred.png");
+        else
+            loadAnimation("block", "../../assets/images/blockblue.png");
+
+        setAnimation("block");
+        blockClock.restart();
+        std::cout << name << " está bloqueando." << std::endl;
+    }
+
+    // Reducir estamina continuamente mientras está bloqueando
+    if (state == BoxerState::BLOCKING) 
+    {
+        // Reducir estamina cada 100 ms para no reducirla demasiado rápido
+        if (blockClock.getElapsedTime().asMilliseconds() > 100) 
+        {
+            reduce_stamina(1);
+            blockClock.restart();
+
+            if (stamina < 0.5) 
+            {
+                std::cout << name << " se queda sin estamina, deja de bloquear." << std::endl;
+                unblock(isBoxer1);
+            }
+        }
     }
 }
 
@@ -213,7 +242,7 @@ void Boxer::uppercut()
 
 
 
-void Boxer::dodge(sf::Vector2f direction) 
+sf::Vector2f Boxer::dodge(sf::Vector2f direction) 
 {
     
     state = BoxerState::DODGING;
@@ -321,7 +350,7 @@ void Boxer::update(const sf::Vector2f& opponentPosition )
         state = BoxerState::IDLE;
         setAnimation("idle");
     }
-     
+    
     if (state == BoxerState::IDLE) 
     {
     recover_stamina(0.05f);  
@@ -454,6 +483,14 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
                         sf::Keyboard::Key keyblock, Collision& hitbox1,
                         Collision& hitbox2, bool isBoxer1) 
 {
+    if (sf::Keyboard::isKeyPressed(keyblock)) {
+        block(hitbox1, hitbox2, isBoxer1);
+    } else {
+        // Si no se presiona el botón de bloqueo, dejar de bloquear
+        if (state == BoxerState::BLOCKING) {
+            unblock(isBoxer1);
+        }
+    }
 
     if (sf::Keyboard::isKeyPressed(attack1)) {
         jab_right(hitbox1, hitbox2, isBoxer1); 
@@ -465,19 +502,7 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
         setState(BoxerState::ATTACKING);
     }
 
-    if(sf::Keyboard::isKeyPressed(keyblock)){
-    
-        block(hitbox1, hitbox2, isBoxer1);
-        setState(BoxerState::BLOCKING);
-        
-        if (state == BoxerState::BLOCKING)
-        {
-            setState(BoxerState::IDLE);
-            return unblock();
-        }
-        
-    }
-    }
+}
 
 void Collision::expand(const sf::Vector2f& expansionSize) 
 {
