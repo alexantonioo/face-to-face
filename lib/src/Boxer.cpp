@@ -11,20 +11,30 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
-    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
+    : name(name),Health(maxHealth),maxHealth(100), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10), attacking(false), dodgeSpeed(5.0f),
     ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
-    loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
+    loadTexture("idle", initialTexturePath);  
     boxerSprite_.setScale(0.6f, 0.6f);
     boxerSprite_.setTexture(animations_["idle"]);
     boxerSprite_.setOrigin(339/2,336/2);    
     boxerSprite_.setPosition(spawn.x,spawn.y); 
     
-    staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
-    staminaBar.setFillColor(sf::Color::Green);        
-    staminaBar.setOutlineColor(sf::Color::Black);    
-    staminaBar.setOutlineThickness(2.0f);
-    loadHeartTexture();
-    
+staminaBar.setSize(sf::Vector2f(200.f, 20.f)); 
+staminaBar.setFillColor(sf::Color::Green);
+staminaBar.setPosition(50.f, 50.f);  
+
+staminaBarBackground.setSize(sf::Vector2f(200.f, 20.f));
+staminaBarBackground.setFillColor(sf::Color(50, 50, 50)); 
+staminaBarBackground.setPosition(50.f, 50.f);  
+
+HealthBar.setSize(sf::Vector2f(300.f, 25.f)); 
+HealthBar.setFillColor(sf::Color::Red);
+HealthBar.setPosition(250.f, 20.f);  
+
+healthBarBackground.setSize(sf::Vector2f(300.f, 25.f));
+healthBarBackground.setFillColor(sf::Color(50, 50, 50)); 
+healthBarBackground.setPosition(250.f, 20.f);
+
     }
 
 void Boxer::loadTexture(const std::string& animationName, const std::string& texturePath) 
@@ -39,23 +49,6 @@ void Boxer::loadTexture(const std::string& animationName, const std::string& tex
         animations_[animationName] = texture;
     }
     
-}
-
-void Boxer::loadHeartTexture() 
-{
-    if (!heartTexture.loadFromFile("../../assets/images/hearts.png")) 
-    {
-        std::cerr << "!!Error loading animation" << std::endl;
-    }
-    heartSprite.setTexture(heartTexture);
-    
-    // Ajustar la posición
-    heartSprite.setPosition(10, 10); // Ajusta la posición como desees
-
-    // Ajustar el tamaño (escalado)
-    float scaleX = 0.25f; 
-    float scaleY = 0.25f; 
-    heartSprite.setScale(scaleX, scaleY);
 }
 
 void Boxer::loadAnimation(const std::string &animationName, const std::string &texturePath) 
@@ -95,7 +88,6 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         state = BoxerState::ATTACKING;
         punchClock.restart();  
         reduce_stamina(10);
-        //take_damage(1);
         
         if(isBoxer1)
         {
@@ -155,11 +147,38 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
     }
 }
 
-/*void Boxer::setOpponent(Boxer* opponent) {
-    this->opponent = opponent;
-}*/
+void Boxer::block(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
+{
 
+    if (state == BoxerState::IDLE) 
+    { 
+        if(stamina < 20)
+        {
+            std::cout << name << " no se puede bloquear recupera energia" << std::endl;
 
+            return;
+        }
+        state = BoxerState::BLOCKING;
+        reduce_stamina(0.5);  
+        blockClock.restart();
+        loadAnimation("block", "../../assets/images/block.png");
+
+        setAnimation("block"); 
+
+        std::cout << name << " está bloqueando." << std::endl;
+
+    } 
+}
+
+void Boxer::unblock() 
+{
+    if (state == BoxerState::BLOCKING)
+    {
+        setState(BoxerState::IDLE);
+        loadAnimation("boxer", "../../assets/images/boxer.png"); 
+        setAnimation("boxer");
+    }
+}
 
 void Boxer::hook() 
 {
@@ -191,37 +210,8 @@ void Boxer::uppercut()
     }
 }
 
-void Boxer::block() 
-{
 
-    if (state == BoxerState::IDLE) 
-    { 
-        if(stamina < 20)
-        {
-            std::cout << name << " no se puede bloquear recupera energia" << std::endl;
 
-            return;
-        }
-        state = BoxerState::BLOCKING;
-        reduce_stamina(1);  
-        blockClock.restart();
-        loadAnimation("block", "../../assets/images/block.png");
-
-        setAnimation("block"); 
-
-        std::cout << name << " está bloqueando." << std::endl;
-
-    } 
-}
-void Boxer::unblock() 
-{
-    if (state == BoxerState::BLOCKING)
-    {
-        setState(BoxerState::IDLE);
-        loadAnimation("boxer", "../../assets/images/boxer.png"); 
-        setAnimation("boxer");
-    }
-}
 
 void Boxer::dodge(sf::Vector2f direction) 
 {
@@ -238,7 +228,7 @@ void Boxer::dodge(sf::Vector2f direction)
     std::cout << name << "esquivo" << std::endl;
         
     
- }   
+}   
 
 //methods damage
 void Boxer::take_damage(int amount) 
@@ -249,36 +239,57 @@ void Boxer::take_damage(int amount)
         return;
     }
 
-     hearts -= amount; 
-    if (hearts < 0) 
-    {
-        hearts = 0; 
-    
-    }
+    Health -= amount;
+    if (Health < 0) Health = 0;
+
 }
 
-void Boxer::receivePunch() {
+void Boxer::receivePunch(int amount) {
     
-    if (hearts > 0) {
-        hearts--;  
-        state = BoxerState::TAKING_DAMAGE;
-        std::cout << "¡Golpe recibido! Corazones restantes x: " << hearts << std::endl;
-    } 
-
-    else if(hearts == 0)
-        {
-        std::cout << "El boxeador ya no tiene corazones, ganaste" << std::endl;
-        loadAnimation("ko","../../assets/images/ko.png");
-        setAnimation("ko");
+    if (state == BoxerState::BLOCKING) {
+        std::cout << name << " bloqueó el golpe y no recibió daño." << std::endl;
         return;
     }
+    
+    if (damageCooldownClock.getElapsedTime() < damageCooldown) {
+        return; 
+    }
+    damageCooldownClock.restart();
+    
+    Health -= amount;
+    
+    if (Health < 0) {
+        Health = 0;
+    }
+    std::cout << "¡Golpe recibido! Vida restante: " << Health << "/" << maxHealth << std::endl;
+
+    
+    if (Health > 0) {
+        state = BoxerState::TAKING_DAMAGE;
+    } 
+    
+    else {
+        std::cout << "El boxeador ha sido derrotado, K.O." << std::endl;
+        state = BoxerState::K_O;
+        loadAnimation("ko", "../../assets/images/ko.png");
+        setAnimation("ko");
+    }
+    float healthRatio = Health / maxHealth;
+    HealthBar.setSize(sf::Vector2f(300.f * healthRatio, 25.f)); 
 }
 
+void Boxer::updateHealthBar(){
+    float healthRatio = Health / maxHealth;
+    HealthBar.setSize(sf::Vector2f(300.f * healthRatio, 25.f));
+}
 
 void Boxer::reduce_stamina(float amount) 
     {
     stamina -= amount;
     if (stamina < 0) stamina = 0;
+    
+    float staminaRatio = stamina / max_stamina;
+    staminaBar.setSize(sf::Vector2f(200.f * staminaRatio, 20.f));
 }
 //
 //stamina
@@ -392,9 +403,9 @@ int Boxer::get_speed() const
     return speed;
 }
 
-int Boxer::get_hearts() const 
+int Boxer::get_Health() const 
 {
-    return hearts;
+    return Health;
 }
 
 BoxerState Boxer::getState() const
@@ -415,24 +426,11 @@ void Boxer::draw(sf::RenderWindow& window) {
     
     window.draw(boxerSprite_);
     //draw hearts
-
-    float heartWidth = heartSprite.getGlobalBounds().width;
-    float spacing = heartWidth + 0.2;  // spacing hearts
-    int heartsToDraw = hearts; // number hearts 
-    
-    // Draw hearts acttually
-    float startX = isleft ? 50 : window.getSize().x - (spacing * 10) - 50;
-    float startY = 20; 
-
-    for (int i = 0; i < get_hearts(); ++i) {
-        heartSprite.setPosition(startX + i * spacing, startY);  
-        window.draw(heartSprite);
-    }
-
-    // draw hotbar stamina
-    staminaBar.setSize(sf::Vector2f((stamina / max_stamina) * 100, 10)); 
-    staminaBar.setPosition(getBounds().left, getBounds().top - 20); 
+    window.draw(staminaBarBackground);
     window.draw(staminaBar);
+
+    window.draw(healthBarBackground);
+    window.draw(HealthBar);
 }
 
 sf::FloatRect Boxer::getBounds() const {
@@ -451,10 +449,12 @@ const sf::Sprite& Boxer::getSprite() const {
     return boxerSprite_;
 }
 
-void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
+void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
                         sf::Keyboard::Key attack3, sf::Keyboard::Key attack4,
-                        Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
+                        sf::Keyboard::Key keyblock, Collision& hitbox1,
+                        Collision& hitbox2, bool isBoxer1) 
 {
+
     if (sf::Keyboard::isKeyPressed(attack1)) {
         jab_right(hitbox1, hitbox2, isBoxer1); 
         setState(BoxerState::ATTACKING);
@@ -464,9 +464,20 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
         jab_left(hitbox1, hitbox2, isBoxer1); 
         setState(BoxerState::ATTACKING);
     }
-}
 
-
+    if(sf::Keyboard::isKeyPressed(keyblock)){
+    
+        block(hitbox1, hitbox2, isBoxer1);
+        setState(BoxerState::BLOCKING);
+        
+        if (state == BoxerState::BLOCKING)
+        {
+            setState(BoxerState::IDLE);
+            return unblock();
+        }
+        
+    }
+    }
 
 void Collision::expand(const sf::Vector2f& expansionSize) 
 {

@@ -10,19 +10,18 @@
 Game::Game() 
     : window(sf::VideoMode(1024, 768), "Face to Face", sf::Style::Titlebar | sf::Style::Close), 
     
-      menu(window),
-      currentState(MENU),
-      currentBackground(STREET),
-      boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
-      boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
-      ring(800.0f, 600.0f, "../../assets/images/ring.png"),
+    menu(window),
+    currentBackground(STREET),
+    currentState(MENU), 
+    boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
+    boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
+    ring(800.0f, 600.0f, "../../assets/images/ring.png"),
     hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
-      hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
-      hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f))
+    hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
+    hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f))
 
-      
 {
-   
+
 
 if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) {
         std::cerr << "Error al cargar la textura del ring" << std::endl;
@@ -63,8 +62,6 @@ void Game::run()
 {
     bool isPaused = false;
     sf::Clock deltaClock;
-    const float targetFPS = 60.0f;
-    const float targetFrameTime = 1.0f / targetFPS;
     window.setFramerateLimit(120);
     window.setVerticalSyncEnabled(true);
     while (window.isOpen()) 
@@ -88,20 +85,10 @@ void Game::run()
                     setBackground(static_cast<BackgroundType>(menu.getSelectedOption()));
                     currentState = PLAYING;
                 }
-
-        float frameTime = clock.restart().asSeconds();
-        boxer1.updatefps(frameTime);
-        boxer2.updatefps(frameTime);
-
-        // Limitar los FPS a 60
-        if (frameTime < targetFrameTime) 
-        {
-            sf::sleep(sf::seconds(targetFrameTime - frameTime));
-        }
             
         }
- }
-   
+}
+
     
     window.clear(sf::Color::Black);
         
@@ -189,8 +176,8 @@ void Game::run()
         }   
         }               
 
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U, hitbox_boxer1, hitbox_boxer2,true);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false); 
+                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U,sf::Keyboard::Key::K, hitbox_boxer1, hitbox_boxer2,true);
+                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J,sf::Keyboard::Key::I, hitbox_boxer1, hitbox_boxer2,false); 
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
@@ -226,50 +213,59 @@ void Game::draw() {
     window.draw(backgroundSprite);
 
     if (selectedMapIndex == 0) {
-        window.draw(ringSprite_);  // Fondo para el escenario "ring"
+        window.draw(ringSprite_);  
     } else if (selectedMapIndex == 1) {
-        window.draw(streetSprite_); // Fondo para el escenario "street"
+        window.draw(streetSprite_); 
     }
 
-    // Configura las posiciones de las barras
-    boxer1.staminaBar.setPosition(10, 10); 
-    boxer2.staminaBar.setPosition(window.getSize().x - 110, 10); 
+    float healthBarWidth = 400.0f;   // X
+    float healthBarHeight = 20.0f;   // HH
+    float staminaBarHeight = 15.0f;  // HS
+    float barSpacing = 5.0f;         // spacing
+    
+// Contenedores para las barras
+sf::RectangleShape containerBoxer1(sf::Vector2f(healthBarWidth, healthBarHeight + staminaBarHeight + barSpacing));
+sf::RectangleShape containerBoxer2(sf::Vector2f(healthBarWidth, healthBarHeight + staminaBarHeight + barSpacing));
 
+// Posiciona los contenedores en las esquinas superiores
+containerBoxer1.setPosition(10.0f, 10.0f);
+containerBoxer2.setPosition(window.getSize().x - healthBarWidth - 10.0f, 10.0f);
+
+// Barra de salud del boxeador 1
+boxer1.HealthBar.setSize(sf::Vector2f(healthBarWidth, healthBarHeight));
+boxer1.HealthBar.setPosition(containerBoxer1.getPosition().x, containerBoxer1.getPosition().y);
+
+// Barra de stamina del boxeador 1
+boxer1.staminaBar.setSize(sf::Vector2f(healthBarWidth, staminaBarHeight));
+boxer1.staminaBar.setPosition(containerBoxer1.getPosition().x, containerBoxer1.getPosition().y + healthBarHeight + barSpacing);
+
+// Barra de salud del boxeador 2
+boxer2.HealthBar.setSize(sf::Vector2f(healthBarWidth, healthBarHeight));
+boxer2.HealthBar.setPosition(containerBoxer2.getPosition().x, containerBoxer2.getPosition().y);
+
+// Barra de stamina del boxeador 2
+boxer2.staminaBar.setSize(sf::Vector2f(healthBarWidth, staminaBarHeight));
+boxer2.staminaBar.setPosition(containerBoxer2.getPosition().x, containerBoxer2.getPosition().y + healthBarHeight + barSpacing);
+
+
+
+    boxer1.updateHealthBar();
+    boxer2.updateHealthBar();
     boxer1.updateStaminaBar();
     boxer2.updateStaminaBar();
 
-    //hearts
-    drawHearts(boxer1, sf::Vector2f(50, 10));         
-    drawHearts(boxer2, sf::Vector2f(600, 10));      
-
     boxer1.draw(window);
     boxer2.draw(window);
+
+    
+    window.draw(boxer1.HealthBar);
+    window.draw(boxer2.HealthBar);
     window.draw(boxer1.staminaBar);
     window.draw(boxer2.staminaBar);
-    
     window.display();
 }
 
 
-
-void Game::drawHearts(const Boxer& boxer, const sf::Vector2f& position) 
-    {
-
-    static sf::Texture heartTexture;
-    static bool textureLoaded = false;
-    if (!textureLoaded) {
-        if (!heartTexture.loadFromFile("../../assets/images/hearts.png")) {
-            
-            return;
-        }
-        textureLoaded = true;
-    }
-    sf::Sprite heartSprite(heartTexture);
-    for (int i = 0; i < boxer.get_hearts(); ++i) {
-        heartSprite.setPosition(position.x + i * (heartSprite.getGlobalBounds().width + 5), position.y);
-        window.draw(heartSprite);
-    }
-}
 
 
 void Game::handleCollisions() 
@@ -368,12 +364,12 @@ void Game::handleCollisions()
         
         if (boxer1.getState() == BoxerState::ATTACKING) 
         {
-            boxer2.receivePunch(); 
+            boxer2.receivePunch(10); 
         }
 
         if (boxer2.getState() == BoxerState::ATTACKING) 
         {
-            boxer1.receivePunch(); 
+            boxer1.receivePunch(10); 
         }
     }
 }
