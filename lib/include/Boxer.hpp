@@ -69,7 +69,7 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     void uppercut();
     
     
-    void dodge(sf::Vector2f direction);
+    sf::Vector2f dodge(sf::Vector2f direction);
     
     
     // Methods managing actions

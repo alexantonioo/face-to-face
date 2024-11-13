@@ -438,7 +438,7 @@ void Game::update() {
         }
     if (!isGameOver) 
 {
-    if (boxer1.get_hearts() <= 0 || boxer2.get_hearts() <= 0) 
+    if (boxer1.get_Health() <= 0 || boxer2.get_Health() <= 0) 
     {
         std::cout << "!!isgameover" << std::endl;
         
