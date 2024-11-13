@@ -223,7 +223,7 @@ void Boxer::unblock()
     }
 }
 
-void Boxer::dodge(sf::Vector2f direction) 
+sf::Vector2f Boxer::dodge(sf::Vector2f direction) 
 {
     
     state = BoxerState::DODGING;
@@ -237,7 +237,7 @@ void Boxer::dodge(sf::Vector2f direction)
     reduce_stamina(40);
     std::cout << name << "se esquivo" << std::endl;
         
-    
+    return sf::Vector2f(direction * dodgeSpeed);
  }   
 
 //methods damage
@@ -326,6 +326,7 @@ void Boxer::update(const sf::Vector2f& opponentPosition )
     boxerSprite_.setRotation(angle + 278);
     
     
+    
 }
 
 void Boxer::increase_ko_probability(int amount) 
@@ -405,6 +406,7 @@ void Boxer::setState(BoxerState newState) {
 
 void Boxer::move(sf::Vector2f direction) {
     boxerSprite_.move(direction);
+    
 }
 
 

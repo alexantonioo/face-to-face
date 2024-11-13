@@ -15,6 +15,8 @@ public:
         STREET 
     };
     void setBackground(BackgroundType backgroundType);
+    void setBotActive(bool active);
+
     
 private:
 
@@ -55,5 +57,10 @@ private:
     Collision hitbox_ring;
     void draw();
     void drawHearts();
+
+    bool isBotActive;
+    bool isGameOver;
+    sf::Text gameOverText;
+    sf::Font font;
 
     };

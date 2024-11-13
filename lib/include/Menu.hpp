@@ -17,6 +17,8 @@ public:
     bool isSettingsSelected() const;
     void resetStartSelected();
 
+    bool isPlayWithBotEnabled() const; 
+
 private:
     std::vector<sf::Text> menuOptions;
     sf::Font font;
@@ -34,4 +36,7 @@ private:
     void moveDown();
 
     SettingsMenu settingsMenu;
+
+    bool playWithBot = false;
+    sf::Text playWithBotCheckbox;
 };
