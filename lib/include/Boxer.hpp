@@ -47,16 +47,16 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     sf::FloatRect getBounds() const;
     void setPosition(float x, float y);
 
-    void setColor(sf::Color color); // ?
-    void setAnimation(const std::string& animationName); //change animation
+    void setColor(sf::Color color); 
+    void setAnimation(const std::string& animationName); 
     
     void setHealthStaminaPosition(sf::Vector2f healthPos, sf::Vector2f staminaPos);
     void drawBars(sf::RenderWindow& window);
 
-    sf::RectangleShape staminaBar;  // Barra de stamina
-    sf::RectangleShape staminaBarBackground; // Fondo para barra de stamina
+    sf::RectangleShape staminaBar;  
+    sf::RectangleShape staminaBarBackground;
 
-    sf::RectangleShape HealthBar;  // Barra de vida
+    sf::RectangleShape HealthBar;
     sf::RectangleShape healthBarBackground;
 
     // action methods
@@ -93,7 +93,6 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     void take_damage(int amount);
     void receivePunch(int amount);
 
-    bool isAttacking() const;  
 
     // access methods
     const std::string& get_name() const;
