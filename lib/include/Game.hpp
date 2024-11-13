@@ -59,5 +59,8 @@ private:
     void drawHearts();
 
     bool isBotActive;
+    bool isGameOver;
+    sf::Text gameOverText;
+    sf::Font font;
 
     };

@@ -326,6 +326,7 @@ void Boxer::update(const sf::Vector2f& opponentPosition )
     boxerSprite_.setRotation(angle + 278);
     
     
+    
 }
 
 void Boxer::increase_ko_probability(int amount) 

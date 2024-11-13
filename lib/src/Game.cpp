@@ -11,6 +11,7 @@
 Game::Game() 
     : window(sf::VideoMode(1024, 768), "Face to Face", sf::Style::Titlebar | sf::Style::Close), 
     
+      isGameOver(false),
       menu(window),
       currentState(MENU),
       currentBackground(STREET),
@@ -20,10 +21,22 @@ Game::Game()
       hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
       hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
       hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f)),
-      isBotActive(false)
       
+      
+      isBotActive(false)
 {
    
+if (!font.loadFromFile("../../assets/fonts/Eight-Bit-Madness.ttf")) {  // Carga la fuente
+        // Manejo de error si la fuente no se carga
+    }
+
+gameOverText.setFont(font); 
+gameOverText.setString("Game Over");
+gameOverText.setCharacterSize(50);
+gameOverText.setFillColor(sf::Color::Red);
+gameOverText.setStyle(sf::Text::Bold);
+gameOverText.setPosition(400, 300);
+
 
 if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) {
         std::cerr << "Error al cargar la textura del ring" << std::endl;
@@ -108,6 +121,8 @@ void Game::run()
         {
             sf::sleep(sf::seconds(targetFrameTime - frameTime));
         }
+
+        
             
         }
  }
@@ -220,6 +235,12 @@ void Game::run()
                 hitbox_boxer1.draw(window);
                 hitbox_boxer2.draw(window);
                 hitbox_ring.draw(window);
+                
+                if (isGameOver = false) 
+                    {
+                        window.draw(gameOverText);
+                    }
+
                 break;
             }
         }
@@ -254,7 +275,11 @@ void Game::draw() {
     boxer2.draw(window);
     window.draw(boxer1.staminaBar);
     window.draw(boxer2.staminaBar);
+
     
+     
+    
+
     window.display();
 }
 
@@ -400,22 +425,42 @@ void Game::setBackground(BackgroundType backgroundType) {
 
 void Game::handleInput() {
     sf::Event event;
-    while (window.pollEvent(event)) {
-        if (currentState == GameState::MENU) {
+    while (window.pollEvent(event)) 
+    {
+        if (currentState == GameState::MENU) 
+        {
             menu.handleInput(event, window);
+        }
+
+        if (isGameOver = true)
+        {
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) 
+            {
+                window.close(); 
+            }
         }
     }
 }
 
 void Game::update() {
-    if (currentState == GameState::MENU) {
-        menu.update();
-    }
+    if (currentState == GameState::MENU) 
+        {
+            menu.update();
+        }
 
     if(isBotActive)
-    {
-     //moveBot() ? 
-    }
+        {
+        //moveBot() ? 
+        }
+    if(!isGameOver)
+        {
+        if (boxer1.get_hearts() <= 0 || boxer2.get_hearts() <= 0) 
+            {
+                std::cout << "!!isgameover" << std::endl; 
+                isGameOver = true;
+                
+            }
+        }
 }
 
 void Game::render() {
@@ -426,6 +471,8 @@ void Game::render() {
     } else {
         
     }
+
+    
 
     window.display();
 }
