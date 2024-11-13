@@ -5,6 +5,7 @@
 #include "Collision.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
+//#include "Game.hpp"
 
 
 using Action = std::function<void()>;
@@ -56,7 +57,7 @@ public:
     void uppercut();
     void block();
     void unblock();  
-    void dodge(sf::Vector2f direction);
+    sf::Vector2f dodge(sf::Vector2f direction);
     
     bool isinrange(const Boxer& opponent, float range) const;
     

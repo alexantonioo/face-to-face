@@ -7,6 +7,7 @@
 #include "SettingsMenu.hpp"
 
 
+
 Game::Game() 
     : window(sf::VideoMode(1024, 768), "Face to Face", sf::Style::Titlebar | sf::Style::Close), 
     
@@ -16,10 +17,10 @@ Game::Game()
       boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
       boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
       ring(800.0f, 600.0f, "../../assets/images/ring.png"),
-    hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
+      hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
       hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
-      hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f))
-
+      hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f)),
+      isBotActive(false)
       
 {
    
@@ -84,7 +85,16 @@ void Game::run()
 
             if (currentState == MENU) {
                 menu.handleInput(event, window);
-                if (menu.isStartSelected()) {
+                if (menu.isStartSelected()) 
+                {   
+                        if(menu.isPlayWithBotEnabled())
+                        {
+                            setBotActive(true);
+                        }
+                        else if (menu.isPlayWithBotEnabled())
+                        {
+                            setBotActive(false);
+                        }
                     setBackground(static_cast<BackgroundType>(menu.getSelectedOption()));
                     currentState = PLAYING;
                 }
@@ -177,11 +187,13 @@ void Game::run()
         {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) 
         {
-        boxer1.dodge(sf::Vector2f(-0.5f, 0.f)); 
+        hitbox_boxer1.move(boxer1.dodge(sf::Vector2f(-0.5f, 0.f))); 
+        
         }   
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))               
         {
-        boxer1.dodge(sf::Vector2f(0.5f, 0.f)); 
+        hitbox_boxer1.move(boxer1.dodge(sf::Vector2f(0.5f, 0.f)));  
+        
         }   
         }               
 
@@ -399,6 +411,11 @@ void Game::update() {
     if (currentState == GameState::MENU) {
         menu.update();
     }
+
+    if(isBotActive)
+    {
+     //moveBot() ? 
+    }
 }
 
 void Game::render() {
@@ -413,4 +430,8 @@ void Game::render() {
     window.display();
 }
 
+bool playWithBot = false;
 
+void Game::setBotActive(bool active) {
+    isBotActive = active;
+}

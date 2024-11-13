@@ -24,12 +24,18 @@ Menu::Menu(sf::RenderWindow& window){
     backgroundSprite.setScale(scaleX, scaleY);
 
   initMenuOptions(1024, 768); 
+
+    playWithBotCheckbox.setFont(font);
+    playWithBotCheckbox.setString("[ ] Jugar con Bot");
+    playWithBotCheckbox.setFillColor(sf::Color::White);
+    playWithBotCheckbox.setPosition(1024/2, 768/2); // Ajusta según el diseño
+    playWithBotCheckbox.setCharacterSize(30);
     
 }
 
 
 void Menu::initMenuOptions(float width, float height) {
-    std::vector<std::string> options = {"Play", "Settings", "Exit"};
+    std::vector<std::string> options = {"Play", "Settings", "Exit",};
     menuOptions.resize(options.size());
 
     for (size_t i = 0; i < options.size(); ++i) {
@@ -53,6 +59,7 @@ void Menu::draw(sf::RenderWindow& window) {
         for (const auto& option : menuOptions) {
             window.draw(option);
         }
+        window.draw(playWithBotCheckbox);
     }
 }
 
@@ -107,9 +114,21 @@ void Menu::handleInput(const sf::Event& event, sf::RenderWindow& window) {
             }
         }
     }
+    if (event.type == sf::Event::MouseButtonPressed) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        if (playWithBotCheckbox.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+            playWithBot = !playWithBot;
+            playWithBotCheckbox.setString(playWithBot ? "[X] Jugar con Bot" : "[ ] Jugar con Bot");
+        }
+    }
 }
 
 
 bool Menu::isSettingsSelected() const {
     return settingsSelected;
 }
+
+bool Menu::isPlayWithBotEnabled() const {
+    return playWithBot;
+}
+

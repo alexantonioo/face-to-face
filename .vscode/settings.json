@@ -77,7 +77,12 @@
     "queue": "cpp",
     "ranges": "cpp",
     "span": "cpp",
-    "xtree": "cpp"
+    "xtree": "cpp",
+    "condition_variable": "cpp",
+    "fstream": "cpp",
+    "stop_token": "cpp",
+    "thread": "cpp",
+    "variant": "cpp"
   },
   "C_Cpp_Runner.cCompilerPath": "gcc",
   "C_Cpp_Runner.cppCompilerPath": "g++",
