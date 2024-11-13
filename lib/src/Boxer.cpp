@@ -169,7 +169,7 @@ void Boxer::unblock(bool isBoxer1)
 
 void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
 {
-    // Iniciar el bloqueo si no está ya bloqueando
+    
     if (state != BoxerState::BLOCKING) 
     {
         if (stamina < 20) 
@@ -180,7 +180,6 @@ void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
 
         setState(BoxerState::BLOCKING);
 
-        // Cargar animación del bloqueador
         if (isBoxer1)
             loadAnimation("block", "../../assets/images/blockred.png");
         else
@@ -191,10 +190,9 @@ void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
         std::cout << name << " está bloqueando." << std::endl;
     }
 
-    // Reducir estamina continuamente mientras está bloqueando
+    
     if (state == BoxerState::BLOCKING) 
     {
-        // Reducir estamina cada 100 ms para no reducirla demasiado rápido
         if (blockClock.getElapsedTime().asMilliseconds() > 100) 
         {
             reduce_stamina(1);
