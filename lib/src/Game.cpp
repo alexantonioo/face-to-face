@@ -38,7 +38,8 @@ gameOverText.setStyle(sf::Text::Bold);
 gameOverText.setPosition(400, 300);
 
 
-if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) {
+if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) 
+{
         std::cerr << "Error al cargar la textura del ring" << std::endl;
     } else {
         ringSprite_.setTexture(ringTexture_);
@@ -48,7 +49,7 @@ if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) {
         );
     }
 
-    // Cargar textura para el escenario "street"
+    // street texture
     if (!streetTexture_.loadFromFile("../../assets/images/street.png")) {
         std::cerr << "Error al cargar la textura de la calle" << std::endl;
     } else {
@@ -61,9 +62,6 @@ if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) {
     setBackground(STREET);
 
 
-
-    
-    // cargar texturas y animaciones
     boxer1.loadTexture("default", "../../assets/images/boxer.png");  // Textura inicial
     boxer2.loadTexture("default", "../../assets/images/boxer.png");
     
@@ -236,10 +234,7 @@ void Game::run()
                 hitbox_boxer2.draw(window);
                 hitbox_ring.draw(window);
                 
-                if (isGameOver = false) 
-                    {
-                        window.draw(gameOverText);
-                    }
+                
 
                 break;
             }
@@ -255,9 +250,9 @@ void Game::draw() {
     window.draw(backgroundSprite);
 
     if (selectedMapIndex == 0) {
-        window.draw(ringSprite_);  // Fondo para el escenario "ring"
+        window.draw(ringSprite_);  
     } else if (selectedMapIndex == 1) {
-        window.draw(streetSprite_); // Fondo para el escenario "street"
+        window.draw(streetSprite_); 
     }
 
     // Configura las posiciones de las barras
@@ -275,11 +270,7 @@ void Game::draw() {
     boxer2.draw(window);
     window.draw(boxer1.staminaBar);
     window.draw(boxer2.staminaBar);
-
     
-     
-    
-
     window.display();
 }
 
@@ -432,13 +423,7 @@ void Game::handleInput() {
             menu.handleInput(event, window);
         }
 
-        if (isGameOver = true)
-        {
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) 
-            {
-                window.close(); 
-            }
-        }
+    
     }
 }
 
@@ -452,15 +437,35 @@ void Game::update() {
         {
         //moveBot() ? 
         }
-    if(!isGameOver)
+    if (!isGameOver) 
+{
+    if (boxer1.get_hearts() <= 0 || boxer2.get_hearts() <= 0) 
+    {
+        std::cout << "!!isgameover" << std::endl;
+        
+        isGameOver = true;  
+        currentState = MENU;
+
+        window.clear();
+        window.draw(gameOverText);
+        window.display();
+
+        sf::sleep(sf::seconds(2)); 
+
+        while (window.isOpen()) 
         {
-        if (boxer1.get_hearts() <= 0 || boxer2.get_hearts() <= 0) 
+            sf::Event event;
+            while (window.pollEvent(event)) 
             {
-                std::cout << "!!isgameover" << std::endl; 
-                isGameOver = true;
                 
+                if (event.type == sf::Event::Closed) 
+                {
+                    window.close();
+                }
             }
         }
+    }
+}
 }
 
 void Game::render() {
