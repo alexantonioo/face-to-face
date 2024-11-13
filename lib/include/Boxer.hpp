@@ -5,7 +5,7 @@
 #include "Collision.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
-
+#include "BehaviorTree.hpp"
 
 using Action = std::function<void()>;
 
@@ -91,6 +91,9 @@ public:
     BoxerState getState() const; 
     void setState(BoxerState state);
     sf::Vector2f vector;
+    //BehaviorTree
+    NodeStatus jabRightAction();
+    void initBehaviorTree();
     
     private:
 
@@ -111,7 +114,8 @@ public:
     int hearts;  
     bool attacking;   
     bool isleft;
-    
+    //BT
+   
     
     
     sf::Sprite boxerSprite_;

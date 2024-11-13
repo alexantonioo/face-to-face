@@ -7,13 +7,13 @@
 #include <queue>
 #include <functional>
 #include <cmath>
-#include <list.hpp>
+#include "BehaviorTree.hpp" 
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
     : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
-    loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
+    loadTexture("idle", initialTexturePath);  
     boxerSprite_.setScale(0.6f, 0.6f);
     boxerSprite_.setTexture(animations_["idle"]);
     boxerSprite_.setOrigin(339/2,336/2);    
@@ -481,4 +481,26 @@ sf::Vector2f Boxer::getPosition()
 {
     return boxerSprite_.getPosition();
 }
+
+NodeStatus Boxer::jabRightAction() {
+    if (stamina >= 10) {
+        //jab_right(hitbox1, hitbox2, isBoxer1);
+        return NodeStatus::Success;
+    } else {
+        return NodeStatus::Failure;
+    }
+}
+
+
+void Boxer::initBehaviorTree() {
+    auto jabRightNode = std::make_shared<ActionNode>([this]() { return this->jabRightAction(); });
+    //auto dodgeNode = std::make_shared<ActionNode>([this]() { return this->dodgeAction(); });
+
+    auto rootSequence = std::make_shared<SequenceNode>();
+    rootSequence->addChild(jabRightNode);
+    //rootSequence->addChild(dodgeNode);
+
+    behaviorTreeRoot = rootSequence;  // `behaviorTreeRoot` es el nodo raíz del árbol
+}
+
 
