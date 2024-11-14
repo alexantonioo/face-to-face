@@ -5,8 +5,7 @@
 #include "Collision.hpp"
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Vector2.hpp>
-//#include "Game.hpp"
-
+#include "BehaviorTree.hpp"
 
 using Action = std::function<void()>;
 
@@ -95,6 +94,12 @@ public:
     BoxerState getState() const; 
     void setState(BoxerState state);
     sf::Vector2f vector;
+    //BehaviorTree
+    NodeStatus jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance);
+    void initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float distance );
+    void Ian_Right_jab(Collision& hitbox1, Collision& hitbox2);
+    void Ian_Left_jab();
+
     
     private:
 
@@ -119,6 +124,10 @@ public:
     sf::Clock blockClock;
     sf::Clock damageCooldownClock;
     sf::Time damageCooldown = sf::milliseconds(1000);
+    //BT
+    std::shared_ptr<BehaviorNode> behaviorTreeRoot;
+    
+    
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?

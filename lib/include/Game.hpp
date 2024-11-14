@@ -8,7 +8,7 @@ public:
     Game();
     void run();
     void drawHearts(const Boxer& boxer, const sf::Vector2f& position); 
-    void limitFPS(float targetFPS = 60.0f);
+    
 
     enum BackgroundType { 
         RING,
