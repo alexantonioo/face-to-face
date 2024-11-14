@@ -121,8 +121,9 @@ public:
     sf::Time damageCooldown = sf::milliseconds(1000);
     sf::Clock dodgeClock; 
     sf::Clock punchClock;
+    sf::Time punchDuration;
     
-
+    
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?

@@ -8,7 +8,7 @@ public:
     Game();
     void run();
     void drawHearts(const Boxer& boxer, const sf::Vector2f& position); 
-    void limitFPS(float targetFPS = 60.0f);
+    
 
     enum BackgroundType { 
         RING,
@@ -26,7 +26,7 @@ private:
 
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
-    BackgroundType currentBackground = RING;  // Por defecto al iniciar 
+    BackgroundType currentBackground = RING;  
     int selectedMapIndex = 0;
 
     sf::Texture ringTexture_;

@@ -2,11 +2,12 @@
 #include "Game.hpp"
 #include "Ring.hpp"
 #include "Boxer.hpp"
+#include <cmath>
 #include "Collision.hpp"
 #include <iostream>
 #include "SettingsMenu.hpp"
 #include "Path.hpp"
-
+#include <SFML/System/Vector2.hpp>
 
 
 Game::Game() 
@@ -25,9 +26,12 @@ Game::Game()
 
     isBotActive(false)
 {
+        float distance_boxer = sqrt(pow(hitbox_boxer1.getPosition().x - hitbox_boxer2.getPosition().x, 2) + pow(hitbox_boxer1.getPosition().y - hitbox_boxer2.getPosition().y, 2));
+    
+    boxer2.initBehaviorTree(hitbox_boxer1,hitbox_boxer2, distance_boxer); 
 
-if (!font.loadFromFile(Path::BITM_FONT_PATH)) {  // Carga la fuente
-        
+if (!font.loadFromFile(Path::BITM_FONT_PATH)) {  
+        std::cerr << "Error al cargar fuente" << std::endl;
     }
 
 gameOverText.setFont(font); 
@@ -259,7 +263,6 @@ void Game::draw() {
         window.draw(streetSprite_); 
     }
 
-    // Configura las posiciones de las barras
     boxer1.staminaBar.setPosition(10, 10); 
     boxer2.staminaBar.setPosition(window.getSize().x - 110, 10); 
 
@@ -439,7 +442,7 @@ void Game::update() {
 
     if(isBotActive)
         {
-        //moveBot() ? 
+        //moveBot() ?? 
         }
     if (!isGameOver) 
 {
