@@ -92,8 +92,11 @@ public:
     void setState(BoxerState state);
     sf::Vector2f vector;
     //BehaviorTree
-    NodeStatus jabRightAction();
-    void initBehaviorTree();
+    NodeStatus jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance);
+    void initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float distance );
+    void Ian_Right_jab(Collision& hitbox1, Collision& hitbox2);
+    void Ian_Left_jab();
+
     
     private:
 
@@ -115,7 +118,7 @@ public:
     bool attacking;   
     bool isleft;
     //BT
-   
+    std::shared_ptr<BehaviorNode> behaviorTreeRoot;
     
     
     sf::Sprite boxerSprite_;

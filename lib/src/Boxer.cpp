@@ -12,20 +12,21 @@
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
     : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
-      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
-    loadTexture("idle", initialTexturePath);  
-    boxerSprite_.setScale(0.6f, 0.6f);
-    boxerSprite_.setTexture(animations_["idle"]);
-    boxerSprite_.setOrigin(339/2,336/2);    
-    boxerSprite_.setPosition(spawn.x,spawn.y); 
+      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) 
+    {
+        loadTexture("idle", initialTexturePath);  
+        boxerSprite_.setScale(0.6f, 0.6f);
+        boxerSprite_.setTexture(animations_["idle"]);
+        boxerSprite_.setOrigin(339/2,336/2);    
+        boxerSprite_.setPosition(spawn.x,spawn.y); 
+        
+        staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
+        staminaBar.setFillColor(sf::Color::Green);        
+        staminaBar.setOutlineColor(sf::Color::Black);    
+        staminaBar.setOutlineThickness(2.0f);
+        loadHeartTexture();
     
-    staminaBar.setSize(sf::Vector2f(100.0f, 20.0f)); 
-    staminaBar.setFillColor(sf::Color::Green);        
-    staminaBar.setOutlineColor(sf::Color::Black);    
-    staminaBar.setOutlineThickness(2.0f);
-    loadHeartTexture();
-    
-      }
+    }
 
 void Boxer::loadTexture(const std::string& animationName, const std::string& texturePath) 
 {
@@ -95,7 +96,7 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         state = BoxerState::ATTACKING;
         punchClock.restart();  
         reduce_stamina(10);
-        //take_damage(1);
+        
         
         if(isBoxer1)
         {
@@ -300,6 +301,10 @@ void Boxer::updatefps(float deltaTime) {
 
 void Boxer::update(const sf::Vector2f& opponentPosition ) 
 {
+    if (behaviorTreeRoot) {
+        behaviorTreeRoot->tick();  
+    }
+    
     if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) 
     {
         state = BoxerState::IDLE;
@@ -482,9 +487,43 @@ sf::Vector2f Boxer::getPosition()
     return boxerSprite_.getPosition();
 }
 
-NodeStatus Boxer::jabRightAction() {
-    if (stamina >= 10) {
-        //jab_right(hitbox1, hitbox2, isBoxer1);
+void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
+{
+   
+    
+    if (state == BoxerState::IDLE) {  
+        state = BoxerState::ATTACKING;
+        punchClock.restart();  
+        reduce_stamina(10);
+        
+        
+      
+        
+        loadAnimation("jab_right", "../../assets/images/right_blue.png");
+        
+
+        setAnimation("jab_right");
+
+        
+        hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
+        hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
+       
+    }
+
+    else {
+        hitbox1.reset();
+        hitbox2.reset();
+        state = BoxerState::IDLE;
+    }
+}
+
+
+
+
+NodeStatus Boxer::jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance) {
+    if (stamina >= 10 && distance < 20 ) {
+        std::cout << distance << "metros" << std::endl;
+        Ian_Right_jab(hitbox1,hitbox2);
         return NodeStatus::Success;
     } else {
         return NodeStatus::Failure;
@@ -492,15 +531,18 @@ NodeStatus Boxer::jabRightAction() {
 }
 
 
-void Boxer::initBehaviorTree() {
-    auto jabRightNode = std::make_shared<ActionNode>([this]() { return this->jabRightAction(); });
+void Boxer::initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float distance) 
+{
+    
+    auto jabRightNode = std::make_shared<ActionNode>([this, &hitbox1, &hitbox2, &distance]() { return this->jabRightAction( hitbox1, hitbox2, distance); });
+    
     //auto dodgeNode = std::make_shared<ActionNode>([this]() { return this->dodgeAction(); });
 
     auto rootSequence = std::make_shared<SequenceNode>();
     rootSequence->addChild(jabRightNode);
+    
     //rootSequence->addChild(dodgeNode);
 
-    behaviorTreeRoot = rootSequence;  // `behaviorTreeRoot` es el nodo raíz del árbol
+    behaviorTreeRoot = rootSequence;  
 }
-
 

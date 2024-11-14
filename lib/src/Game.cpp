@@ -2,9 +2,11 @@
 #include "Game.hpp"
 #include "Ring.hpp"
 #include "Boxer.hpp"
+#include <cmath>
 #include "Collision.hpp"
 #include <iostream>
 #include "SettingsMenu.hpp"
+#include <SFML/System/Vector2.hpp>
 
 
 Game::Game() 
@@ -16,15 +18,17 @@ Game::Game()
       boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
       boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
       ring(800.0f, 600.0f, "../../assets/images/ring.png"),
-    hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
+      hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
       hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
       hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f))
 
       
 {
-   
-
-if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) {
+    float distance_boxer = sqrt(pow(hitbox_boxer2.getPosition().x - hitbox_boxer1.getPosition().x, 2) + pow(hitbox_boxer2.getPosition().y - hitbox_boxer1.getPosition().y, 2));
+    
+    boxer2.initBehaviorTree(hitbox_boxer1,hitbox_boxer2, distance_boxer); 
+            
+    if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) {
         std::cerr << "Error al cargar la textura del ring" << std::endl;
     } else {
         ringSprite_.setTexture(ringTexture_);
@@ -34,7 +38,7 @@ if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) {
         );
     }
 
-    // Cargar textura para el escenario "street"
+    
     if (!streetTexture_.loadFromFile("../../assets/images/street.png")) {
         std::cerr << "Error al cargar la textura de la calle" << std::endl;
     } else {
@@ -412,5 +416,4 @@ void Game::render() {
 
     window.display();
 }
-
 
