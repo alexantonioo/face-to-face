@@ -16,8 +16,7 @@ enum class BoxerState
     ATTACKING,
     BLOCKING,
     DODGING,
-    TAKING_DAMAGE,
-    K_O
+    TAKING_DAMAGE
     };
 
 class Boxer 
@@ -33,10 +32,7 @@ public:
     
 
 
-void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
-                sf::Keyboard::Key attack3, sf::Keyboard::Key attack4,
-                sf::Keyboard::Key keyblock, Collision& hitbox1,
-                Collision& hitbox2, bool isBoxer1);
+    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, Collision& hitbox1, Collision& hitbox2, bool isBoxer1, sf::Keyboard::Key keyblock);
 
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
     const sf::Sprite&  getSprite() const;
@@ -47,30 +43,27 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     sf::FloatRect getBounds() const;
     void setPosition(float x, float y);
 
-    void setColor(sf::Color color); 
-    void setAnimation(const std::string& animationName); 
-    
-    void setHealthStaminaPosition(sf::Vector2f healthPos, sf::Vector2f staminaPos);
-    void drawBars(sf::RenderWindow& window);
-
-    sf::RectangleShape staminaBar;  
-    sf::RectangleShape staminaBarBackground;
-
-    sf::RectangleShape HealthBar;
-    sf::RectangleShape healthBarBackground;
+    void setColor(sf::Color color); // ?
+    void setAnimation(const std::string& animationName); //change animation
+    sf::RectangleShape staminaBar;
+    void loadHeartTexture();
+    void drawHearts(sf::RenderWindow& window, int heartsCount, bool isLeft);
 
     // action methods
     void jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
     void jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
+
     void block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1);
-    void unblock(); 
+    void unblock(bool); 
     
     void hook();
     void uppercut();
     
     
     sf::Vector2f dodge(sf::Vector2f direction);
+
     
+    bool isinrange(const Boxer& opponent, float range) const;
     
     // Methods managing actions
     void enqueue_action(Action action);
@@ -88,8 +81,7 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     void recover_stamina(float amount);      
     float get_stamina() const;                
     float get_max_stamina() const;   
-    
-    void updateHealthBar();
+
     void take_damage(int amount);
     void receivePunch(int amount);
 
@@ -99,7 +91,7 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     int get_lucky_in_punch() const;
     int get_defense() const;
     int get_speed() const;
-    int get_Health() const;
+    int get_hearts() const;
 
     BoxerState getState() const; 
     void setState(BoxerState state);
@@ -107,12 +99,11 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     
     private:
 
+
     std::string name;
     
     Boxer* opponent = nullptr; 
 
-    float maxHealth;
-    float Health;
     float max_stamina; 
     float stamina;               
     int lucky_in_punch;
@@ -121,14 +112,14 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     int ko_probability; 
     bool knocked_out;   
     float dodgeSpeed;
-
     
+    int hearts;  
     bool attacking;   
     bool isleft;
     
-    
+    sf::Clock blockClock;
     sf::Clock damageCooldownClock;
-    sf::Time damageCooldown = sf::milliseconds(200);
+    sf::Time damageCooldown = sf::milliseconds(800);
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?
@@ -138,13 +129,11 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     sf::Vector2f position;
     BoxerState state;  // manage state
     
-    sf::Clock blockClock; 
     sf::Clock punchClock;
     sf::Time punchDuration;
     std::queue<Action> action_queue;  // action queue
     float time_accumulated;           // accumulated time
     float action_interval;
-    
-    
-
+    sf::Texture heartTexture;  // heart textur
+    sf::Sprite heartSprite; 
 };

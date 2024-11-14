@@ -3,12 +3,12 @@
 #include "Ring.hpp"
 #include "Menu.hpp"
 #include "Collision.hpp"
-
 class Game {
 public:
     Game();
     void run();
-    
+    void drawHearts(const Boxer& boxer, const sf::Vector2f& position); 
+    void limitFPS(float targetFPS = 60.0f);
 
     enum BackgroundType { 
         RING,
@@ -56,7 +56,7 @@ private:
     Collision hitbox_boxer2;
     Collision hitbox_ring;
     void draw();
-    
+    void drawHearts();
 
     bool isBotActive;
     bool isGameOver;

@@ -1,8 +1,9 @@
 #include "SettingsMenu.hpp"
+#include "Path.hpp"
 #include <iostream>
 
 SettingsMenu::SettingsMenu() {
-    if (!font.loadFromFile("../../assets/fonts/Eight-Bit-Madness.ttf")) {
+    if (!font.loadFromFile(Path::BITM_FONT_PATH)) {
         std::cerr << "Error 'assets/fonts/Eight-Bit-Madness.ttf'" << std::endl;
     }
 

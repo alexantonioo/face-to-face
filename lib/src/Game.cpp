@@ -5,29 +5,29 @@
 #include "Collision.hpp"
 #include <iostream>
 #include "SettingsMenu.hpp"
+#include "Path.hpp"
 
 
 
 Game::Game() 
     : window(sf::VideoMode(1024, 768), "Face to Face", sf::Style::Titlebar | sf::Style::Close), 
     
-      isGameOver(false),
-      menu(window),
-      currentState(MENU),
-      currentBackground(STREET),
-      boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
-      boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
-      ring(800.0f, 600.0f, "../../assets/images/ring.png"),
-      hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
-      hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
-      hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f)),
-      
-      
-      isBotActive(false)
+    isGameOver(false),
+    menu(window),
+    currentState(MENU),
+    currentBackground(STREET),
+    boxer1("Boxer 1", Path::IDLERED_TEXTURE_PATH, sf::Vector2f(512, 120)), 
+    boxer2("Boxer 2", Path::IDLEBLUE_TEXTURE_PATH,sf::Vector2f(512, 440)), 
+    ring(800.0f, 600.0f, Path::RING_TEXTURE_PATH),
+    hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
+    hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
+    hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f)),
+
+    isBotActive(false)
 {
-   
-if (!font.loadFromFile("../../assets/fonts/Eight-Bit-Madness.ttf")) {  // Carga la fuente
-        // Manejo de error si la fuente no se carga
+
+if (!font.loadFromFile(Path::BITM_FONT_PATH)) {  // Carga la fuente
+        
     }
 
 gameOverText.setFont(font); 
@@ -38,7 +38,7 @@ gameOverText.setStyle(sf::Text::Bold);
 gameOverText.setPosition(400, 300);
 
 
-if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) 
+if (!ringTexture_.loadFromFile(Path::RING_TEXTURE_PATH)) 
 {
         std::cerr << "Error al cargar la textura del ring" << std::endl;
     } else {
@@ -50,7 +50,7 @@ if (!ringTexture_.loadFromFile("../../assets/images/ring.png"))
     }
 
     // street texture
-    if (!streetTexture_.loadFromFile("../../assets/images/street.png")) {
+    if (!streetTexture_.loadFromFile(Path::STREET_TEXTURE_PATH)) {
         std::cerr << "Error al cargar la textura de la calle" << std::endl;
     } else {
         streetSprite_.setTexture(streetTexture_);
@@ -62,8 +62,8 @@ if (!ringTexture_.loadFromFile("../../assets/images/ring.png"))
     setBackground(STREET);
 
 
-    boxer1.loadTexture("default", "../../assets/images/boxer.png");  // Textura inicial
-    boxer2.loadTexture("default", "../../assets/images/boxer.png");
+    boxer1.loadTexture("default", Path::IDLERED_TEXTURE_PATH);  
+    boxer2.loadTexture("default", Path::IDLEBLUE_TEXTURE_PATH);
     
 
     boxer1.vector = boxer2.getSprite().getPosition() - boxer1.getSprite().getPosition();
@@ -75,6 +75,8 @@ void Game::run()
 {
     bool isPaused = false;
     sf::Clock deltaClock;
+    const float targetFPS = 60.0f;
+    const float targetFrameTime = 1.0f / targetFPS;
     window.setFramerateLimit(120);
     window.setVerticalSyncEnabled(true);
     while (window.isOpen()) 
@@ -107,10 +109,22 @@ void Game::run()
                     setBackground(static_cast<BackgroundType>(menu.getSelectedOption()));
                     currentState = PLAYING;
                 }
+
+        float frameTime = clock.restart().asSeconds();
+        boxer1.updatefps(frameTime);
+        boxer2.updatefps(frameTime);
+
+        // Limitar los FPS a 60
+        if (frameTime < targetFrameTime) 
+        {
+            sf::sleep(sf::seconds(targetFrameTime - frameTime));
+        }
+
+        
             
         }
-}
-
+ }
+   
     
     window.clear(sf::Color::Black);
         
@@ -200,8 +214,8 @@ void Game::run()
         }   
         }               
 
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U,sf::Keyboard::Key::K, hitbox_boxer1, hitbox_boxer2,true);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J,sf::Keyboard::Key::I, hitbox_boxer1, hitbox_boxer2,false); 
+                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U, hitbox_boxer1, hitbox_boxer2,true,sf::Keyboard::Key::K);
+                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false,sf::Keyboard::Key::I); 
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
@@ -245,54 +259,45 @@ void Game::draw() {
         window.draw(streetSprite_); 
     }
 
-    float healthBarWidth = 400.0f;   // X
-    float healthBarHeight = 20.0f;   // HH
-    float staminaBarHeight = 15.0f;  // HS
-    float barSpacing = 5.0f;         // spacing
+    // Configura las posiciones de las barras
+    boxer1.staminaBar.setPosition(10, 10); 
+    boxer2.staminaBar.setPosition(window.getSize().x - 110, 10); 
 
-// Contenedores para las barras
-sf::RectangleShape containerBoxer1(sf::Vector2f(healthBarWidth, healthBarHeight + staminaBarHeight + barSpacing));
-sf::RectangleShape containerBoxer2(sf::Vector2f(healthBarWidth, healthBarHeight + staminaBarHeight + barSpacing));
-
-// Posiciona los contenedores en las esquinas superiores
-containerBoxer1.setPosition(10.0f, 10.0f);
-containerBoxer2.setPosition(window.getSize().x - healthBarWidth - 10.0f, 10.0f);
-
-// Barra de salud del boxeador 1
-boxer1.HealthBar.setSize(sf::Vector2f(healthBarWidth, healthBarHeight));
-boxer1.HealthBar.setPosition(containerBoxer1.getPosition().x, containerBoxer1.getPosition().y);
-
-// Barra de stamina del boxeador 1
-boxer1.staminaBar.setSize(sf::Vector2f(healthBarWidth, staminaBarHeight));
-boxer1.staminaBar.setPosition(containerBoxer1.getPosition().x, containerBoxer1.getPosition().y + healthBarHeight + barSpacing);
-
-// Barra de salud del boxeador 2
-boxer2.HealthBar.setSize(sf::Vector2f(healthBarWidth, healthBarHeight));
-boxer2.HealthBar.setPosition(containerBoxer2.getPosition().x, containerBoxer2.getPosition().y);
-
-// Barra de stamina del boxeador 2
-boxer2.staminaBar.setSize(sf::Vector2f(healthBarWidth, staminaBarHeight));
-boxer2.staminaBar.setPosition(containerBoxer2.getPosition().x, containerBoxer2.getPosition().y + healthBarHeight + barSpacing);
-
-
-
-    boxer1.updateHealthBar();
-    boxer2.updateHealthBar();
     boxer1.updateStaminaBar();
     boxer2.updateStaminaBar();
 
+    //hearts
+    drawHearts(boxer1, sf::Vector2f(50, 10));         
+    drawHearts(boxer2, sf::Vector2f(600, 10));      
+
     boxer1.draw(window);
     boxer2.draw(window);
-
-    
-    window.draw(boxer1.HealthBar);
-    window.draw(boxer2.HealthBar);
     window.draw(boxer1.staminaBar);
     window.draw(boxer2.staminaBar);
+    
     window.display();
 }
 
 
+
+void Game::drawHearts(const Boxer& boxer, const sf::Vector2f& position) 
+    {
+
+    static sf::Texture heartTexture;
+    static bool textureLoaded = false;
+    if (!textureLoaded) {
+        if (!heartTexture.loadFromFile(Path::HEART_TEXTURE_PATH)) {
+            
+            return;
+        }
+        textureLoaded = true;
+    }
+    sf::Sprite heartSprite(heartTexture);
+    for (int i = 0; i < boxer.get_hearts(); ++i) {
+        heartSprite.setPosition(position.x + i * (heartSprite.getGlobalBounds().width + 5), position.y);
+        window.draw(heartSprite);
+    }
+}
 
 
 void Game::handleCollisions() 
@@ -391,12 +396,12 @@ void Game::handleCollisions()
         
         if (boxer1.getState() == BoxerState::ATTACKING) 
         {
-            boxer2.receivePunch(10); 
+            boxer2.receivePunch(1); 
         }
 
         if (boxer2.getState() == BoxerState::ATTACKING) 
         {
-            boxer1.receivePunch(10); 
+            boxer1.receivePunch(1); 
         }
     }
 }
