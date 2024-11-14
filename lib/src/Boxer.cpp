@@ -13,7 +13,7 @@
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
     : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
-      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) 
+    ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) 
     {
         loadTexture("idle", initialTexturePath);  
         boxerSprite_.setScale(0.6f, 0.6f);
@@ -533,15 +533,13 @@ sf::Vector2f Boxer::getPosition()
 
 void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
 {
-   
-    
+
     if (state == BoxerState::IDLE) {  
         state = BoxerState::ATTACKING;
         punchClock.restart();  
         reduce_stamina(10);
         
-        
-      
+
         
         loadAnimation("jab_right", "../../assets/images/right_blue.png");
         
@@ -551,7 +549,6 @@ void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
         
         hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
         hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
-       
     }
 
     else {
@@ -567,13 +564,15 @@ void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
 NodeStatus Boxer::jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance) {
     float delta = sqrt(pow(hitbox1.getPosition().x - hitbox2.getPosition().x, 2) + pow(hitbox1.getPosition().y - hitbox2.getPosition().y, 2));
 
-    std::cout << delta << " metros" << std::endl;
+    //std::cout << delta << " metros" << std::endl;
 
-    if (stamina >= 10 && delta < 20) {
+    if (stamina >= 10 && delta < 37) {
         
         Ian_Right_jab(hitbox1, hitbox2);
         return NodeStatus::Success;
-    } else {
+    } 
+    
+    else {
         return NodeStatus::Failure;
     }
 }
