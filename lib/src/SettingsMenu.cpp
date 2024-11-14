@@ -59,10 +59,6 @@ void SettingsMenu::moveDown() {
     }
 }
 
-/*std::string SettingsMenu::getSelectedMap() const {
-    return selectedMapIndex >= 0 ? mapOptions[selectedMapIndex].getString() : "None";
-}*/
-
 int SettingsMenu::getSelectedMapIndex() const {
     return selectedMapIndex;
 }
