@@ -11,21 +11,20 @@
 Game::Game() 
     : window(sf::VideoMode(1024, 768), "Face to Face", sf::Style::Titlebar | sf::Style::Close), 
     
-      isGameOver(false),
-      menu(window),
-      currentState(MENU),
-      currentBackground(STREET),
-      boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
-      boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
-      ring(800.0f, 600.0f, "../../assets/images/ring.png"),
-      hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
-      hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
-      hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f)),
-      
-      
-      isBotActive(false)
+    isGameOver(false),
+    menu(window),
+    currentState(MENU),
+    currentBackground(STREET),
+    boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
+    boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
+    ring(800.0f, 600.0f, "../../assets/images/ring.png"),
+    hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
+    hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
+    hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f)),
+
+    isBotActive(false)
 {
-   
+
 if (!font.loadFromFile("../../assets/fonts/Eight-Bit-Madness.ttf")) {  // Carga la fuente
         // Manejo de error si la fuente no se carga
     }
@@ -214,8 +213,8 @@ void Game::run()
         }   
         }               
 
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U, hitbox_boxer1, hitbox_boxer2,true);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false); 
+                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U, hitbox_boxer1, hitbox_boxer2,true,sf::Keyboard::Key::K);
+                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false,sf::Keyboard::Key::I); 
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
@@ -396,12 +395,12 @@ void Game::handleCollisions()
         
         if (boxer1.getState() == BoxerState::ATTACKING) 
         {
-            boxer2.receivePunch(); 
+            boxer2.receivePunch(1); 
         }
 
         if (boxer2.getState() == BoxerState::ATTACKING) 
         {
-            boxer1.receivePunch(); 
+            boxer1.receivePunch(1); 
         }
     }
 }

@@ -155,7 +155,6 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
     }
 }
 
-<<<<<<< HEAD
 void Boxer::unblock(bool isBoxer1) 
 {
 
@@ -175,13 +174,6 @@ void Boxer::unblock(bool isBoxer1)
         std::cout << name << " dejó de bloquear." << std::endl;
     }
 }
-=======
-/*void Boxer::setOpponent(Boxer* opponent) {
-    this->opponent = opponent;
-}*/
-
-
->>>>>>> parent of a14867c (Rework stamina corazones)
 
 void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
 {
@@ -207,8 +199,7 @@ void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
 
         setAnimation("block");
         blockClock.restart();
-        parryClock.restart(); // Reiniciamos el reloj para medir la ventana del parry
-        isParrying = false;
+        
         std::cout << name << " está bloqueando." << std::endl;
     }
 
@@ -229,61 +220,7 @@ void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
     }
 }
 
-void Boxer::counterAttack(Collision& hitbox1, Collision& hitbox2, bool isBoxer1) {
-    if (isParrying) {
-        std::cout << name << " aprovecha el parry y lanza un contraataque.\n";
-        if(isBoxer1){
-        takeDamage(20);
-        }
-        else{
-        take_damage(20);
-        }
-        isParrying;
-        state = BoxerState::ATTACKING; 
-    }
-}
-
-<<<<<<< HEAD
-sf::Vector2f Boxer::dodge(sf::Vector2f direction) 
-=======
-void Boxer::block() 
-{
-
-    if (state == BoxerState::IDLE) 
-    { 
-        if(stamina < 20)
-        {
-            std::cout << name << " no se puede bloquear recupera energia" << std::endl;
-
-            return;
-        }
-        state = BoxerState::BLOCKING;
-        reduce_stamina(1);  
-        blockClock.restart();
-        loadAnimation("block", "../../assets/images/block.png");
-
-        setAnimation("block"); 
-
-        std::cout << name << " está bloqueando." << std::endl;
-
-    } 
-}
-void Boxer::unblock() 
-{
-    if (state == BoxerState::BLOCKING)
-    {
-        setState(BoxerState::IDLE);
-        loadAnimation("boxer", "../../assets/images/boxer.png"); 
-        setAnimation("boxer");
-    }
-}
-
-<<<<<<< HEAD
-sf::Vector2f Boxer::dodge(sf::Vector2f direction) 
-=======
-void Boxer::dodge(sf::Vector2f direction) 
->>>>>>> parent of a14867c (Rework stamina corazones)
->>>>>>> V2.0_Lj
+sf::Vector2f Boxer::dodge(sf::Vector2f direction)
 {
     
     state = BoxerState::DODGING;
@@ -298,29 +235,18 @@ void Boxer::dodge(sf::Vector2f direction)
     std::cout << name << "esquivo" << std::endl;
         
     return sf::Vector2f(direction * dodgeSpeed);
- }   
+}   
 
 //methods damage
 void Boxer::take_damage(int amount) 
 {
-    if (state == BoxerState::BLOCKING) {
-        float elapsedTime = parryClock.getElapsedTime().asSeconds();
-
-        if (elapsedTime <= parryWindow) {
-            isParrying = true;
-            std::cout << name << " realizó un parry exitoso.\n";
-            state = BoxerState::IDLE; 
-            return;
-        }
-    }
-
     if (state == BoxerState::BLOCKING) 
     {
         std::cout << name << " bloqueó el golpe y no recibió daño." << std::endl;
         return;
     }
 
-     hearts -= amount; 
+    hearts -= amount; 
     if (hearts < 0) 
     {
         hearts = 0; 
@@ -328,7 +254,7 @@ void Boxer::take_damage(int amount)
     }
 }
 
-void Boxer::receivePunch() {
+void Boxer::receivePunch(int amount) {
     
     if (hearts > 0) {
         hearts--;  
@@ -526,9 +452,8 @@ const sf::Sprite& Boxer::getSprite() const {
 
 void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
                         sf::Keyboard::Key attack3, sf::Keyboard::Key attack4,
-                        Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
+                        Collision& hitbox1, Collision& hitbox2,bool isBoxer1,sf::Keyboard::Key keyblock) 
 {
-<<<<<<< HEAD
     if (sf::Keyboard::isKeyPressed(keyblock)) {
         block(hitbox1, hitbox2, isBoxer1);
     } else {
@@ -538,8 +463,6 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
         }
     }
 
-=======
->>>>>>> parent of a14867c (Rework stamina corazones)
     if (sf::Keyboard::isKeyPressed(attack1)) {
         jab_right(hitbox1, hitbox2, isBoxer1); 
         setState(BoxerState::ATTACKING);
@@ -550,12 +473,6 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
         setState(BoxerState::ATTACKING);
     }
 }
-
-
-<<<<<<< HEAD
-}
-=======
->>>>>>> parent of a14867c (Rework stamina corazones)
 
 void Collision::expand(const sf::Vector2f& expansionSize) 
 {

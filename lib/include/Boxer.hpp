@@ -32,7 +32,7 @@ public:
     
 
 
-    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, Collision& hitbox1, Collision& hitbox2, bool isBoxer1);
+    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, Collision& hitbox1, Collision& hitbox2, bool isBoxer1, sf::Keyboard::Key keyblock);
 
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
     const sf::Sprite&  getSprite() const;
@@ -43,30 +43,16 @@ public:
     sf::FloatRect getBounds() const;
     void setPosition(float x, float y);
 
-<<<<<<< HEAD
-    void setColor(sf::Color color); 
-    void setAnimation(const std::string& animationName); 
-    
-    void setHealthStaminaPosition(sf::Vector2f healthPos, sf::Vector2f staminaPos);
-    void drawBars(sf::RenderWindow& window);
-
-    sf::RectangleShape staminaBar;  
-    sf::RectangleShape staminaBarBackground;
-
-    sf::RectangleShape HealthBar;
-    sf::RectangleShape healthBarBackground;
-=======
     void setColor(sf::Color color); // ?
     void setAnimation(const std::string& animationName); //change animation
     sf::RectangleShape staminaBar;
     void loadHeartTexture();
     void drawHearts(sf::RenderWindow& window, int heartsCount, bool isLeft);
->>>>>>> parent of a14867c (Rework stamina corazones)
 
     // action methods
     void jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
     void jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
-<<<<<<< HEAD
+
     void block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1);
     void unblock(bool); 
     
@@ -75,18 +61,7 @@ public:
     
     
     sf::Vector2f dodge(sf::Vector2f direction);
-=======
-   
-    void hook();
-    void uppercut();
-    void block();
-    void unblock();  
-<<<<<<< HEAD
-    sf::Vector2f dodge(sf::Vector2f direction);
-=======
-    void dodge(sf::Vector2f direction);
->>>>>>> parent of a14867c (Rework stamina corazones)
->>>>>>> V2.0_Lj
+
     
     bool isinrange(const Boxer& opponent, float range) const;
     
@@ -106,15 +81,10 @@ public:
     void recover_stamina(float amount);      
     float get_stamina() const;                
     float get_max_stamina() const;   
-   
+
     void take_damage(int amount);
-<<<<<<< HEAD
     void receivePunch(int amount);
 
-=======
-    void receivePunch();
-    bool isAttacking() const;  
->>>>>>> parent of a14867c (Rework stamina corazones)
 
     // access methods
     const std::string& get_name() const;
@@ -147,13 +117,9 @@ public:
     bool attacking;   
     bool isleft;
     
-    
-<<<<<<< HEAD
+    sf::Clock blockClock;
     sf::Clock damageCooldownClock;
     sf::Time damageCooldown = sf::milliseconds(800);
-=======
-    
->>>>>>> parent of a14867c (Rework stamina corazones)
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?
