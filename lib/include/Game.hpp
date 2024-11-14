@@ -26,7 +26,7 @@ private:
 
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
-    BackgroundType currentBackground = RING;  // Por defecto al iniciar 
+    BackgroundType currentBackground = RING;  
     int selectedMapIndex = 0;
 
     sf::Texture ringTexture_;
