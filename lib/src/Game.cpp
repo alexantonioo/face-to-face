@@ -137,7 +137,7 @@ void Game::run()
                 handleInput();
                 update();
 
-                // boxer 1 movement wasd
+        // boxer 1 movement wasd
         sf::Vector2f movement1(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
         {
@@ -157,16 +157,18 @@ void Game::run()
         }
         //block
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+        
         //Dodge
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::U)) 
         {
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
         {
-        boxer2.dodge(sf::Vector2f(-1.f, 0.f)); // Esquivar hacia la izquierda
+        boxer2.dodge(sf::Vector2f(-1.f, 0.f)); 
         } 
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
         {
-        boxer2.dodge(sf::Vector2f(1.f, 0.f)); // Esquivar hacia la derecha
+        boxer2.dodge(sf::Vector2f(1.f, 0.f)); 
         }
         }
 
@@ -195,6 +197,8 @@ void Game::run()
         boxer2.move(movement2);
         hitbox_boxer2.move(movement2);
         
+        //BLOCK
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::I))
         //DODGE BOXER 1
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
         {
@@ -220,7 +224,7 @@ void Game::run()
                     menu.draw(window); 
                 }
                 else {
- 
+
                 boxer1.update(boxer2.getSprite().getPosition() /*1*/);
                 boxer2.update(boxer1.getSprite().getPosition() /*2*/);
 
@@ -365,7 +369,7 @@ void Game::handleCollisions()
                 moveDirection.x = intersection.width / 2;
             }
         }
-         else 
+        else 
         {
             if (boxer1Bounds.top < boxer2Bounds.top) 
             {

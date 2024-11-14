@@ -7,12 +7,12 @@
 #include <queue>
 #include <functional>
 #include <cmath>
-
+#include <list.hpp>
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
     : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
-      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
+    ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.6f, 0.6f);
     boxerSprite_.setTexture(animations_["idle"]);
@@ -25,7 +25,7 @@ Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf:
     staminaBar.setOutlineThickness(2.0f);
     loadHeartTexture();
     
-      }
+    }
 
 void Boxer::loadTexture(const std::string& animationName, const std::string& texturePath) 
 {
@@ -111,7 +111,7 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         
         hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
         hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
-       
+    
     }
 
     else {
@@ -155,42 +155,97 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
     }
 }
 
+<<<<<<< HEAD
+void Boxer::unblock(bool isBoxer1) 
+{
+
+    if (state == BoxerState::BLOCKING) 
+    {
+        setState(BoxerState::IDLE);
+        
+        if(isBoxer1)
+        {
+            loadAnimation("idle", "../../assets/images/idle_red.png");
+        }
+        else
+        {
+            loadAnimation("idle", "../../assets/images/idle_blue.png");
+        }
+        setAnimation("idle");
+        std::cout << name << " dejó de bloquear." << std::endl;
+    }
+}
+=======
 /*void Boxer::setOpponent(Boxer* opponent) {
     this->opponent = opponent;
 }*/
 
 
+>>>>>>> parent of a14867c (Rework stamina corazones)
 
-void Boxer::hook() 
+void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
 {
-    if (state == BoxerState::IDLE) {  
-        state = BoxerState::ATTACKING;
-        punchClock.restart();  
+    
+    if (state != BoxerState::BLOCKING) 
+    {
+        if (stamina < 20) 
+        {
+            std::cout << name << " no tiene suficiente energía para bloquear." << std::endl;
+            return; 
+        }
 
-        loadAnimation("hook", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/hook.png");
+        setState(BoxerState::BLOCKING);
 
-        setAnimation("hook");  
-        //FALTA AJUSTAR STAMINA
+            
+        if (isBoxer1){
+            loadAnimation("block", "../../assets/images/blockred.png");
+        }
+            
+        else{
+            loadAnimation("block", "../../assets/images/blockblue.png");
+        }
+
+        setAnimation("block");
+        blockClock.restart();
+        parryClock.restart(); // Reiniciamos el reloj para medir la ventana del parry
+        isParrying = false;
+        std::cout << name << " está bloqueando." << std::endl;
     }
 
-    if (stamina >= 8) {  
-        state = BoxerState::ATTACKING;
-        reduce_stamina(10);  
+    
+    if (state == BoxerState::BLOCKING) 
+    {
+        if (blockClock.getElapsedTime().asMilliseconds() > 100) 
+        {
+            reduce_stamina(1);
+            blockClock.restart();
+
+            if (stamina < 0.5) 
+            {
+                std::cout << name << " se queda sin estamina, deja de bloquear." << std::endl;
+                unblock(isBoxer1);
+            }
+        }
     }
 }
 
-void Boxer::uppercut() 
-{
-    if (state == BoxerState::IDLE) {  
-        state = BoxerState::ATTACKING;
-        punchClock.restart();  
-
-        loadAnimation("uppercut", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/uppercut.png");
-
-        setAnimation("uppercut"); 
+void Boxer::counterAttack(Collision& hitbox1, Collision& hitbox2, bool isBoxer1) {
+    if (isParrying) {
+        std::cout << name << " aprovecha el parry y lanza un contraataque.\n";
+        if(isBoxer1){
+        takeDamage(20);
+        }
+        else{
+        take_damage(20);
+        }
+        isParrying;
+        state = BoxerState::ATTACKING; 
     }
 }
 
+<<<<<<< HEAD
+sf::Vector2f Boxer::dodge(sf::Vector2f direction) 
+=======
 void Boxer::block() 
 {
 
@@ -203,7 +258,7 @@ void Boxer::block()
             return;
         }
         state = BoxerState::BLOCKING;
-        reduce_stamina(20);  
+        reduce_stamina(1);  
         blockClock.restart();
         loadAnimation("block", "../../assets/images/block.png");
 
@@ -223,19 +278,24 @@ void Boxer::unblock()
     }
 }
 
+<<<<<<< HEAD
 sf::Vector2f Boxer::dodge(sf::Vector2f direction) 
+=======
+void Boxer::dodge(sf::Vector2f direction) 
+>>>>>>> parent of a14867c (Rework stamina corazones)
+>>>>>>> V2.0_Lj
 {
     
     state = BoxerState::DODGING;
-    float dodgeDistance = 01.f; 
+    float dodgeDistance = 5.0f; 
 
     sf::Vector2f dodgeMovement = direction * dodgeDistance;
     state = BoxerState::DODGING;
 
     move(direction * dodgeSpeed);
     dodgeClock.restart().asSeconds();
-    reduce_stamina(40);
-    std::cout << name << "se esquivo" << std::endl;
+    reduce_stamina(20);
+    std::cout << name << "esquivo" << std::endl;
         
     return sf::Vector2f(direction * dodgeSpeed);
  }   
@@ -243,6 +303,17 @@ sf::Vector2f Boxer::dodge(sf::Vector2f direction)
 //methods damage
 void Boxer::take_damage(int amount) 
 {
+    if (state == BoxerState::BLOCKING) {
+        float elapsedTime = parryClock.getElapsedTime().asSeconds();
+
+        if (elapsedTime <= parryWindow) {
+            isParrying = true;
+            std::cout << name << " realizó un parry exitoso.\n";
+            state = BoxerState::IDLE; 
+            return;
+        }
+    }
+
     if (state == BoxerState::BLOCKING) 
     {
         std::cout << name << " bloqueó el golpe y no recibió daño." << std::endl;
@@ -258,14 +329,19 @@ void Boxer::take_damage(int amount)
 }
 
 void Boxer::receivePunch() {
+    
     if (hearts > 0) {
         hearts--;  
         state = BoxerState::TAKING_DAMAGE;
         std::cout << "¡Golpe recibido! Corazones restantes x: " << hearts << std::endl;
     } 
+
     else if(hearts == 0)
         {
         std::cout << "El boxeador ya no tiene corazones, ganaste" << std::endl;
+        loadAnimation("ko","../../assets/images/ko.png");
+        setAnimation("ko");
+        return;
     }
 }
 
@@ -284,7 +360,7 @@ void Boxer::recover_stamina(float amount) {
 
 void Boxer::updateStaminaBar() {
     float staminaPercentage = stamina / max_stamina; 
-    staminaBar.setSize(sf::Vector2f(100.0f * staminaPercentage, 20.0f));
+    staminaBar.setSize(sf::Vector2f(200.0f * staminaPercentage, 20.0f));
 }
 
 
@@ -305,7 +381,7 @@ void Boxer::update(const sf::Vector2f& opponentPosition )
         state = BoxerState::IDLE;
         setAnimation("idle");
     }
-     
+    
     if (state == BoxerState::IDLE) 
     {
     recover_stamina(0.05f);  
@@ -313,12 +389,10 @@ void Boxer::update(const sf::Vector2f& opponentPosition )
 
     if (state == BoxerState::DODGING && dodgeClock.getElapsedTime().asSeconds() > 0.5f) 
     {
+    
     state = BoxerState::IDLE;
     }
 
-    if (state == BoxerState::BLOCKING && blockClock.getElapsedTime().asSeconds() > 2.0f) {
-        unblock(); 
-    }
 
     //boxer rotation 
     sf::Vector2f direction = opponentPosition - boxerSprite_.getPosition();
@@ -424,13 +498,13 @@ void Boxer::draw(sf::RenderWindow& window) {
     float startY = 20; 
 
     for (int i = 0; i < get_hearts(); ++i) {
-        heartSprite.setPosition(startX + i * spacing, startY);  // Usar 'position' aquí
+        heartSprite.setPosition(startX + i * spacing, startY);  
         window.draw(heartSprite);
     }
 
     // draw hotbar stamina
-    staminaBar.setSize(sf::Vector2f((stamina / max_stamina) * 100, 10)); // size
-    staminaBar.setPosition(getBounds().left, getBounds().top - 20);  // position the stamina 
+    staminaBar.setSize(sf::Vector2f((stamina / max_stamina) * 100, 10)); 
+    staminaBar.setPosition(getBounds().left, getBounds().top - 20); 
     window.draw(staminaBar);
 }
 
@@ -454,6 +528,18 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
                         sf::Keyboard::Key attack3, sf::Keyboard::Key attack4,
                         Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
 {
+<<<<<<< HEAD
+    if (sf::Keyboard::isKeyPressed(keyblock)) {
+        block(hitbox1, hitbox2, isBoxer1);
+    } else {
+        // Si no se presiona el botón de bloqueo, dejar de bloquear
+        if (state == BoxerState::BLOCKING) {
+            unblock(isBoxer1);
+        }
+    }
+
+=======
+>>>>>>> parent of a14867c (Rework stamina corazones)
     if (sf::Keyboard::isKeyPressed(attack1)) {
         jab_right(hitbox1, hitbox2, isBoxer1); 
         setState(BoxerState::ATTACKING);
@@ -466,6 +552,10 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
 }
 
 
+<<<<<<< HEAD
+}
+=======
+>>>>>>> parent of a14867c (Rework stamina corazones)
 
 void Collision::expand(const sf::Vector2f& expansionSize) 
 {
