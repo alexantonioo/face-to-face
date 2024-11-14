@@ -541,7 +541,7 @@ void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
         reduce_stamina(10);
         
         
-      
+
         
         loadAnimation("jab_right", "../../assets/images/right_blue.png");
         
@@ -551,7 +551,6 @@ void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
         
         hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
         hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
-       
     }
 
     else {
@@ -568,12 +567,21 @@ NodeStatus Boxer::jabRightAction(Collision& hitbox1, Collision& hitbox2, float d
     float delta = sqrt(pow(hitbox1.getPosition().x - hitbox2.getPosition().x, 2) + pow(hitbox1.getPosition().y - hitbox2.getPosition().y, 2));
 
     std::cout << delta << " metros" << std::endl;
+    
+    
 
-    if (stamina >= 10 && delta < 20) {
-        
+    if (stamina >= 10 && delta < 37) {
         Ian_Right_jab(hitbox1, hitbox2);
         return NodeStatus::Success;
-    } else {
+    } 
+    
+    if(punchDuration < sf::seconds(0.5)){
+            punchClock.restart();
+            reduce_stamina(10);
+            return NodeStatus::Failure;
+        }
+
+    else {
         return NodeStatus::Failure;
     }
 }
@@ -590,7 +598,7 @@ void Boxer::initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float dista
     rootSequence->addChild(jabRightNode);
     
     //rootSequence->addChild(dodgeNode);
-
+    
     behaviorTreeRoot = rootSequence;  
 }
 
