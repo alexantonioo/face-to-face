@@ -16,7 +16,9 @@ enum class BoxerState
     ATTACKING,
     BLOCKING,
     DODGING,
-    TAKING_DAMAGE
+    TAKING_DAMAGE,
+    K_O,
+    INVINCIBLE
     };
 
 class Boxer 
@@ -32,7 +34,7 @@ public:
     
 
 
-    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, sf::Keyboard::Key attack3, sf::Keyboard::Key attack4, Collision& hitbox1, Collision& hitbox2, bool isBoxer1, sf::Keyboard::Key keyblock);
+    void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack3, Collision& hitbox1, Collision& hitbox2, bool isBoxer1, sf::Keyboard::Key keyblock, sf::Keyboard::Key dodge_move);
 
     Boxer() : state(BoxerState::IDLE), punchDuration(sf::seconds(0.2f)) {}
     const sf::Sprite&  getSprite() const;
@@ -55,9 +57,6 @@ public:
 
     void block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1);
     void unblock(bool); 
-    
-    void hook();
-    void uppercut();
     
     
     sf::Vector2f dodge(sf::Vector2f direction);
@@ -119,7 +118,7 @@ public:
     
     sf::Clock blockClock;
     sf::Clock damageCooldownClock;
-    sf::Time damageCooldown = sf::milliseconds(800);
+    sf::Time damageCooldown = sf::milliseconds(1000);
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?

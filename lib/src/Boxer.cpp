@@ -11,7 +11,7 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
-    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
+    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(12), attacking(false), dodgeSpeed(5.0f),
     ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.6f, 0.6f);
@@ -86,6 +86,11 @@ void Boxer::setAnimation(const std::string& animationName)
 // action methods
 void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
 {
+    if (damageCooldownClock.getElapsedTime() < damageCooldown) {
+        std::cout << name << " aún está en cooldown de golpe\n";
+        return; 
+    }
+
     if (stamina < 10) {
         std::cout << name << "Nesesitas recuperar energia" << std::endl;
         return; 
@@ -95,7 +100,7 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         state = BoxerState::ATTACKING;
         punchClock.restart();  
         reduce_stamina(10);
-        //take_damage(1);
+        damageCooldownClock.restart();
         
         if(isBoxer1)
         {
@@ -108,7 +113,7 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
 
         setAnimation("jab_right");
 
-        
+        damageCooldownClock.restart();
         hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
         hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
     
@@ -124,6 +129,11 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
 
 void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
 {
+    if (damageCooldownClock.getElapsedTime() < damageCooldown) {
+        std::cout << name << " aún está en cooldown de golpe\n";
+        return; 
+    }
+
     if (stamina < 10)
     {
         std::cout << name << " Necesitas recuperar energía" << std::endl;
@@ -134,6 +144,8 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         state = BoxerState::ATTACKING;
         punchClock.restart();
         reduce_stamina(10);
+        damageCooldownClock.restart();
+
         if(isBoxer1)
         {
             loadAnimation("jab_left", "../../assets/images/left_red.png");
@@ -144,6 +156,7 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         }
         setAnimation("jab_left");
 
+        damageCooldownClock.restart();
         hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
         hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
     }
@@ -224,7 +237,8 @@ sf::Vector2f Boxer::dodge(sf::Vector2f direction)
 {
     
     state = BoxerState::DODGING;
-    float dodgeDistance = 5.0f; 
+    float dodgeDistance = 100.0f; 
+    float dodgeSpeed = 5.0f;  
 
     sf::Vector2f dodgeMovement = direction * dodgeDistance;
     state = BoxerState::DODGING;
@@ -240,29 +254,37 @@ sf::Vector2f Boxer::dodge(sf::Vector2f direction)
 //methods damage
 void Boxer::take_damage(int amount) 
 {
-    if (state == BoxerState::BLOCKING) 
-    {
-        std::cout << name << " bloqueó el golpe y no recibió daño." << std::endl;
-        return;
-    }
+    if (damageCooldownClock.getElapsedTime() >= damageCooldown) {
+        if (hearts > 0) {
+            hearts--; 
+            std::cout << name << " pierde un corazón. Corazones restantes: " << hearts << std::endl; 
 
-    hearts -= amount; 
-    if (hearts < 0) 
-    {
-        hearts = 0; 
     
-    }
+    if (hearts <= 0) {
+        std::cout << name << " ha sido derrotado.\n";
+        state = BoxerState::TAKING_DAMAGE;
+            }
+        }
+    } 
 }
 
 void Boxer::receivePunch(int amount) {
     
+    if (state == BoxerState::INVINCIBLE) {
+        std::cout << name << " está invencible, no recibe daño.\n";
+        return;
+    }
+
     if (hearts > 0) {
         hearts--;  
         state = BoxerState::TAKING_DAMAGE;
         std::cout << "¡Golpe recibido! Corazones restantes x: " << hearts << std::endl;
     } 
 
-    else if(hearts == 0)
+    state = BoxerState::INVINCIBLE;
+    damageCooldownClock.restart(); 
+
+    if(hearts == 0)
         {
         std::cout << "El boxeador ya no tiene corazones, ganaste" << std::endl;
         loadAnimation("ko","../../assets/images/ko.png");
@@ -302,6 +324,11 @@ void Boxer::updatefps(float deltaTime) {
 
 void Boxer::update(const sf::Vector2f& opponentPosition ) 
 {
+    if (state == BoxerState::INVINCIBLE && damageCooldownClock.getElapsedTime().asSeconds() > 1.0f) {
+        state = BoxerState::IDLE;
+        std::cout << name << " ya no es invencible.\n";
+    }
+
     if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) 
     {
         state = BoxerState::IDLE;
@@ -450,14 +477,15 @@ const sf::Sprite& Boxer::getSprite() const {
     return boxerSprite_;
 }
 
-void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2, 
-                        sf::Keyboard::Key attack3, sf::Keyboard::Key attack4,
-                        Collision& hitbox1, Collision& hitbox2,bool isBoxer1,sf::Keyboard::Key keyblock) 
+void Boxer::handleInput(sf::Keyboard::Key attack1,sf::Keyboard::Key attack3,
+                        Collision& hitbox1,Collision& hitbox2,bool isBoxer1,
+                        sf::Keyboard::Key keyblock,sf::Keyboard::Key dodgemove) 
 {
     if (sf::Keyboard::isKeyPressed(keyblock)) {
         block(hitbox1, hitbox2, isBoxer1);
-    } else {
-        // Si no se presiona el botón de bloqueo, dejar de bloquear
+    } 
+    else {
+        
         if (state == BoxerState::BLOCKING) {
             unblock(isBoxer1);
         }
@@ -472,8 +500,16 @@ void Boxer::handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
         jab_left(hitbox1, hitbox2, isBoxer1); 
         setState(BoxerState::ATTACKING);
     }
-}
+    if (sf::Keyboard::isKeyPressed(dodgemove)) {
+        
+        if (get_stamina() > 20 && dodgeClock.getElapsedTime().asSeconds() >= 1.0f) {
+            
+            sf::Vector2f dodgeDirection = isBoxer1 ? sf::Vector2f(-1.0f, 0.0f) : sf::Vector2f(1.0f, 0.0f);
+            dodge(dodgeDirection); 
+        } 
 
+}
+}
 void Collision::expand(const sf::Vector2f& expansionSize) 
 {
     rectangle.setSize(originalSize + expansionSize);

@@ -213,8 +213,8 @@ void Game::run()
         }   
         }               
 
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U, hitbox_boxer1, hitbox_boxer2,true,sf::Keyboard::Key::K);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false,sf::Keyboard::Key::I); 
+                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::Y, hitbox_boxer1, hitbox_boxer2,true,sf::Keyboard::Key::K,sf::Keyboard::Key::P);
+                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::H, hitbox_boxer1, hitbox_boxer2,false,sf::Keyboard::Key::I,sf::Keyboard::Key::L); 
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
