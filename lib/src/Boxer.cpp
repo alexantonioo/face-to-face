@@ -2,6 +2,7 @@
 #include "Game.hpp"
 #include "Boxer.hpp"
 #include "Collision.hpp"
+#include "Path.hpp"
 #include <cstdlib> 
 #include <iostream>
 #include <queue>
@@ -13,7 +14,7 @@
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
     : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
     ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
-    loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
+    loadTexture("idle", initialTexturePath);  
     boxerSprite_.setScale(0.6f, 0.6f);
     boxerSprite_.setTexture(animations_["idle"]);
     boxerSprite_.setOrigin(339/2,336/2);    
@@ -43,16 +44,14 @@ void Boxer::loadTexture(const std::string& animationName, const std::string& tex
 
 void Boxer::loadHeartTexture() 
 {
-    if (!heartTexture.loadFromFile("../../assets/images/hearts.png")) 
+    if (!heartTexture.loadFromFile(Path::HEART_TEXTURE_PATH)) 
     {
         std::cerr << "!!Error loading animation" << std::endl;
     }
     heartSprite.setTexture(heartTexture);
     
-    // Ajustar la posición
     heartSprite.setPosition(10, 10); // Ajusta la posición como desees
 
-    // Ajustar el tamaño (escalado)
     float scaleX = 0.25f; 
     float scaleY = 0.25f; 
     heartSprite.setScale(scaleX, scaleY);
@@ -99,11 +98,11 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         
         if(isBoxer1)
         {
-            loadAnimation("jab_right", "../../assets/images/right_red.png");
+            loadAnimation("jab_right", Path::RIGHTRED_TEXTURE_PATH);
         }
         else
         {
-            loadAnimation("jab_right", "../../assets/images/right_blue.png");
+            loadAnimation("jab_right", Path::RIGHTBLUE_TEXTURE_PATH);
         }
 
         setAnimation("jab_right");
@@ -136,11 +135,11 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         reduce_stamina(10);
         if(isBoxer1)
         {
-            loadAnimation("jab_left", "../../assets/images/left_red.png");
+            loadAnimation("jab_left", Path::LEFTRED_TEXTURE_PATH);
         }
         else
         {
-            loadAnimation("jab_left", "../../assets/images/left_blue.png");
+            loadAnimation("jab_left", Path::LEFTBLUE_TEXTURE_PATH);
         }
         setAnimation("jab_left");
 
@@ -164,11 +163,11 @@ void Boxer::unblock(bool isBoxer1)
         
         if(isBoxer1)
         {
-            loadAnimation("idle", "../../assets/images/idle_red.png");
+            loadAnimation("idle", Path::IDLERED_TEXTURE_PATH);
         }
         else
         {
-            loadAnimation("idle", "../../assets/images/idle_blue.png");
+            loadAnimation("idle", Path::IDLEBLUE_TEXTURE_PATH);
         }
         setAnimation("idle");
         std::cout << name << " dejó de bloquear." << std::endl;
@@ -190,11 +189,11 @@ void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
 
             
         if (isBoxer1){
-            loadAnimation("block", "../../assets/images/blockred.png");
+            loadAnimation("block", Path::BLOCKRED_TEXTURE_PATH);
         }
             
         else{
-            loadAnimation("block", "../../assets/images/blockblue.png");
+            loadAnimation("block", Path::BLOCKBLUE_TEXTURE_PATH);
         }
 
         setAnimation("block");
@@ -265,7 +264,7 @@ void Boxer::receivePunch(int amount) {
     else if(hearts == 0)
         {
         std::cout << "El boxeador ya no tiene corazones, ganaste" << std::endl;
-        loadAnimation("ko","../../assets/images/ko.png");
+        loadAnimation("ko", Path::KO_TEXTURE_PATH);
         setAnimation("ko");
         return;
     }

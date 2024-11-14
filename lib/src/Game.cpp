@@ -5,6 +5,7 @@
 #include "Collision.hpp"
 #include <iostream>
 #include "SettingsMenu.hpp"
+#include "Path.hpp"
 
 
 
@@ -15,9 +16,9 @@ Game::Game()
     menu(window),
     currentState(MENU),
     currentBackground(STREET),
-    boxer1("Boxer 1", "../../assets/images/idle_red.png",sf::Vector2f(512, 120)), 
-    boxer2("Boxer 2", "../../assets/images/idle_blue.png",sf::Vector2f(512, 440)), 
-    ring(800.0f, 600.0f, "../../assets/images/ring.png"),
+    boxer1("Boxer 1", Path::IDLERED_TEXTURE_PATH, sf::Vector2f(512, 120)), 
+    boxer2("Boxer 2", Path::IDLEBLUE_TEXTURE_PATH,sf::Vector2f(512, 440)), 
+    ring(800.0f, 600.0f, Path::RING_TEXTURE_PATH),
     hitbox_boxer1(sf::Vector2f(512 - 5, 120 + 10), sf::Vector2f(05, 05)),
     hitbox_boxer2(sf::Vector2f(512 - 5, 440 + 10), sf::Vector2f(05, 05)),
     hitbox_ring(sf::Vector2f(1024 / 2.0f, 768 / 2.0f), sf::Vector2f(800.0f, 700.0f)),
@@ -25,8 +26,8 @@ Game::Game()
     isBotActive(false)
 {
 
-if (!font.loadFromFile("../../assets/fonts/Eight-Bit-Madness.ttf")) {  // Carga la fuente
-        // Manejo de error si la fuente no se carga
+if (!font.loadFromFile(Path::BITM_FONT_PATH)) {  // Carga la fuente
+        
     }
 
 gameOverText.setFont(font); 
@@ -37,7 +38,7 @@ gameOverText.setStyle(sf::Text::Bold);
 gameOverText.setPosition(400, 300);
 
 
-if (!ringTexture_.loadFromFile("../../assets/images/ring.png")) 
+if (!ringTexture_.loadFromFile(Path::RING_TEXTURE_PATH)) 
 {
         std::cerr << "Error al cargar la textura del ring" << std::endl;
     } else {
@@ -49,7 +50,7 @@ if (!ringTexture_.loadFromFile("../../assets/images/ring.png"))
     }
 
     // street texture
-    if (!streetTexture_.loadFromFile("../../assets/images/street.png")) {
+    if (!streetTexture_.loadFromFile(Path::STREET_TEXTURE_PATH)) {
         std::cerr << "Error al cargar la textura de la calle" << std::endl;
     } else {
         streetSprite_.setTexture(streetTexture_);
@@ -61,8 +62,8 @@ if (!ringTexture_.loadFromFile("../../assets/images/ring.png"))
     setBackground(STREET);
 
 
-    boxer1.loadTexture("default", "../../assets/images/boxer.png");  // Textura inicial
-    boxer2.loadTexture("default", "../../assets/images/boxer.png");
+    boxer1.loadTexture("default", Path::IDLERED_TEXTURE_PATH);  
+    boxer2.loadTexture("default", Path::IDLEBLUE_TEXTURE_PATH);
     
 
     boxer1.vector = boxer2.getSprite().getPosition() - boxer1.getSprite().getPosition();
@@ -285,7 +286,7 @@ void Game::drawHearts(const Boxer& boxer, const sf::Vector2f& position)
     static sf::Texture heartTexture;
     static bool textureLoaded = false;
     if (!textureLoaded) {
-        if (!heartTexture.loadFromFile("../../assets/images/hearts.png")) {
+        if (!heartTexture.loadFromFile(Path::HEART_TEXTURE_PATH)) {
             
             return;
         }
