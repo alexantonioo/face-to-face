@@ -34,11 +34,10 @@ void SettingsMenu::handleInput(const sf::Event& event) {
             moveDown();
         } 
         else if (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::Right) {
-            // Alternar entre opciones de escenario (ring y street)
             selectedMapIndex = (selectedMapIndex == 0) ? 1 : 0;
         }
         else if (event.key.code == sf::Keyboard::Escape) {
-            selectedMapIndex = -1; // Puede usarse para salir de la configuración
+            selectedMapIndex = -1; 
         }
     }
 }

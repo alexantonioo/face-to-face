@@ -50,7 +50,6 @@ public:
     void loadHeartTexture();
     void drawHearts(sf::RenderWindow& window, int heartsCount, bool isLeft);
 
-    // action methods
     void jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
     void jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
 
@@ -63,7 +62,6 @@ public:
     
     bool isinrange(const Boxer& opponent, float range) const;
     
-    // Methods managing actions
     void enqueue_action(Action action);
     void update(const sf::Vector2f& opponentPosition);
     void updatefps(float deltatime);
@@ -83,8 +81,6 @@ public:
     void take_damage(int amount);
     void receivePunch(int amount);
 
-
-    // access methods
     const std::string& get_name() const;
     int get_lucky_in_punch() const;
     int get_defense() const;
