@@ -119,17 +119,21 @@ public:
     sf::Clock blockClock;
     sf::Clock damageCooldownClock;
     sf::Time damageCooldown = sf::milliseconds(1000);
+    sf::Clock dodgeClock; 
+    sf::Clock punchClock;
+    
+
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?
 
-    sf::Clock dodgeClock; 
+    
     
     sf::Vector2f position;
     BoxerState state;  // manage state
     
-    sf::Clock punchClock;
-    sf::Time punchDuration;
+    
+    
     std::queue<Action> action_queue;  // action queue
     float time_accumulated;           // accumulated time
     float action_interval;
