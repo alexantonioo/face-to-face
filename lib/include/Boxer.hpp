@@ -62,7 +62,7 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     void jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
     void jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1);
     void block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1);
-    void unblock(); 
+    void unblock(bool); 
     
     void hook();
     void uppercut();
@@ -127,7 +127,7 @@ void handleInput(sf::Keyboard::Key attack1, sf::Keyboard::Key attack2,
     
     
     sf::Clock damageCooldownClock;
-    sf::Time damageCooldown = sf::milliseconds(200);
+    sf::Time damageCooldown = sf::milliseconds(800);
     sf::Sprite boxerSprite_;
     std::map<std::string, sf::Texture> animations_;
     sf::CircleShape head; //?

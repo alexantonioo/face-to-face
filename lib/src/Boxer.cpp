@@ -156,13 +156,13 @@ void Boxer::unblock(bool isBoxer1)
         
         if(isBoxer1)
         {
-            loadAnimation("boxer", "../../assets/images/boxer.png");
+            loadAnimation("idle", "../../assets/images/idle_red.png");
         }
         else
         {
-            loadAnimation("boxer", "../../assets/images/boxer2.png");
+            loadAnimation("idle", "../../assets/images/idle_blue.png");
         }
-        setAnimation("boxer");
+        setAnimation("idle");
         std::cout << name << " dejó de bloquear." << std::endl;
     }
 }
@@ -180,13 +180,19 @@ void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
 
         setState(BoxerState::BLOCKING);
 
-        if (isBoxer1)
+            
+        if (isBoxer1){
             loadAnimation("block", "../../assets/images/blockred.png");
-        else
+        }
+            
+        else{
             loadAnimation("block", "../../assets/images/blockblue.png");
+        }
 
         setAnimation("block");
         blockClock.restart();
+        parryClock.restart(); // Reiniciamos el reloj para medir la ventana del parry
+        isParrying = false;
         std::cout << name << " está bloqueando." << std::endl;
     }
 
@@ -207,38 +213,19 @@ void Boxer::block(Collision& hitbox1, Collision& hitbox2, bool isBoxer1)
     }
 }
 
-void Boxer::hook() 
-{
-    if (state == BoxerState::IDLE) {  
-        state = BoxerState::ATTACKING;
-        punchClock.restart();  
-
-        loadAnimation("hook", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/hook.png");
-
-        setAnimation("hook");  
-        //FALTA AJUSTAR STAMINA
-    }
-
-    if (stamina >= 8) {  
-        state = BoxerState::ATTACKING;
-        reduce_stamina(10);  
+void Boxer::counterAttack(Collision& hitbox1, Collision& hitbox2, bool isBoxer1) {
+    if (isParrying) {
+        std::cout << name << " aprovecha el parry y lanza un contraataque.\n";
+        if(isBoxer1){
+        takeDamage(20);
+        }
+        else{
+        take_damage(20);
+        }
+        isParrying;
+        state = BoxerState::ATTACKING; 
     }
 }
-
-void Boxer::uppercut() 
-{
-    if (state == BoxerState::IDLE) {  
-        state = BoxerState::ATTACKING;
-        punchClock.restart();  
-
-        loadAnimation("uppercut", "/mnt/c/Users/alex/Documents/GitHub/face-to-face/assets/images/uppercut.png");
-
-        setAnimation("uppercut"); 
-    }
-}
-
-
-
 
 sf::Vector2f Boxer::dodge(sf::Vector2f direction) 
 {
@@ -260,6 +247,17 @@ sf::Vector2f Boxer::dodge(sf::Vector2f direction)
 //methods damage
 void Boxer::take_damage(int amount) 
 {
+    if (state == BoxerState::BLOCKING) {
+        float elapsedTime = parryClock.getElapsedTime().asSeconds();
+
+        if (elapsedTime <= parryWindow) {
+            isParrying = true;
+            std::cout << name << " realizó un parry exitoso.\n";
+            state = BoxerState::IDLE; 
+            return;
+        }
+    }
+
     if (state == BoxerState::BLOCKING) 
     {
         std::cout << name << " bloqueó el golpe y no recibió daño." << std::endl;
@@ -327,7 +325,7 @@ void Boxer::recover_stamina(float amount) {
 
 void Boxer::updateStaminaBar() {
     float staminaPercentage = stamina / max_stamina; 
-    staminaBar.setSize(sf::Vector2f(100.0f * staminaPercentage, 20.0f));
+    staminaBar.setSize(sf::Vector2f(200.0f * staminaPercentage, 20.0f));
 }
 
 

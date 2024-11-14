@@ -396,6 +396,10 @@ void Game::handleInput() {
 }
 
 void Game::update() {
+    
+    boxer1.updateStaminaBar();
+    boxer2.updateStaminaBar();
+
     if (currentState == GameState::MENU) {
         menu.update();
     }
