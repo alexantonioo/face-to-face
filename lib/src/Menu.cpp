@@ -1,16 +1,18 @@
 #include "Menu.hpp"
 #include "SettingsMenu.hpp"
+#include "Path.hpp"
 #include <iostream>
+
 
 
 Menu::Menu(sf::RenderWindow& window){
 
-    if (!font.loadFromFile("../../assets/fonts/Eight-Bit-Madness.ttf")) {
-        std::cerr << "Error 'assets/fonts/Eight-Bit-Madness.ttf'" << std::endl;
+    if (!font.loadFromFile(Path::BITM_FONT_PATH)) {
+        std::cerr << "!! Font Error " << std::endl;
     }
 
 
-    if (!backgroundTexture.loadFromFile("../../assets/images/backgroundmenu.png")) {
+    if (!backgroundTexture.loadFromFile(Path::BACKGROUNDMENU_TEXTURE_PATH)) {
         std::cerr << "Error al cargar la imagen de fondo" << std::endl;
     } else {
         backgroundSprite.setTexture(backgroundTexture); 
@@ -28,8 +30,8 @@ Menu::Menu(sf::RenderWindow& window){
     playWithBotCheckbox.setFont(font);
     playWithBotCheckbox.setString("[ ] Jugar con Bot");
     playWithBotCheckbox.setFillColor(sf::Color::White);
-    playWithBotCheckbox.setPosition(1024/2, 768/2); // Ajusta según el diseño
-    playWithBotCheckbox.setCharacterSize(30);
+    playWithBotCheckbox.setPosition(800/2, 600/2); 
+    playWithBotCheckbox.setCharacterSize(40);
     
 }
 
