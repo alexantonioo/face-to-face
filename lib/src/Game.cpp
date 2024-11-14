@@ -24,7 +24,7 @@ Game::Game()
 
       
 {
-    float distance_boxer = sqrt(pow(hitbox_boxer2.getPosition().x - hitbox_boxer1.getPosition().x, 2) + pow(hitbox_boxer2.getPosition().y - hitbox_boxer1.getPosition().y, 2));
+    float distance_boxer = sqrt(pow(hitbox_boxer1.getPosition().x - hitbox_boxer2.getPosition().x, 2) + pow(hitbox_boxer1.getPosition().y - hitbox_boxer2.getPosition().y, 2));
     
     boxer2.initBehaviorTree(hitbox_boxer1,hitbox_boxer2, distance_boxer); 
             

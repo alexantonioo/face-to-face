@@ -521,9 +521,13 @@ void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
 
 
 NodeStatus Boxer::jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance) {
-    if (stamina >= 10 && distance < 20 ) {
-        std::cout << distance << "metros" << std::endl;
-        Ian_Right_jab(hitbox1,hitbox2);
+    float delta = sqrt(pow(hitbox1.getPosition().x - hitbox2.getPosition().x, 2) + pow(hitbox1.getPosition().y - hitbox2.getPosition().y, 2));
+
+    std::cout << delta << " metros" << std::endl;
+
+    if (stamina >= 10 && delta < 20) {
+        
+        Ian_Right_jab(hitbox1, hitbox2);
         return NodeStatus::Success;
     } else {
         return NodeStatus::Failure;
