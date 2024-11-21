@@ -198,7 +198,7 @@ void Game::run()
         hitbox_boxer2.move(movement2);
         
         //DODGE BOXER 1
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::R)) 
         {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) 
         {
@@ -213,7 +213,7 @@ void Game::run()
         }           
 
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) 
         {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
         {
@@ -229,8 +229,8 @@ void Game::run()
 
 
 
-                boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U, hitbox_boxer1, hitbox_boxer2,true);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false); 
+                boxer1.handleInput(sf::Keyboard::Key::T, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::Y, hitbox_boxer1, hitbox_boxer2,true);
+                boxer2.handleInput(sf::Keyboard::Key::K, sf::Keyboard::Key::K, sf::Keyboard::Key::J, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false); 
             
                 boxer1.update(boxer2.getSprite().getPosition());
                 boxer2.update(boxer1.getSprite().getPosition());
