@@ -25,11 +25,11 @@ Menu::Menu(sf::RenderWindow& window){
 
   initMenuOptions(1024, 768); 
 
-    playWithBotCheckbox.setFont(font);
-    playWithBotCheckbox.setString("[ ] Jugar con Bot");
-    playWithBotCheckbox.setFillColor(sf::Color::White);
-    playWithBotCheckbox.setPosition(1024/2, 768/2); // Ajusta según el diseño
-    playWithBotCheckbox.setCharacterSize(30);
+    //playWithBotCheckbox.setFont(font);
+    //playWithBotCheckbox.setString("[ ] Jugar con Bot");
+    //playWithBotCheckbox.setFillColor(sf::Color::White);
+    //playWithBotCheckbox.setPosition(1024/2, 768/2); // Ajusta según el diseño
+    //playWithBotCheckbox.setCharacterSize(30);
     
 }
 
