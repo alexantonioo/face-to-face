@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include <vector>
 #include <memory>
 #include <functional>
@@ -42,4 +42,4 @@ public:
 
 private:
     std::vector<std::shared_ptr<BehaviorNode>> children_;
-};
+};*/

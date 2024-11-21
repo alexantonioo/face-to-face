@@ -8,7 +8,7 @@
 #include <queue>
 #include <functional>
 #include <cmath>
-#include "BehaviorTree.hpp" 
+//#include "BehaviorTree.hpp" 
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
@@ -51,7 +51,7 @@ void Boxer::loadHeartTexture()
     }
     heartSprite.setTexture(heartTexture);
     
-    heartSprite.setPosition(10, 10); // Ajusta la posición como desees
+    heartSprite.setPosition(10, 10); 
 
     float scaleX = 0.25f; 
     float scaleY = 0.25f; 
@@ -86,22 +86,23 @@ void Boxer::setAnimation(const std::string& animationName)
 // action methods
 void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
 {
-    if (damageCooldownClock.getElapsedTime() < damageCooldown) {
+    /*if (damageCooldownClock.getElapsedTime() < damageCooldown) {
         std::cout << name << " aún está en cooldown de golpe\n";
         return; 
+    }*/
+
+    if (stamina < 10)
+    {
+        std::cout << name << " Necesitas recuperar energía" << std::endl;
+        return;
     }
 
-    if (stamina < 10) {
-        std::cout << name << "Nesesitas recuperar energia" << std::endl;
-        return; 
-    }
-    
-    if (state == BoxerState::IDLE) {  
+    if (state == BoxerState::IDLE) {
         state = BoxerState::ATTACKING;
-        punchClock.restart();  
+        punchClock.restart();
         reduce_stamina(10);
-        damageCooldownClock.restart();
-        
+        //damageCooldownClock.restart();
+
         if(isBoxer1)
         {
             loadAnimation("jab_right", Path::RIGHTRED_TEXTURE_PATH);
@@ -110,13 +111,11 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         {
             loadAnimation("jab_right", Path::RIGHTBLUE_TEXTURE_PATH);
         }
-
         setAnimation("jab_right");
 
-        damageCooldownClock.restart();
+        //damageCooldownClock.restart();
         hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
         hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
-    
     }
 
     else {
@@ -129,10 +128,10 @@ void Boxer::jab_right(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
 
 void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1) 
 {
-    if (damageCooldownClock.getElapsedTime() < damageCooldown) {
+    /*if (damageCooldownClock.getElapsedTime() < damageCooldown) {
         std::cout << name << " aún está en cooldown de golpe\n";
         return; 
-    }
+    }*/
 
     if (stamina < 10)
     {
@@ -144,7 +143,7 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         state = BoxerState::ATTACKING;
         punchClock.restart();
         reduce_stamina(10);
-        damageCooldownClock.restart();
+        //damageCooldownClock.restart();
 
         if(isBoxer1)
         {
@@ -156,7 +155,7 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         }
         setAnimation("jab_left");
 
-        damageCooldownClock.restart();
+        //damageCooldownClock.restart();
         hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
         hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
     }
@@ -167,6 +166,37 @@ void Boxer::jab_left(Collision& hitbox1, Collision& hitbox2,bool isBoxer1)
         state = BoxerState::IDLE;
     }
 }
+
+
+/*if (stamina < 10) {
+        std::cout << name << " Necesitas recuperar energía" << std::endl;
+        return;
+    }
+
+    if (state == BoxerState::IDLE) {  
+        state = BoxerState::ATTACKING;
+        punchClock.restart();  
+        reduce_stamina(10);
+            if(isBoxer1)
+            {
+                loadAnimation("jab_left", Path::LEFTRED_TEXTURE_PATH);
+            }
+            else
+            {
+                loadAnimation("jab_left", Path::LEFTBLUE_TEXTURE_PATH);
+            }
+            setAnimation("jab_left");
+
+        hitbox1.expand(sf::Vector2f(20.f, 20.f)); 
+        hitbox2.expand(sf::Vector2f(20.f, 20.f)); 
+    }
+
+    else {
+        hitbox1.reset();
+        hitbox2.reset();
+        state = BoxerState::IDLE;
+    }
+*/
 
 void Boxer::unblock(bool isBoxer1) 
 {
@@ -329,9 +359,9 @@ void Boxer::update(const sf::Vector2f& opponentPosition )
         std::cout << name << " ya no es invencible.\n";
     }
 
-    if (behaviorTreeRoot) {
+    /*if (behaviorTreeRoot) {
         behaviorTreeRoot->tick();  
-    }
+    }*/
     
     if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) 
     {
@@ -531,7 +561,7 @@ sf::Vector2f Boxer::getPosition()
     return boxerSprite_.getPosition();
 }
 
-void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
+/*void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
 {
    
     
@@ -559,12 +589,12 @@ void Boxer::Ian_Right_jab(Collision& hitbox1, Collision& hitbox2)
         hitbox2.reset();
         state = BoxerState::IDLE;
     }
-}
+}*/
 
 
 
 
-NodeStatus Boxer::jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance) {
+/*NodeStatus Boxer::jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance) {
     float delta = sqrt(pow(hitbox1.getPosition().x - hitbox2.getPosition().x, 2) + pow(hitbox1.getPosition().y - hitbox2.getPosition().y, 2));
 
     std::cout << delta << " metros" << std::endl;
@@ -576,10 +606,10 @@ NodeStatus Boxer::jabRightAction(Collision& hitbox1, Collision& hitbox2, float d
     } else {
         return NodeStatus::Failure;
     }
-}
+}*/
 
 
-void Boxer::initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float distance) 
+/*void Boxer::initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float distance) 
 {
     
     auto jabRightNode = std::make_shared<ActionNode>([this, &hitbox1, &hitbox2, &distance]() { return this->jabRightAction( hitbox1, hitbox2, distance); });
@@ -592,5 +622,5 @@ void Boxer::initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float dista
     //rootSequence->addChild(dodgeNode);
 
     behaviorTreeRoot = rootSequence;  
-}
+}*/
 

@@ -91,10 +91,10 @@ public:
     void setState(BoxerState state);
     sf::Vector2f vector;
     //BehaviorTree
-    NodeStatus jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance);
+    /*NodeStatus jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance);
     void initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float distance );
     void Ian_Right_jab(Collision& hitbox1, Collision& hitbox2);
-    void Ian_Left_jab();
+    void Ian_Left_jab();*/
 
     
     private:
@@ -121,7 +121,7 @@ public:
     sf::Clock damageCooldownClock;
     sf::Time damageCooldown = sf::milliseconds(1000);
     //BT
-    std::shared_ptr<BehaviorNode> behaviorTreeRoot;
+    //std::shared_ptr<BehaviorNode> behaviorTreeRoot;
     
     
     sf::Sprite boxerSprite_;
