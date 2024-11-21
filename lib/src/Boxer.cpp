@@ -11,7 +11,7 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
-    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
+    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(7.0f),
       ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) {
     loadTexture("idle", initialTexturePath);  // Cargar la imagen inicial
     boxerSprite_.setScale(0.6f, 0.6f);
@@ -234,7 +234,7 @@ sf::Vector2f Boxer::dodge(sf::Vector2f direction)
 
     move(direction * dodgeSpeed);
     dodgeClock.restart().asSeconds();
-    reduce_stamina(40);
+    //reduce_stamina(40);
     std::cout << name << "se esquivo" << std::endl;
         
     return sf::Vector2f(direction * dodgeSpeed);

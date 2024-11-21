@@ -75,9 +75,9 @@ void Game::run()
 {
     bool isPaused = false;
     sf::Clock deltaClock;
-    const float targetFPS = 60.0f;
+    const float targetFPS = 2000.0f;
     const float targetFrameTime = 1.0f / targetFPS;
-    window.setFramerateLimit(120);
+    window.setFramerateLimit(1200);
     window.setVerticalSyncEnabled(true);
     while (window.isOpen()) 
     {
@@ -115,10 +115,10 @@ void Game::run()
         boxer2.updatefps(frameTime);
 
         // Limitar los FPS a 60
-        if (frameTime < targetFrameTime) 
-        {
-            sf::sleep(sf::seconds(targetFrameTime - frameTime));
-        }
+        //if (frameTime < targetFrameTime) 
+        //{
+       //     sf::sleep(sf::seconds(targetFrameTime - frameTime));
+        //}
 
         
             
@@ -141,19 +141,19 @@ void Game::run()
         sf::Vector2f movement1(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) 
         {
-            movement1.y -= 1.0f;
+            movement1.y -= 2.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) 
         {
-            movement1.y += 1.0f;
+            movement1.y += 2.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) 
         {
-            movement1.x -= 1.0f;
+            movement1.x -= 2.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) 
         {
-            movement1.x += 1.0f;
+            movement1.x += 2.0f;
         }
         //block
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::K))
@@ -177,19 +177,19 @@ void Game::run()
         sf::Vector2f movement2(0.f, 0.f);
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) 
         {
-            movement2.y -= 1.0f;
+            movement2.y -= 2.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) 
         {
-            movement2.y += 1.0f;
+            movement2.y += 2.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
         {
-            movement2.x -= 1.0f;
+            movement2.x -= 2.0f;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) 
         {
-            movement2.x += 1.0f;
+            movement2.x += 2.0f;
         }
         
         
