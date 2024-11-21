@@ -191,6 +191,8 @@ void Game::run()
         {
             movement2.x += 1.0f;
         }
+        
+        
 
         boxer2.move(movement2);
         hitbox_boxer2.move(movement2);
@@ -208,7 +210,24 @@ void Game::run()
         hitbox_boxer1.move(boxer1.dodge(sf::Vector2f(0.5f, 0.f)));  
         
         }   
+        }           
+
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) 
+        {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) 
+        {
+        hitbox_boxer2.move(boxer2.dodge(sf::Vector2f(-0.5f, 0.f))); 
+        
+        }   
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))               
+        {
+        hitbox_boxer2.move(boxer2.dodge(sf::Vector2f(0.5f, 0.f)));  
+        
+        }   
         }               
+
+
 
                 boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::T, sf::Keyboard::Key::Y, sf::Keyboard::Key::U, hitbox_boxer1, hitbox_boxer2,true);
                 boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::G, sf::Keyboard::Key::H, sf::Keyboard::Key::J, hitbox_boxer1, hitbox_boxer2,false); 
