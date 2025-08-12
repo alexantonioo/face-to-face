@@ -12,8 +12,8 @@
 
 // Constructor
 Boxer::Boxer(const std::string& name, const std::string& initialTexturePath, sf::Vector2f spawn)
-    : name(name), stamina(max_stamina),max_stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
-      ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) 
+        : name(name), max_stamina(100), stamina(100), lucky_in_punch(10), defense(10), speed(10),hearts(10), attacking(false), dodgeSpeed(5.0f),
+            ko_probability(0), knocked_out(false), state(BoxerState::IDLE), time_accumulated(0.0f), action_interval(1.0f), punchDuration(sf::seconds(0.5f)) 
     {
         loadTexture("idle", initialTexturePath);  
         boxerSprite_.setScale(0.6f, 0.6f);
@@ -329,9 +329,7 @@ void Boxer::update(const sf::Vector2f& opponentPosition )
         std::cout << name << " ya no es invencible.\n";
     }
 
-    if (behaviorTreeRoot) {
-        behaviorTreeRoot->tick();  
-    }
+    // AI tree tick removed from here (handled in updateBot) to avoid double ticks
     
     if (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration) 
     {
@@ -568,29 +566,83 @@ NodeStatus Boxer::jabRightAction(Collision& hitbox1, Collision& hitbox2, float d
     float delta = sqrt(pow(hitbox1.getPosition().x - hitbox2.getPosition().x, 2) + pow(hitbox1.getPosition().y - hitbox2.getPosition().y, 2));
 
     std::cout << delta << " metros" << std::endl;
-
-    if (stamina >= 10 && delta < 20) {
-        
+    // Check AI cooldown to avoid spamming
+    if (stamina >= 10 && delta < 120 && aiAttackClock.getElapsedTime().asSeconds() >= aiAttackCooldown) {
         Ian_Right_jab(hitbox1, hitbox2);
+        aiAttackClock.restart();
         return NodeStatus::Success;
-    } else {
-        return NodeStatus::Failure;
     }
+    return NodeStatus::Failure;
 }
 
 
-void Boxer::initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float distance) 
-{
-    
-    auto jabRightNode = std::make_shared<ActionNode>([this, &hitbox1, &hitbox2, &distance]() { return this->jabRightAction( hitbox1, hitbox2, distance); });
-    
-    //auto dodgeNode = std::make_shared<ActionNode>([this]() { return this->dodgeAction(); });
+void Boxer::initBehaviorTree(Collision& selfHitbox, Collision& opponentHitbox) {
+    // Condition: enough stamina to attempt punch
+    auto staminaCond = std::make_shared<ConditionNode>([this]() {
+        return this->stamina >= 10.f; });
 
-    auto rootSequence = std::make_shared<SequenceNode>();
-    rootSequence->addChild(jabRightNode);
-    
-    //rootSequence->addChild(dodgeNode);
+    // Condition: within range
+    auto inRangeCond = std::make_shared<ConditionNode>([this]() {
+        return this->cachedDistance <= this->desiredPunchRange; });
 
-    behaviorTreeRoot = rootSequence;  
+    // Action: move towards opponent
+    auto approachAction = std::make_shared<ActionNode>([this, &opponentHitbox]() {
+        if (state == BoxerState::ATTACKING || state == BoxerState::BLOCKING) return NodeStatus::Failure; // let attacks finish
+        // simple seek movement along vector
+        // We only modify sprite; caller must sync hitbox outside (Game updateBot)
+        return NodeStatus::Success; // actual position changed in updateBot using movement vector
+    });
+
+    // Action: punch (right jab for now)
+    auto punchAction = std::make_shared<ActionNode>([this, &selfHitbox, &opponentHitbox]() {
+        return this->jabRightAction(selfHitbox, opponentHitbox, this->cachedDistance);
+    });
+
+    // Sequence: if in range and enough stamina, punch
+    auto punchSequence = std::make_shared<SequenceNode>();
+    punchSequence->addChild(staminaCond);
+    punchSequence->addChild(inRangeCond);
+    punchSequence->addChild(punchAction);
+
+    // Selector: try punch else approach
+    auto rootSelector = std::make_shared<SelectorNode>();
+    rootSelector->addChild(punchSequence);
+    rootSelector->addChild(approachAction);
+
+    behaviorTreeRoot = rootSelector;
+}
+
+void Boxer::updateBot(float dt, Collision& selfHitbox, Collision& opponentHitbox, const sf::Vector2f& opponentPos) {
+    if (!isBot) return;
+
+    // Update cached distance
+    sf::Vector2f myPos = getSprite().getPosition();
+    cachedDistance = std::sqrt(std::pow(myPos.x - opponentPos.x, 2) + std::pow(myPos.y - opponentPos.y, 2));
+    currentDT = dt;
+
+    // Basic lateral micro movement to feel alive when in range
+    if (cachedDistance <= desiredPunchRange * 0.95f && state == BoxerState::IDLE) {
+        // small horizontal sway
+        float swayDir = (std::sin(static_cast<float>(std::fmod(aiAttackClock.getElapsedTime().asSeconds()*3.0, 6.28))) > 0) ? 1.f : -1.f;
+        sf::Vector2f sway(swayDir * 40.f * dt, 0.f);
+        move(sway);
+        selfHitbox.move(sway);
+    }
+
+    if (behaviorTreeRoot) {
+        // Movement toward opponent if out of range
+        if (cachedDistance > desiredPunchRange * 0.9f && state == BoxerState::IDLE) {
+            sf::Vector2f dir = opponentPos - myPos;
+            float len = std::sqrt(dir.x*dir.x + dir.y*dir.y);
+            if (len > 0.001f) dir /= len;
+            sf::Vector2f delta = dir * moveSpeed * dt;
+            move(delta);
+            selfHitbox.move(delta);
+        }
+        // Tick behavior tree only if not mid punch; after punch it will reset in Boxer::update
+        if (state != BoxerState::ATTACKING || (state == BoxerState::ATTACKING && punchClock.getElapsedTime() > punchDuration)) {
+            behaviorTreeRoot->tick();
+        }
+    }
 }
 

@@ -28,7 +28,7 @@ Game::Game()
 {
         float distance_boxer = sqrt(pow(hitbox_boxer1.getPosition().x - hitbox_boxer2.getPosition().x, 2) + pow(hitbox_boxer1.getPosition().y - hitbox_boxer2.getPosition().y, 2));
     
-    boxer2.initBehaviorTree(hitbox_boxer1,hitbox_boxer2, distance_boxer); 
+    boxer2.initBehaviorTree(hitbox_boxer2, hitbox_boxer1); 
 
 if (!font.loadFromFile(Path::BITM_FONT_PATH)) {  
         std::cerr << "Error al cargar fuente" << std::endl;
@@ -85,6 +85,7 @@ void Game::run()
     window.setVerticalSyncEnabled(true);
     while (window.isOpen()) 
     {
+        float dtFrame = clock.restart().asSeconds();
         sf::Event event;
         while (window.pollEvent(event)) 
         {
@@ -102,26 +103,24 @@ void Game::run()
                 menu.handleInput(event, window);
                 if (menu.isStartSelected()) 
                 {   
-                        if(menu.isPlayWithBotEnabled())
-                        {
+                        if(menu.isPlayWithBotEnabled()) {
                             setBotActive(true);
-                        }
-                        else if (menu.isPlayWithBotEnabled())
-                        {
+                            boxer2.setIsBot(true);
+                        } else {
                             setBotActive(false);
+                            boxer2.setIsBot(false);
                         }
                     setBackground(static_cast<BackgroundType>(menu.getSelectedOption()));
                     currentState = PLAYING;
                 }
 
-        float frameTime = clock.restart().asSeconds();
-        boxer1.updatefps(frameTime);
-        boxer2.updatefps(frameTime);
+    boxer1.updatefps(dtFrame);
+    boxer2.updatefps(dtFrame);
 
         // Limitar los FPS a 60
-        if (frameTime < targetFrameTime) 
+        if (dtFrame < targetFrameTime) 
         {
-            sf::sleep(sf::seconds(targetFrameTime - frameTime));
+            sf::sleep(sf::seconds(targetFrameTime - dtFrame));
         }
 
         
@@ -219,9 +218,15 @@ void Game::run()
         }               
 
                 boxer1.handleInput(sf::Keyboard::Key::R, sf::Keyboard::Key::Y, hitbox_boxer1, hitbox_boxer2,true,sf::Keyboard::Key::K,sf::Keyboard::Key::P);
-                boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::H, hitbox_boxer1, hitbox_boxer2,false,sf::Keyboard::Key::I,sf::Keyboard::Key::L); 
+                if(!boxer2.getIsBot()) {
+                    boxer2.handleInput(sf::Keyboard::Key::F, sf::Keyboard::Key::H, hitbox_boxer1, hitbox_boxer2,false,sf::Keyboard::Key::I,sf::Keyboard::Key::L); 
+                }
             
                 boxer1.update(boxer2.getSprite().getPosition());
+                if(boxer2.getIsBot()) {
+                    // AI update
+                    boxer2.updateBot(dtFrame, hitbox_boxer2, hitbox_boxer1, boxer1.getSprite().getPosition());
+                }
                 boxer2.update(boxer1.getSprite().getPosition());
                 if (isPaused) 
                 {

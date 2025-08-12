@@ -92,9 +92,13 @@ public:
     sf::Vector2f vector;
     //BehaviorTree
     NodeStatus jabRightAction(Collision& hitbox1, Collision& hitbox2, float distance);
-    void initBehaviorTree(Collision& hitbox1, Collision& hitbox2, float distance );
+    void initBehaviorTree(Collision& selfHitbox, Collision& opponentHitbox);
     void Ian_Right_jab(Collision& hitbox1, Collision& hitbox2);
     void Ian_Left_jab();
+    // AI helpers
+    void setIsBot(bool v) { isBot = v; }
+    bool getIsBot() const { return isBot; }
+    void updateBot(float dt, Collision& selfHitbox, Collision& opponentHitbox, const sf::Vector2f& opponentPos);
 
     
     private:
@@ -122,6 +126,14 @@ public:
     sf::Time damageCooldown = sf::milliseconds(1000);
     //BT
     std::shared_ptr<BehaviorNode> behaviorTreeRoot;
+    bool isBot = false; // flagged as AI controlled
+    // Cached distance for BT conditions (updated each tick when bot)
+    float cachedDistance = 0.f;
+    float desiredPunchRange = 120.f; // range to attempt punch
+    float moveSpeed = 180.f; // pixels per second
+    float currentDT = 0.f; // delta time passed from game loop
+    float aiAttackCooldown = 0.8f; // seconds between AI attack attempts
+    sf::Clock aiAttackClock; // cooldown timer
     
     
     sf::Sprite boxerSprite_;

@@ -70,4 +70,27 @@ The project has the following directory structure:
 
 3. Open the executable by navigating through the folders test, then bin, and execute the GameTest file with:
     ```bash
-   ./GameTest
+    ./GameTest
+    ```
+
+## Single Player (Bot) Mode
+
+From the main menu you can toggle the option "Jugar con Bot" (Play with Bot). When enabled:
+- Player 1 uses WASD to move, R/Y to punch, K to block, P/L to dodge (existing controls).
+- Player 2 becomes an AI-controlled boxer.
+
+### Current AI Behavior
+The bot uses a lightweight Behavior Tree composed of:
+1. Selector (root)
+   - Sequence (Punch Sequence)
+     - Condition: Has minimum stamina (>= 10)
+     - Condition: Within punch range (<= 120 px)
+     - Action: Perform right jab
+   - Action: Approach (move towards opponent until in range)
+
+Distance is recomputed every frame; if outside range the bot advances, otherwise attempts a jab when stamina allows. This is intentionally simple and can be extended (add dodge, block, left jab, combos, retreat on low stamina) in future iterations.
+
+### Notes
+- Bot logic is frame-time aware and updates movement before evaluating attack.
+- Stamina constraints prevent constant spam of attacks.
+- Behavior Tree nodes are defined in `BehaviorTree.hpp` (added ConditionNode).

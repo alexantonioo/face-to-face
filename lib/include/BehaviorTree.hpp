@@ -43,3 +43,14 @@ public:
 private:
     std::vector<std::shared_ptr<BehaviorNode>> children_;
 };
+
+// Simple condition node: executes a predicate (no side effects) and returns
+// Success if predicate is true, otherwise Failure. Never returns Running.
+class ConditionNode : public BehaviorNode {
+public:
+    using ConditionFunction = std::function<bool()>;
+    explicit ConditionNode(ConditionFunction condition) : condition_(std::move(condition)) {}
+    NodeStatus tick() override { return condition_() ? NodeStatus::Success : NodeStatus::Failure; }
+private:
+    ConditionFunction condition_;
+};
